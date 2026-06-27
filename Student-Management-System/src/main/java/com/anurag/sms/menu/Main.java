@@ -1,4 +1,4 @@
-package anurag.menu;
+package com.anurag.sms.menu;
 
 public class Main{
     public static void main(String[] args) {
