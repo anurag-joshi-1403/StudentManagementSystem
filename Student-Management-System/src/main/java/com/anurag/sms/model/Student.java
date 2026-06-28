@@ -58,4 +58,9 @@ public class Student {
     public void setMarks(double marks){
         this.marks=marks;
     }
+
+    @Override
+    public String toString(){
+        return "Student{"+"id="+ id + "'name=" +name+ '\''+ "email='"+email+'\''+ "Course='"+ course + '\''+ "marks='"+marks + '}';
+    }
 }
