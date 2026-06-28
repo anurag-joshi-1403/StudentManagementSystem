@@ -1,0 +1,13 @@
+package com.anurag.sms.service;
+
+import com.anurag.sms.dao.StudentDAO;
+import com.anurag.sms.model.Student;
+
+public class StudentService {
+    private StudentDAO dao = new StudentDAO();
+
+    public boolean addStudent(Student student){
+        return dao.addStudents(student);
+
+    }
+}
