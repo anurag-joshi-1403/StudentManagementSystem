@@ -7,7 +7,7 @@ public class StudentService {
     private StudentDAO dao = new StudentDAO();
 
     public boolean addStudent(Student student){
-        return dao.addStudents(student);
+        return dao.addStudent(student);
 
     }
 }

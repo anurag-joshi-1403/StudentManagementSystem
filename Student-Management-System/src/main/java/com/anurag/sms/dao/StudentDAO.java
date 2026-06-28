@@ -9,7 +9,7 @@ import com.anurag.sms.model.Student;
 
 public class StudentDAO {
 
-    public boolean addStudents(Student student) {
+    public boolean addStudent(Student student) {
         String sql ="""
                 INSERT INTO students(name,email,course,marks)VALUES( ?,  ?,  ?,  ?)""";
 

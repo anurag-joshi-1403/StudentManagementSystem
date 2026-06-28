@@ -19,5 +19,6 @@
             "database": "student_management",
             "username": "root"
         }
-    ]
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }
