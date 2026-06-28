@@ -1,5 +1,6 @@
 package com.anurag.sms.menu;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.anurag.sms.model.Student;
@@ -66,7 +67,17 @@ public class Menu {
     }
 
     private void viewAllStudents() {
-        System.out.println("Coming Soon......");
+        List<Student> students = service.getAllStudents();
+
+        if(students.isEmpty()){
+            System.out.println("No students found.");
+            return;
+        }
+        System.out.println("\n===== Student List =====");
+
+        for(Student student : students){
+            System.out.println(student);
+        }
     }
 
 }

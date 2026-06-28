@@ -2,7 +2,10 @@ package com.anurag.sms.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.anurag.sms.config.DBConnection;
 import com.anurag.sms.model.Student;
@@ -10,7 +13,7 @@ import com.anurag.sms.model.Student;
 public class StudentDAO {
 
     public boolean addStudent(Student student) {
-        String sql ="""
+        String sql = """
                 INSERT INTO students(name,email,course,marks)VALUES( ?,  ?,  ?,  ?)""";
 
         try {
@@ -31,11 +34,32 @@ public class StudentDAO {
             return false;
         }
     }
-    public void viewStudent(){
+
+    public List<Student> getAllStudents() {
+        List<Student> students = new ArrayList<>();
+
         String sql = "SELECT * FROM students";
+        try {
+            Connection connection = DBConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Student student = new Student(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("course"),
+                        rs.getDouble("marks")
+                );
+                students.add(student);
+
+            }
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return students;
     }
-    
-    public List<Student> getAllStudents(){
-    }
-    
+
 }

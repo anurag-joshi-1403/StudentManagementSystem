@@ -14,6 +14,6 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents(){
-        
+        return dao.getAllStudents();
     }
 }
