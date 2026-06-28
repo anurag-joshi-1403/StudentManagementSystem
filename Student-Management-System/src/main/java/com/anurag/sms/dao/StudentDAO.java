@@ -31,4 +31,11 @@ public class StudentDAO {
             return false;
         }
     }
+    public void viewStudent(){
+        String sql = "SELECT * FROM students";
+    }
+    
+    public List<Student> getAllStudents(){
+    }
+    
 }

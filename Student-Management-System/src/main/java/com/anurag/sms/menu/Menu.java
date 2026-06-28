@@ -5,12 +5,40 @@ import java.util.Scanner;
 import com.anurag.sms.model.Student;
 import com.anurag.sms.service.StudentService;
 
-public class Menu{
+public class Menu {
 
     private Scanner scanner = new Scanner(System.in);
     private StudentService service = new StudentService();
 
-    public void start(){
+    public void start() {
+        while(true){
+            System.out.println("\n===== Student Management System =====");
+            System.out.println("1. Add Student");
+            System.out.println("2.View All Students");
+            System.out.println("3. Exit");
+
+            System.out.println("Enter Choice : ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch(choice){
+                case 1:
+                    addStudent();
+                    break;
+                case 2 :
+                    viewAllStudents();
+                    break;
+                case 3 :
+                    System.out.println("Thank You!");
+                    return;
+                default:
+                    System.out.println("Invalid Choice");
+            }
+
+        }
+    }
+
+    private void addStudent() {
         System.out.println("===== Add Student =====");
 
         System.out.print("Enter Name : ");
@@ -29,10 +57,16 @@ public class Menu{
 
         boolean status = service.addStudent(student);
 
-        if(status){
+        if (status) {
             System.out.println("Student Added Successfully. ");
-        }else {
+        } else {
             System.out.println("Failed to Add Student.");
         }
+
     }
+
+    private void viewAllStudents() {
+        System.out.println("Coming Soon......");
+    }
+
 }
