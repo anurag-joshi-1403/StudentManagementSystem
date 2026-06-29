@@ -16,7 +16,8 @@ public class Menu {
             System.out.println("\n===== Student Management System =====");
             System.out.println("1. Add Student");
             System.out.println("2.View All Students");
-            System.out.println("3. Exit");
+            System.out.println("3.Search Student By ID :");
+            System.out.println("4. Exit");
 
             System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
@@ -29,7 +30,10 @@ public class Menu {
                 case 2 :
                     viewAllStudents();
                     break;
-                case 3 :
+                case 3:
+                    searchStudentById();
+                    break;
+                case 4 :
                     System.out.println("Thank You!");
                     return;
                 default:
@@ -77,6 +81,21 @@ public class Menu {
 
         for(Student student : students){
             System.out.println(student);
+        }
+    }
+
+    private void searchStudentById(){
+
+        System.out.print("Enter Student ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        Student student = service.getStudentById(id);
+
+        if(student != null){
+            System.out.println(student);
+        }else {
+            System.out.println("Student Not Found");
         }
     }
 

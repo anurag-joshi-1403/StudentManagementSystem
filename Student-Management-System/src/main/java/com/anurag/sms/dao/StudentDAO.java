@@ -67,21 +67,25 @@ public class StudentDAO {
 
         try{
             Connection connection = DBConnection.getConnection();
+
             PreparedStatement ps = connection.prepareStatement(sql);
+
             ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
 
             if(rs.next()) {
                 Student student = new Student(
-                    rs.getId("id"),
+                    rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("email"),
                     rs.getString("course"),
                     rs.getDouble("marks")
                 );
-                connection close();
+                connection.close();
                 return student;
             }
-            connection close();
+            connection.close();
         } catch (SQLException e){
             e.printStackTrace();
         }
