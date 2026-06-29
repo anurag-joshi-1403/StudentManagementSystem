@@ -18,7 +18,7 @@ public class Menu {
             System.out.println("2.View All Students");
             System.out.println("3. Exit");
 
-            System.out.println("Enter Choice : ");
+            System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
             scanner.nextLine();
 
