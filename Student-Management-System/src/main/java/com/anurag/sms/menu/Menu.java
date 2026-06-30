@@ -19,7 +19,8 @@ public class Menu {
             System.out.println("3.Search Student By ID :");
             System.out.println("4. Update Student : ");
             System.out.println("5. Delete Student : ");
-            System.out.println("6. Exit");
+            System.out.println("6. Search Student By Name : ");
+            System.out.println("7. Exit");
 
             System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
@@ -42,6 +43,9 @@ public class Menu {
                     deleteStudent();
                     break;
                 case 6:
+                    searchStudentByName();
+                    break;
+                case 7:
                     System.out.println("Thank You...");
                     return;
                 default:
@@ -157,6 +161,23 @@ public class Menu {
 
     }
 
+    public void searchStudentsByName(){
+        System.out.println("====== Search Student By Name ======");
+        System.out.print("Enter Student Name : ");
+        String name = scanner.nextLine();
+
+        List<Student> students = service.getStudentsByName(name);
+
+        if(students.isEmpty()){
+            System.out.println("No Student Found");
+        }
+        else {
+            for(Student student : students){
+                System.out.println(student);
+            }
+        }
+
+    }
 
 
 }
