@@ -28,4 +28,8 @@ public class StudentService {
     public boolean deleteStudent(int id){
         return dao.deleteStudent(id);
     }
+
+    public List<Student> getStudentsByName(String name){
+        return dao.getStudentsByName(name);
+    }
 }
