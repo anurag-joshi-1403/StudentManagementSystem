@@ -204,6 +204,9 @@ public class Menu {
     private void searchStudentsByMarks() {
         System.out.println("====== Search Student By Marks ======");
         System.out.println("Enter Student Marks : ");
+        int marks = scanner.nextInt();
+
+        L
 
     }
 

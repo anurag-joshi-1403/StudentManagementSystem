@@ -200,5 +200,36 @@ public class StudentDAO {
         return students;
     }
 
+    public List<Student> getAtudentsSortedByMarks(int marks){
+
+        List<Student> students = new ArrayList<>();
+
+        String sql = "SELECT * FROM students ORDER BY marks DESC";
+
+        try{
+            Connection connection = DBConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, "%" + marks + "%");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                Student student = new Student(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("course"),
+                    rs.getDouble("marks")
+                );
+                students.add(student);
+            }
+            connection.close();
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return students;
+    }
+
 }
 
