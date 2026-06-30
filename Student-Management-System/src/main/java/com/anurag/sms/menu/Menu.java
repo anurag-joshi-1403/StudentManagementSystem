@@ -21,7 +21,8 @@ public class Menu {
             System.out.println("5. Delete Student : ");
             System.out.println("6. Search Student By Name : ");
             System.out.println("7. Search Student By Course : ");
-            System.out.println("8. Exit");
+            System.out.println("8. Search Student Sorted By Marks : ");
+            System.out.println("9. Exit");
 
             System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
@@ -203,10 +204,16 @@ public class Menu {
 
     private void searchStudentsByMarks() {
         System.out.println("====== Search Student By Marks ======");
-        System.out.println("Enter Student Marks : ");
-        int marks = scanner.nextInt();
 
-        L
+        List<Student> students = service.getStudentsSortedByMarks();
+
+        if (students.isEmpty()) {
+            System.out.println("No Student Found");
+        } else {
+            for (Student student : students) {
+                System.out.println(student);
+            }
+        }
 
     }
 

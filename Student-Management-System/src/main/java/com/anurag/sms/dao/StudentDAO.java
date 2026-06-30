@@ -200,7 +200,7 @@ public class StudentDAO {
         return students;
     }
 
-    public List<Student> getAtudentsSortedByMarks(int marks){
+    public List<Student> getStudentsSortedByMarks(){
 
         List<Student> students = new ArrayList<>();
 
@@ -209,8 +209,6 @@ public class StudentDAO {
         try{
             Connection connection = DBConnection.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);
-
-            ps.setString(1, "%" + marks + "%");
 
             ResultSet rs = ps.executeQuery();
 

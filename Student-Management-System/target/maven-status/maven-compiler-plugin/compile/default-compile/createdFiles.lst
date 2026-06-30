@@ -1,3 +1,7 @@
+com\anurag\sms\dao\StudentDAO.class
+com\anurag\sms\menu\TestConnection.class
+com\anurag\sms\menu\Menu.class
+com\anurag\sms\model\Student.class
 com\anurag\sms\menu\Main.class
 com\anurag\sms\config\DBConnection.class
-com\anurag\sms\menu\TestConnection.class
+com\anurag\sms\service\StudentService.class
