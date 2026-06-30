@@ -32,4 +32,8 @@ public class StudentService {
     public List<Student> getStudentsByName(String name){
         return dao.getStudentsByName(name);
     }
+
+    public List<Student> getStudentsByCourse(String course){
+        return dao.getStudentsByCourse(course);
+    }
 }

@@ -20,7 +20,8 @@ public class Menu {
             System.out.println("4. Update Student : ");
             System.out.println("5. Delete Student : ");
             System.out.println("6. Search Student By Name : ");
-            System.out.println("7. Exit");
+            System.out.println("7. Search Student By Course : ");
+            System.out.println("8. Exit");
 
             System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
@@ -43,9 +44,12 @@ public class Menu {
                     deleteStudent();
                     break;
                 case 6:
-                    searchStudentByName();
+                    searchStudentsByName();
                     break;
                 case 7:
+                    searchStudentsByCourse();
+                    break;
+                case 8:
                     System.out.println("Thank You...");
                     return;
                 default:
@@ -144,7 +148,7 @@ public class Menu {
 
     }
 
-    public void deleteStudent(){
+    private  void deleteStudent(){
         System.out.println("Delete Student : ");
         System.out.print("Enter Student Id : ");
         int id = scanner.nextInt();
@@ -161,12 +165,30 @@ public class Menu {
 
     }
 
-    public void searchStudentsByName(){
+    private void searchStudentsByName(){
         System.out.println("====== Search Student By Name ======");
         System.out.print("Enter Student Name : ");
         String name = scanner.nextLine();
 
         List<Student> students = service.getStudentsByName(name);
+
+        if(students.isEmpty()){
+            System.out.println("No Student Found");
+        }
+        else {
+            for(Student student : students){
+                System.out.println(student);
+            }
+        }
+
+    }
+
+    private void searchStudentsByCourse(){
+        System.out.println("====== Search Student By Course ======");
+        System.out.print("Enter Student Course : ");
+        String course = scanner.nextLine();
+
+        List<Student> students = service.getStudentsByCourse(course);
 
         if(students.isEmpty()){
             System.out.println("No Student Found");
