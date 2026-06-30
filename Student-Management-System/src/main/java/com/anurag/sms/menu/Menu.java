@@ -18,7 +18,8 @@ public class Menu {
             System.out.println("2.View All Students :");
             System.out.println("3.Search Student By ID :");
             System.out.println("4. Update Student : ");
-            System.out.println("5. Exit");
+            System.out.println("5. Delete Student : ");
+            System.out.println("6. Exit");
 
             System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
@@ -37,7 +38,10 @@ public class Menu {
                 case 4:
                     updateStudent();
                     break;
-                case 5:
+                case 5 :
+                    deleteStudent();
+                    break;
+                case 6:
                     System.out.println("Thank You...");
                     return;
                 default:
@@ -135,5 +139,24 @@ public class Menu {
         }
 
     }
+
+    public void deleteStudent(){
+        System.out.println("Delete Student : ");
+        System.out.print("Enter Student Id : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        boolean status = service.deleteStudent(id);
+
+        if(status){
+            System.out.println("Student Deleted Successfully.");
+        }
+        else{
+            System.out.println("Student Not Found.");
+        }
+
+    }
+
+
 
 }

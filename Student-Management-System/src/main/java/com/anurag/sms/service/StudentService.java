@@ -24,4 +24,8 @@ public class StudentService {
     public boolean updateStudent(Student student){
         return dao.updateStudent(student);
     }
+
+    public boolean deleteStudent(int id){
+        return dao.deleteStudent(id);
+    }
 }
