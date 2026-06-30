@@ -138,5 +138,34 @@ public class StudentDAO {
         return false;
     }
 
+    public List<Student> getStudentsByName(String name){
+
+        List<Student> students = new ArrayList<>();
+
+        String sql = "SELECT * FROM students WHERE name Like";
+
+        try{
+            Connection connection = DBConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                Student student = new Student(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("course"),
+                    rs.getDouble("marks")
+                );
+                students.add(student);
+            }
+            connection.close();
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return students;
+    }
+
 }
 
