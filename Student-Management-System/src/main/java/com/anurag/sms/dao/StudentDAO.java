@@ -12,6 +12,31 @@ import com.anurag.sms.model.Student;
 
 public class StudentDAO {
 
+    public boolean updateStudent(Student student){
+            String sql = "UPDATE students SET name=?, email=?, course=?, marks=? WHERE id=?";
+
+            try{
+                Connection connection = DBConnection.getConnection();
+
+                PreparedStatement ps = connection.prepareStatement(sql);
+
+                ps.setString(1, student.getName());
+                ps.setString(2, student.getEmail());
+                ps.setString(3, student.getCourse());
+                ps.setDouble(4, student.getMarks());
+                ps.setInt(5, student.getId());
+
+                int rows = ps.executeUpdate();
+
+                connection.close();
+
+                return rows > 0;
+            }catch (SQLException e){
+                e.printStackTrace();
+                return false;
+            }
+        }
+
     public boolean addStudent(Student student) {
         String sql = """
                 INSERT INTO students(name,email,course,marks)VALUES( ?,  ?,  ?,  ?)""";
@@ -50,8 +75,7 @@ public class StudentDAO {
                         rs.getString("name"),
                         rs.getString("email"),
                         rs.getString("course"),
-                        rs.getDouble("marks")
-                );
+                        rs.getDouble("marks"));
                 students.add(student);
 
             }
@@ -61,11 +85,12 @@ public class StudentDAO {
         }
         return students;
     }
+
     // Search Student by Id
-    public Student getStudentById(int id){
+    public Student getStudentById(int id) {
         String sql = "SELECT * FROM students WHERE id = ?";
 
-        try{
+        try {
             Connection connection = DBConnection.getConnection();
 
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -74,22 +99,23 @@ public class StudentDAO {
 
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()) {
+            if (rs.next()) {
                 Student student = new Student(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("email"),
-                    rs.getString("course"),
-                    rs.getDouble("marks")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("course"),
+                        rs.getDouble("marks")
                 );
                 connection.close();
                 return student;
             }
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
 }
+

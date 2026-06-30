@@ -20,4 +20,8 @@ public class StudentService {
     public Student getStudentById(int id){
         return dao.getStudentById(id);
     }
+
+    public boolean updateStudent(Student student){
+        return dao.updateStudent(student);
+    }
 }

@@ -12,29 +12,33 @@ public class Menu {
     private StudentService service = new StudentService();
 
     public void start() {
-        while(true){
+        while (true) {
             System.out.println("\n===== Student Management System =====");
-            System.out.println("1. Add Student");
-            System.out.println("2.View All Students");
+            System.out.println("1. Add Student :");
+            System.out.println("2.View All Students :");
             System.out.println("3.Search Student By ID :");
-            System.out.println("4. Exit");
+            System.out.println("4. Update Student : ");
+            System.out.println("5. Exit");
 
             System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
             scanner.nextLine();
 
-            switch(choice){
+            switch (choice) {
                 case 1:
                     addStudent();
                     break;
-                case 2 :
+                case 2:
                     viewAllStudents();
                     break;
                 case 3:
                     searchStudentById();
                     break;
-                case 4 :
-                    System.out.println("Thank You!");
+                case 4:
+                    updateStudent();
+                    break;
+                case 5:
+                    System.out.println("Thank You...");
                     return;
                 default:
                     System.out.println("Invalid Choice");
@@ -73,18 +77,18 @@ public class Menu {
     private void viewAllStudents() {
         List<Student> students = service.getAllStudents();
 
-        if(students.isEmpty()){
+        if (students.isEmpty()) {
             System.out.println("No students found.");
             return;
         }
         System.out.println("\n===== Student List =====");
 
-        for(Student student : students){
+        for (Student student : students) {
             System.out.println(student);
         }
     }
 
-    private void searchStudentById(){
+    private void searchStudentById() {
 
         System.out.print("Enter Student ID: ");
         int id = scanner.nextInt();
@@ -92,11 +96,44 @@ public class Menu {
 
         Student student = service.getStudentById(id);
 
-        if(student != null){
+        if (student != null) {
             System.out.println(student);
-        }else {
+        } else {
             System.out.println("Student Not Found");
         }
+    }
+
+    private void updateStudent() {
+
+        System.out.println("====== Update Student ======");
+
+        System.out.print("Enter Student ID : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Enter New Name : ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter New Email : ");
+        String email = scanner.nextLine();
+
+        System.out.print("Enter New Course : ");
+        String course = scanner.nextLine();
+
+        System.out.print("Enter New Marks : ");
+        double marks = scanner.nextDouble();
+        scanner.nextLine();
+
+        Student student = new Student(id, name, email, course, marks);
+
+        boolean status = service.updateStudent(student);
+
+        if (status) {
+            System.out.println("Student Updated Successfully.");
+        } else {
+            System.out.println("Failed to Update Successfully.");
+        }
+
     }
 
 }
