@@ -40,7 +40,7 @@ public class Menu {
                 case 4:
                     updateStudent();
                     break;
-                case 5 :
+                case 5:
                     deleteStudent();
                     break;
                 case 6:
@@ -50,6 +50,9 @@ public class Menu {
                     searchStudentsByCourse();
                     break;
                 case 8:
+                    searchStudentsByMarks();
+                    break;
+                case 9:
                     System.out.println("Thank You...");
                     return;
                 default:
@@ -148,7 +151,7 @@ public class Menu {
 
     }
 
-    private  void deleteStudent(){
+    private void deleteStudent() {
         System.out.println("Delete Student : ");
         System.out.print("Enter Student Id : ");
         int id = scanner.nextInt();
@@ -156,50 +159,52 @@ public class Menu {
 
         boolean status = service.deleteStudent(id);
 
-        if(status){
+        if (status) {
             System.out.println("Student Deleted Successfully.");
-        }
-        else{
+        } else {
             System.out.println("Student Not Found.");
         }
 
     }
 
-    private void searchStudentsByName(){
+    private void searchStudentsByName() {
         System.out.println("====== Search Student By Name ======");
         System.out.print("Enter Student Name : ");
         String name = scanner.nextLine();
 
         List<Student> students = service.getStudentsByName(name);
 
-        if(students.isEmpty()){
+        if (students.isEmpty()) {
             System.out.println("No Student Found");
-        }
-        else {
-            for(Student student : students){
+        } else {
+            for (Student student : students) {
                 System.out.println(student);
             }
         }
 
     }
 
-    private void searchStudentsByCourse(){
+    private void searchStudentsByCourse() {
         System.out.println("====== Search Student By Course ======");
         System.out.print("Enter Student Course : ");
         String course = scanner.nextLine();
 
         List<Student> students = service.getStudentsByCourse(course);
 
-        if(students.isEmpty()){
+        if (students.isEmpty()) {
             System.out.println("No Student Found");
-        }
-        else {
-            for(Student student : students){
+        } else {
+            for (Student student : students) {
                 System.out.println(student);
             }
         }
 
     }
 
+    private void searchStudentsByMarks() {
+        System.out.println("====== Search Student By Marks ======");
+        System.out.println("Enter Student Marks : ");
+
+    }
 
 }
