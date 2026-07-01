@@ -40,4 +40,8 @@ public class StudentService {
     public List<Student> getStudentsSortedByMarks(){
         return dao.getStudentsSortedByMarks();
     }
+
+    public int getTotalStudents(){
+        return dao.getTotalStudents();
+    }
 }
