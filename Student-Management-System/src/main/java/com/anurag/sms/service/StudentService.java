@@ -47,4 +47,7 @@ public class StudentService {
     public double  getHighMarks(){
         return dao.getHighMarks();
     }
+    public double  getLowestMarks(){
+        return dao.getLowestMarks();
+    }
 }
