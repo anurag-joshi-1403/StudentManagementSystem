@@ -231,7 +231,7 @@ public class StudentDAO {
 
     // Total Students
     public int getTotalStudents(){
-        String sql = "SELECT COUNT(*) FROM student";
+        String sql = "SELECT COUNT(*) FROM students";
 
         try {
             Connection connection = DBConnection.getConnection();
@@ -250,7 +250,7 @@ public class StudentDAO {
 
     // Highest Marks
     public double getHighMarks(){
-        String sql = "SELECT MAX(marks) FROM student";
+        String sql = "SELECT MAX(marks) FROM students";
 
         try {
             Connection connection = DBConnection.getConnection();
@@ -268,7 +268,7 @@ public class StudentDAO {
     }
 
     public double getLowestMarks(){
-        String sql = "SELECT MIN(marks) FROM student";
+        String sql = "SELECT MIN(marks) FROM students";
 
         try {
             Connection connection = DBConnection.getConnection();
@@ -286,7 +286,7 @@ public class StudentDAO {
     }
 
     public double getAverageMarks(){
-        String sql = "SELECT AVG(marks) FROM student";
+        String sql = "SELECT AVG(marks) FROM students";
 
         try {
             Connection connection = DBConnection.getConnection();

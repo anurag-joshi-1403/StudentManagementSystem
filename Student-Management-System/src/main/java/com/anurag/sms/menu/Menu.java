@@ -22,7 +22,8 @@ public class Menu {
             System.out.println("6. Search Student By Name : ");
             System.out.println("7. Search Student By Course : ");
             System.out.println("8. Search Student Sorted By Marks : ");
-            System.out.println("9. Exit");
+            System.out.println("9. Show Student Statistics");
+            System.out.println("10. Exit");
 
             System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
@@ -54,6 +55,9 @@ public class Menu {
                     searchStudentsByMarks();
                     break;
                 case 9:
+                    showStudentStatistics();
+                    break;
+                case 10:
                     System.out.println("Thank You...");
                     return;
                 default:
@@ -217,6 +221,22 @@ public class Menu {
 
     }
 
+    // Show Student Statistics
+    private void showStudentStatistics(){
+        System.out.println("/n====== Student Statistics ======");
+
+        int total = service.getTotalStudents();
+        double highest = service.getHighMarks();
+        double lowest = service.getLowestMarks();
+        double average = service.getAverageMarks();
     
+        System.out.println("Total Student : " + total);
+        System.out.println("Highest Marks : " + highest);
+        System.out.println("Lowest Marks : " + lowest);
+        System.out.println("Average Marks : " + average);
+
+        System.out.println("=================================");
+    }
+
 
 }
