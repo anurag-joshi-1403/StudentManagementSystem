@@ -44,4 +44,7 @@ public class StudentService {
     public int getTotalStudents(){
         return dao.getTotalStudents();
     }
+    public double  getHighMarks(){
+        return dao.getHighMarks();
+    }
 }
