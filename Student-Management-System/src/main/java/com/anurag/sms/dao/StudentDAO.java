@@ -285,5 +285,23 @@ public class StudentDAO {
         return 0;
     }
 
+    public double getAverageMarks(){
+        String sql = "SELECT AVG(marks) FROM student";
+
+        try {
+            Connection connection = DBConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+                return rs.getDouble(1);
+            }
+            connection.close();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }
 

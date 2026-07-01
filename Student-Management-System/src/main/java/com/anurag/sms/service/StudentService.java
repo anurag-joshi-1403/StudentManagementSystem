@@ -44,10 +44,17 @@ public class StudentService {
     public int getTotalStudents(){
         return dao.getTotalStudents();
     }
+
     public double  getHighMarks(){
         return dao.getHighMarks();
     }
+
     public double  getLowestMarks(){
         return dao.getLowestMarks();
     }
+    
+    public double  getAverageMarks(){
+        return dao.getAverageMarks();
+    }
+
 }
