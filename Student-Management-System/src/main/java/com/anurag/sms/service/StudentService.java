@@ -57,4 +57,8 @@ public class StudentService {
         return dao.getAverageMarks();
     }
 
+    public boolean exportStudentsToCSV() {
+        return dao.exportStudentsToCSV();
+    }
+
 }

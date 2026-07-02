@@ -1,5 +1,8 @@
 package com.anurag.sms.dao;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,30 +15,30 @@ import com.anurag.sms.model.Student;
 
 public class StudentDAO {
 
-    public boolean updateStudent(Student student){
-            String sql = "UPDATE students SET name=?, email=?, course=?, marks=? WHERE id=?";
+    public boolean updateStudent(Student student) {
+        String sql = "UPDATE students SET name=?, email=?, course=?, marks=? WHERE id=?";
 
-            try{
-                Connection connection = DBConnection.getConnection();
+        try {
+            Connection connection = DBConnection.getConnection();
 
-                PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = connection.prepareStatement(sql);
 
-                ps.setString(1, student.getName());
-                ps.setString(2, student.getEmail());
-                ps.setString(3, student.getCourse());
-                ps.setDouble(4, student.getMarks());
-                ps.setInt(5, student.getId());
+            ps.setString(1, student.getName());
+            ps.setString(2, student.getEmail());
+            ps.setString(3, student.getCourse());
+            ps.setDouble(4, student.getMarks());
+            ps.setInt(5, student.getId());
 
-                int rows = ps.executeUpdate();
+            int rows = ps.executeUpdate();
 
-                connection.close();
+            connection.close();
 
-                return rows > 0;
-            }catch (SQLException e){
-                e.printStackTrace();
-                return false;
-            }
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
+    }
 
     public boolean addStudent(Student student) {
         String sql = """
@@ -105,8 +108,7 @@ public class StudentDAO {
                         rs.getString("name"),
                         rs.getString("email"),
                         rs.getString("course"),
-                        rs.getDouble("marks")
-                );
+                        rs.getDouble("marks"));
                 connection.close();
                 return student;
             }
@@ -120,7 +122,7 @@ public class StudentDAO {
     public boolean deleteStudent(int id) {
         String sql = "DELETE FROM students WHERE id=?";
 
-        try{
+        try {
             Connection connection = DBConnection.getConnection();
 
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -132,19 +134,19 @@ public class StudentDAO {
             connection.close();
 
             return rows > 0;
-        } catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public List<Student> getStudentsByName(String name){
+    public List<Student> getStudentsByName(String name) {
 
         List<Student> students = new ArrayList<>();
 
         String sql = "SELECT * FROM students WHERE name Like ?";
 
-        try{
+        try {
             Connection connection = DBConnection.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);
 
@@ -152,30 +154,29 @@ public class StudentDAO {
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 Student student = new Student(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("email"),
-                    rs.getString("course"),
-                    rs.getDouble("marks")
-                );
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("course"),
+                        rs.getDouble("marks"));
                 students.add(student);
             }
             connection.close();
-        } catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return students;
     }
 
-    public List<Student> getStudentsByCourse(String course){
+    public List<Student> getStudentsByCourse(String course) {
 
         List<Student> students = new ArrayList<>();
 
         String sql = "SELECT * FROM students WHERE course Like ?";
 
-        try{
+        try {
             Connection connection = DBConnection.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);
 
@@ -183,54 +184,52 @@ public class StudentDAO {
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 Student student = new Student(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("email"),
-                    rs.getString("course"),
-                    rs.getDouble("marks")
-                );
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("course"),
+                        rs.getDouble("marks"));
                 students.add(student);
             }
             connection.close();
-        } catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return students;
     }
 
-    public List<Student> getStudentsSortedByMarks(){
+    public List<Student> getStudentsSortedByMarks() {
 
         List<Student> students = new ArrayList<>();
 
         String sql = "SELECT * FROM students ORDER BY marks DESC";
 
-        try{
+        try {
             Connection connection = DBConnection.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 Student student = new Student(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("email"),
-                    rs.getString("course"),
-                    rs.getDouble("marks")
-                );
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("course"),
+                        rs.getDouble("marks"));
                 students.add(student);
             }
             connection.close();
-        } catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return students;
     }
 
     // Total Students
-    public int getTotalStudents(){
+    public int getTotalStudents() {
         String sql = "SELECT COUNT(*) FROM students";
 
         try {
@@ -238,18 +237,18 @@ public class StudentDAO {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getInt(1);
             }
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
     }
 
     // Highest Marks
-    public double getHighMarks(){
+    public double getHighMarks() {
         String sql = "SELECT MAX(marks) FROM students";
 
         try {
@@ -257,17 +256,17 @@ public class StudentDAO {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getDouble(1);
             }
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
     }
 
-    public double getLowestMarks(){
+    public double getLowestMarks() {
         String sql = "SELECT MIN(marks) FROM students";
 
         try {
@@ -275,17 +274,17 @@ public class StudentDAO {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getDouble(1);
             }
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
     }
 
-    public double getAverageMarks(){
+    public double getAverageMarks() {
         String sql = "SELECT AVG(marks) FROM students";
 
         try {
@@ -293,15 +292,50 @@ public class StudentDAO {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getDouble(1);
             }
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
     }
 
-}
+    // Export Students To CSV
+    public boolean exportStudentsToCSV() {
+        String sql = "SELECT * FROM students";
 
+        try {
+            Connection connection = DBConnection.getConnection();
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter("student.CSV"));
+
+            writer.write("ID,Name,Email,Course,Marks");
+            writer.newLine();
+
+            while (rs.next()) {
+                writer.write(
+                        rs.getInt("id") + ", " +
+                                rs.getString("name") + ", " +
+                                rs.getString("email") + ", " +
+                                rs.getString("course") + ", " +
+                                rs.getDouble("marks"));
+                writer.newLine();
+            }
+
+            writer.close();
+            connection.close();
+
+            return true;
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+}

@@ -60,6 +60,9 @@ public class Menu {
                     showStudentStatistics();
                     break;
                 case 10:
+                    exportStudentsToCSV();
+                    break;
+                case 11:
                     System.out.println("Thank You...");
                     return;
                 default:
@@ -256,6 +259,19 @@ public class Menu {
         System.out.println("Average Marks : " + average);
 
         System.out.println("=================================");
+    }
+
+    private void exportStudentsToCSV() {
+        System.out.println("====== Export Students To CSV ====== ");
+
+        boolean status = service.exportStudentsToCSV();
+
+        if(status){
+            System.out.println("Students Exported Successfully.");
+        }
+        else {
+            System.out.println("Export Failed");
+        }
     }
 
 
