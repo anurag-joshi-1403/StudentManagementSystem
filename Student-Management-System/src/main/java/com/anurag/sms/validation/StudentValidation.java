@@ -17,5 +17,16 @@ public class StudentValidation {
         return email.matches("^[A-Za-z-9+_.-]+@[A-Za-z0-9.-]+$");
     }
 
-    
+    // Validate Course
+    public static boolean validateCourse(String course){
+        if(course == null || course.trim().isEmpty()){
+            return false;
+        }
+        return true;
+    }
+
+    // Validate Marks
+    public static boolean validateMarks(double marks) {
+        return marks >= 0 && marks <= 100;
+    }
 }
