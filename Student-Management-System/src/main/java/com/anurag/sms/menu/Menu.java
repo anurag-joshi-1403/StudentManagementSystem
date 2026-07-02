@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import com.anurag.sms.model.Student;
 import com.anurag.sms.service.StudentService;
+import com.anurag.sms.validation.StudentValidator;
 
 public class Menu {
 
@@ -23,7 +24,8 @@ public class Menu {
             System.out.println("7. Search Student By Course : ");
             System.out.println("8. Search Student Sorted By Marks : ");
             System.out.println("9. Show Student Statistics");
-            System.out.println("10. Exit");
+            System.out.println("10. Export Student to CSV : ");
+            System.out.println("11. Exit");
 
             System.out.print("Enter Choice : ");
             int choice = scanner.nextInt();
@@ -72,15 +74,33 @@ public class Menu {
 
         System.out.print("Enter Name : ");
         String name = scanner.nextLine();
+        if(!StudentValidator.validateName(name)){
+            System.out.println("Invalid Name!");
+            return;
+        }
 
         System.out.print("Enter Email : ");
         String email = scanner.nextLine();
+        if(!StudentValidator.validateEmail(email)){
+            System.out.println("Invalid Email!");
+            return;
+        }
 
         System.out.print("Enter Course : ");
         String course = scanner.nextLine();
+        if(!StudentValidator.validateCourse(course)){
+            System.out.println("Course cannot be empty!");
+            return;
+        }
 
         System.out.print("Enter Marks : ");
         double marks = scanner.nextDouble();
+        scanner.nextLine();
+        if(!StudentValidator.validateMarks(marks)){
+            System.out.println("Marks must be between 0 and 100!");
+            return;
+        }
+
 
         Student student = new Student(name, email, course, marks);
 
