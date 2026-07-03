@@ -3,6 +3,7 @@ package com.anurag.sms.service;
 import java.util.List;
 
 import com.anurag.sms.dao.StudentDAO;
+import com.anurag.sms.exception.StudentNotFoundException;
 import com.anurag.sms.model.Student;
 
 public class StudentService {
@@ -17,8 +18,12 @@ public class StudentService {
         return dao.getAllStudents();
     }
 
-    public Student getStudentById(int id){
-        return dao.getStudentById(id);
+    public Student getStudentById(int id) throws StudentNotFoundException {
+        Student student = dao.getStudentById(id);
+        if(student == null) {
+            throw new StudentNotFoundException("Student with id" + id + " not found.");
+        }
+        return student;
     }
 
     public boolean updateStudent(Student student){

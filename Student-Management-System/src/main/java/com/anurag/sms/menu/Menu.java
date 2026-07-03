@@ -3,6 +3,7 @@ package com.anurag.sms.menu;
 import java.util.List;
 import java.util.Scanner;
 
+import com.anurag.sms.exception.StudentNotFoundException;
 import com.anurag.sms.model.Student;
 import com.anurag.sms.service.StudentService;
 import com.anurag.sms.validation.StudentValidator;
@@ -136,14 +137,14 @@ public class Menu {
         System.out.print("Enter Student ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-
-        Student student = service.getStudentById(id);
-
-        if (student != null) {
+        try{
+            Student student = service.getStudentById(id);
             System.out.println(student);
-        } else {
-            System.out.println("Student Not Found");
         }
+        catch (StudentNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+
     }
 
     private void updateStudent() {
