@@ -9,11 +9,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.anurag.sms.config.DBConnection;
 import com.anurag.sms.model.Student;
 
 public class StudentDAO {
+
+    private static final Logger logger = Logger.getLogger(StudentDAO.class.getName());
 
     public boolean updateStudent(Student student) {
         String sql = "UPDATE students SET name=?, email=?, course=?, marks=? WHERE id=?";
@@ -33,11 +37,18 @@ public class StudentDAO {
 
             connection.close();
 
-            return rows > 0;
+            if(rows > 0) {
+                logger.info("Student Added Succesfully.");
+                return true;
+            }
+            else {
+                logger.warning("Failed to Add Student.");
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error updating student", e);
             return false;
         }
+        return false;
     }
 
     public boolean addStudent(Student student) {
