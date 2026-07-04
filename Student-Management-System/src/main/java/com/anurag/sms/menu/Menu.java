@@ -8,11 +8,24 @@ import com.anurag.sms.model.Student;
 import com.anurag.sms.service.StudentService;
 import com.anurag.sms.validation.StudentValidator;
 
+/**
+ * Provides the console-based menu for the
+ * Student Management System.
+ *
+ * Handles user interaction and calls the
+ * service layer methods.
+ *
+ * @author Anurag Joshi
+ */
 public class Menu {
 
     private Scanner scanner = new Scanner(System.in);
     private StudentService service = new StudentService();
 
+    /**
+     * Starts the application and displays the
+     * main menu repeatedly until the user exits.
+     */
     public void start() {
         while (true) {
             System.out.println("\n===== Student Management System =====");
@@ -73,26 +86,31 @@ public class Menu {
         }
     }
 
+    /**
+     * Accepts student details from the user,
+     * validates the input, and adds the student
+     * to the database.
+     */
     private void addStudent() {
         System.out.println("===== Add Student =====");
 
         System.out.print("Enter Name : ");
         String name = scanner.nextLine();
-        if(!StudentValidator.validateName(name)){
+        if (!StudentValidator.validateName(name)) {
             System.out.println("Invalid Name!");
             return;
         }
 
         System.out.print("Enter Email : ");
         String email = scanner.nextLine();
-        if(!StudentValidator.validateEmail(email)){
+        if (!StudentValidator.validateEmail(email)) {
             System.out.println("Invalid Email!");
             return;
         }
 
         System.out.print("Enter Course : ");
         String course = scanner.nextLine();
-        if(!StudentValidator.validateCourse(course)){
+        if (!StudentValidator.validateCourse(course)) {
             System.out.println("Course cannot be empty!");
             return;
         }
@@ -100,11 +118,10 @@ public class Menu {
         System.out.print("Enter Marks : ");
         double marks = scanner.nextDouble();
         scanner.nextLine();
-        if(!StudentValidator.validateMarks(marks)){
+        if (!StudentValidator.validateMarks(marks)) {
             System.out.println("Marks must be between 0 and 100!");
             return;
         }
-
 
         Student student = new Student(name, email, course, marks);
 
@@ -118,6 +135,9 @@ public class Menu {
 
     }
 
+    /**
+     * Displays all students available in the database.
+     */
     private void viewAllStudents() {
         List<Student> students = service.getAllStudents();
 
@@ -132,21 +152,27 @@ public class Menu {
         }
     }
 
+    /**
+     * Searches for a student using the student ID
+     * entered by the user.
+     */
     private void searchStudentById() {
 
         System.out.print("Enter Student ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-        try{
+        try {
             Student student = service.getStudentById(id);
             System.out.println(student);
-        }
-        catch (StudentNotFoundException e){
+        } catch (StudentNotFoundException e) {
             System.out.println(e.getMessage());
         }
 
     }
 
+    /**
+     * Updates the details of an existing student.
+     */
     private void updateStudent() {
 
         System.out.println("====== Update Student ======");
@@ -180,6 +206,10 @@ public class Menu {
 
     }
 
+    /**
+     * Deletes a student using the entered ID.
+     */
+
     private void deleteStudent() {
         System.out.println("Delete Student : ");
         System.out.print("Enter Student Id : ");
@@ -195,6 +225,11 @@ public class Menu {
         }
 
     }
+
+    /**
+     * Displays students whose names match the
+     * entered name.
+     */
 
     private void searchStudentsByName() {
         System.out.println("====== Search Student By Name ======");
@@ -213,6 +248,9 @@ public class Menu {
 
     }
 
+    /**
+     * Displays students enrolled in the entered course.
+     */
     private void searchStudentsByCourse() {
         System.out.println("====== Search Student By Course ======");
         System.out.print("Enter Student Course : ");
@@ -230,6 +268,9 @@ public class Menu {
 
     }
 
+    /**
+     * Displays students sorted according to marks.
+     */
     private void searchStudentsByMarks() {
         System.out.println("====== Search Student By Marks ======");
 
@@ -245,15 +286,19 @@ public class Menu {
 
     }
 
+    /**
+     * Displays student statistics such as total students,
+     * highest marks, lowest marks, and average marks.
+     */
     // Show Student Statistics
-    private void showStudentStatistics(){
+    private void showStudentStatistics() {
         System.out.println("/n====== Student Statistics ======");
 
         int total = service.getTotalStudents();
         double highest = service.getHighMarks();
         double lowest = service.getLowestMarks();
         double average = service.getAverageMarks();
-    
+
         System.out.println("Total Student : " + total);
         System.out.println("Highest Marks : " + highest);
         System.out.println("Lowest Marks : " + lowest);
@@ -262,18 +307,19 @@ public class Menu {
         System.out.println("=================================");
     }
 
+    /**
+     * Exports all student records to a CSV file.
+     */
     private void exportStudentsToCSV() {
         System.out.println("====== Export Students To CSV ====== ");
 
         boolean status = service.exportStudentsToCSV();
 
-        if(status){
+        if (status) {
             System.out.println("Students Exported Successfully.");
-        }
-        else {
+        } else {
             System.out.println("Export Failed");
         }
     }
-
 
 }
