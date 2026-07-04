@@ -20,7 +20,7 @@ import com.anurag.sms.model.Student;
 * database operations on Student records
 * 
 * @author Anurag Joshi
-*/
+ */
 public class StudentDAO {
 
     private static final Logger logger = Logger.getLogger(StudentDAO.class.getName());
@@ -35,10 +35,9 @@ public class StudentDAO {
     public boolean updateStudent(Student student) {
         String sql = "UPDATE students SET name=?, email=?, course=?, marks=? WHERE id=?";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);) {
 
             ps.setString(1, student.getName());
             ps.setString(2, student.getEmail());
@@ -74,9 +73,9 @@ public class StudentDAO {
         String sql = """
                 INSERT INTO students(name,email,course,marks)VALUES( ?,  ?,  ?,  ?)""";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);) {
 
             ps.setString(1, student.getName());
             ps.setString(2, student.getEmail());
@@ -94,18 +93,18 @@ public class StudentDAO {
     }
 
     /*
-    * Retrieves all students from the database
-    *
-    * @return list of all student
+     * Retrieves all students from the database
+     *
+     * @return list of all student
      */
     public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
 
         String sql = "SELECT * FROM students";
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();) {
 
             while (rs.next()) {
                 Student student = new Student(
@@ -125,20 +124,19 @@ public class StudentDAO {
     }
 
     /*
-    * @ Retrieves a student using the student ID
-    *
-    * @param id student ID
-    * @return Student object if found, otherwise null
-    */
+     * @ Retrieves a student using the student ID
+     *
+     * @param id student ID
+     * 
+     * @return Student object if found, otherwise null
+     */
     // Search Student by Id
     public Student getStudentById(int id) {
         String sql = "SELECT * FROM students WHERE id = ?";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-
-            PreparedStatement ps = connection.prepareStatement(sql);
-
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);) {
             ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -161,19 +159,18 @@ public class StudentDAO {
     }
 
     /*
-    * Deletes a student from the database
-    *
-    *  @param id student ID
-    *  @return true if deleted successfully, otherwise false
-    */
+     * Deletes a student from the database
+     *
+     * @param id student ID
+     * 
+     * @return true if deleted successfully, otherwise false
+     */
     public boolean deleteStudent(int id) {
         String sql = "DELETE FROM students WHERE id=?";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-
-            PreparedStatement ps = connection.prepareStatement(sql);
-
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);) {
             ps.setInt(1, id);
 
             int rows = ps.executeUpdate();
@@ -181,6 +178,7 @@ public class StudentDAO {
             connection.close();
 
             return rows > 0;
+
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error Deleting student", e);
             return false;
@@ -188,20 +186,21 @@ public class StudentDAO {
     }
 
     /*
-    * Search students by name 
-    * 
-    * @param name student name
-    * @return list of matching students
-    */
+     * Search students by name
+     * 
+     * @param name student name
+     * 
+     * @return list of matching students
+     */
     public List<Student> getStudentsByName(String name) {
 
         List<Student> students = new ArrayList<>();
 
         String sql = "SELECT * FROM students WHERE name Like ?";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);) {
 
             ps.setString(1, "%" + name + "%");
 
@@ -224,20 +223,21 @@ public class StudentDAO {
     }
 
     /*
-    *Retrieves students enrolled in a specific course
-    *
-    * @param course course name 
-    * @returns list of students
-    */
+     * Retrieves students enrolled in a specific course
+     *
+     * @param course course name
+     * 
+     * @returns list of students
+     */
     public List<Student> getStudentsByCourse(String course) {
 
         List<Student> students = new ArrayList<>();
 
         String sql = "SELECT * FROM students WHERE course Like ?";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);) {
 
             ps.setString(1, "%" + course + "%");
 
@@ -260,19 +260,19 @@ public class StudentDAO {
     }
 
     /*
-    * Retrieves all students sorted by marks
-    *
-    *  @return sorted list of students
-    */
+     * Retrieves all students sorted by marks
+     *
+     * @return sorted list of students
+     */
     public List<Student> getStudentsSortedByMarks() {
 
         List<Student> students = new ArrayList<>();
 
         String sql = "SELECT * FROM students ORDER BY marks DESC";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);) {
 
             ResultSet rs = ps.executeQuery();
 
@@ -293,18 +293,18 @@ public class StudentDAO {
     }
 
     /*
-    * Returns the total number of students.
-    *
-    *  @return total number of students
-    */
+     * Returns the total number of students.
+     *
+     * @return total number of students
+     */
     // Total Students
     public int getTotalStudents() {
         String sql = "SELECT COUNT(*) FROM students";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();) {
 
             if (rs.next()) {
                 return rs.getInt(1);
@@ -317,20 +317,19 @@ public class StudentDAO {
         return 0;
     }
 
-
     /*
-    * Returns the highest marks among all students
-    *
-    *  @return highest marks
-    */
+     * Returns the highest marks among all students
+     *
+     * @return highest marks
+     */
     // Highest Marks
     public double getHighMarks() {
         String sql = "SELECT MAX(marks) FROM students";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();) {
 
             if (rs.next()) {
                 return rs.getDouble(1);
@@ -344,17 +343,17 @@ public class StudentDAO {
     }
 
     /*
-    * Returns the lowest marks among all students
-    *
-    *  @return highest marks
-    */
+     * Returns the lowest marks among all students
+     *
+     * @return highest marks
+     */
     public double getLowestMarks() {
         String sql = "SELECT MIN(marks) FROM students";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();) {
 
             if (rs.next()) {
                 return rs.getDouble(1);
@@ -367,17 +366,17 @@ public class StudentDAO {
     }
 
     /*
-    * Calculates the average marks of all students.
-    *
-    * @return average marks
-    */
+     * Calculates the average marks of all students.
+     *
+     * @return average marks
+     */
     public double getAverageMarks() {
         String sql = "SELECT AVG(marks) FROM students";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();) {
 
             if (rs.next()) {
                 return rs.getDouble(1);
@@ -390,33 +389,30 @@ public class StudentDAO {
     }
 
     /*
-    * Exports all student records to a CSV file
-    *
-    * @return true if export is successful, otherwise false
-    */
+     * Exports all student records to a CSV file
+     *
+     * @return true if export is successful, otherwise false
+     */
     // Export Students To CSV
     public boolean exportStudentsToCSV() {
         String sql = "SELECT * FROM students";
 
-        try {
-            Connection connection = DBConnection.getConnection();
-
-            PreparedStatement ps = connection.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter("student.CSV"));
+        try (
+                Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();
+                BufferedWriter writer = new BufferedWriter(new FileWriter("student.CSV"));) {
 
             writer.write("ID,Name,Email,Course,Marks");
             writer.newLine();
 
             while (rs.next()) {
                 writer.write(
-                        rs.getInt("id") + ", " +
-                                rs.getString("name") + ", " +
-                                rs.getString("email") + ", " +
-                                rs.getString("course") + ", " +
-                                rs.getDouble("marks"));
+                        rs.getInt("id") + ", "
+                                + rs.getString("name") + ", "
+                                + rs.getString("email") + ", "
+                                + rs.getString("course") + ", "
+                                + rs.getDouble("marks"));
                 writer.newLine();
             }
 
