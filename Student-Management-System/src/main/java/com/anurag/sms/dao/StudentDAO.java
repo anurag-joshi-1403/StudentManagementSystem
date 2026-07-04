@@ -15,10 +15,23 @@ import java.util.logging.Logger;
 import com.anurag.sms.config.DBConnection;
 import com.anurag.sms.model.Student;
 
+/*
+* Data Access Object(DAO) class for performing
+* database operations on Student records
+* 
+* @author Anurag Joshi
+*/
 public class StudentDAO {
 
     private static final Logger logger = Logger.getLogger(StudentDAO.class.getName());
 
+    /*
+     * Updates an existing student's details
+     *
+     * @param student Student object containing update details
+     * 
+     * @return true if updated successfully, otherwise false
+     */
     public boolean updateStudent(Student student) {
         String sql = "UPDATE students SET name=?, email=?, course=?, marks=? WHERE id=?";
 
@@ -37,11 +50,10 @@ public class StudentDAO {
 
             connection.close();
 
-            if(rows > 0) {
+            if (rows > 0) {
                 logger.info("Student Added Succesfully.");
                 return true;
-            }
-            else {
+            } else {
                 logger.warning("Failed to Add Student.");
             }
         } catch (SQLException e) {
@@ -51,6 +63,13 @@ public class StudentDAO {
         return false;
     }
 
+    /*
+     * Adds a new student to the database.
+     *
+     * @param student Student object to be added
+     * 
+     * @return true if the student is added successfully, otherwise false
+     */
     public boolean addStudent(Student student) {
         String sql = """
                 INSERT INTO students(name,email,course,marks)VALUES( ?,  ?,  ?,  ?)""";
@@ -74,6 +93,11 @@ public class StudentDAO {
         }
     }
 
+    /*
+    * Retrieves all students from the database
+    *
+    * @return list of all student
+     */
     public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
 
@@ -100,6 +124,12 @@ public class StudentDAO {
         return students;
     }
 
+    /*
+    * @ Retrieves a student using the student ID
+    *
+    * @param id student ID
+    * @return Student object if found, otherwise null
+    */
     // Search Student by Id
     public Student getStudentById(int id) {
         String sql = "SELECT * FROM students WHERE id = ?";
@@ -130,6 +160,12 @@ public class StudentDAO {
         return null;
     }
 
+    /*
+    * Deletes a student from the database
+    *
+    *  @param id student ID
+    *  @return true if deleted successfully, otherwise false
+    */
     public boolean deleteStudent(int id) {
         String sql = "DELETE FROM students WHERE id=?";
 
@@ -151,6 +187,12 @@ public class StudentDAO {
         return false;
     }
 
+    /*
+    * Search students by name 
+    * 
+    * @param name student name
+    * @return list of matching students
+    */
     public List<Student> getStudentsByName(String name) {
 
         List<Student> students = new ArrayList<>();
@@ -181,6 +223,12 @@ public class StudentDAO {
         return students;
     }
 
+    /*
+    *Retrieves students enrolled in a specific course
+    *
+    * @param course course name 
+    * @returns list of students
+    */
     public List<Student> getStudentsByCourse(String course) {
 
         List<Student> students = new ArrayList<>();
@@ -211,6 +259,11 @@ public class StudentDAO {
         return students;
     }
 
+    /*
+    * Retrieves all students sorted by marks
+    *
+    *  @return sorted list of students
+    */
     public List<Student> getStudentsSortedByMarks() {
 
         List<Student> students = new ArrayList<>();
@@ -239,6 +292,11 @@ public class StudentDAO {
         return students;
     }
 
+    /*
+    * Returns the total number of students.
+    *
+    *  @return total number of students
+    */
     // Total Students
     public int getTotalStudents() {
         String sql = "SELECT COUNT(*) FROM students";
@@ -258,6 +316,12 @@ public class StudentDAO {
         return 0;
     }
 
+
+    /*
+    * Returns the highest marks among all students
+    *
+    *  @return highest marks
+    */
     // Highest Marks
     public double getHighMarks() {
         String sql = "SELECT MAX(marks) FROM students";
@@ -277,6 +341,11 @@ public class StudentDAO {
         return 0;
     }
 
+    /*
+    * Returns the lowest marks among all students
+    *
+    *  @return highest marks
+    */
     public double getLowestMarks() {
         String sql = "SELECT MIN(marks) FROM students";
 
@@ -295,6 +364,11 @@ public class StudentDAO {
         return 0;
     }
 
+    /*
+    * Calculates the average marks of all students.
+    *
+    * @return average marks
+    */
     public double getAverageMarks() {
         String sql = "SELECT AVG(marks) FROM students";
 
@@ -313,6 +387,11 @@ public class StudentDAO {
         return 0;
     }
 
+    /*
+    * Exports all student records to a CSV file
+    *
+    * @return true if export is successful, otherwise false
+    */
     // Export Students To CSV
     public boolean exportStudentsToCSV() {
         String sql = "SELECT * FROM students";
@@ -348,6 +427,5 @@ public class StudentDAO {
         }
         return false;
     }
-    
 
 }
