@@ -88,7 +88,7 @@ public class StudentDAO {
             connection.close();
             return rows > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error adding student", e);
             return false;
         }
     }
@@ -119,7 +119,7 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error in Getting all student", e);
         }
         return students;
     }
@@ -155,7 +155,7 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error in getting  Student Search by Id", e);
         }
         return null;
     }
@@ -182,9 +182,9 @@ public class StudentDAO {
 
             return rows > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error Deleting student", e);
+            return false;
         }
-        return false;
     }
 
     /*
@@ -218,7 +218,7 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error get Student by name.", e);
         }
         return students;
     }
@@ -254,7 +254,7 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error get student by course", e);
         }
         return students;
     }
@@ -287,7 +287,7 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error get Students Sorted By Marks", e);
         }
         return students;
     }
@@ -311,7 +311,8 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error get total students", e);
+
         }
         return 0;
     }
@@ -336,7 +337,8 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error get highest marks", e);
+
         }
         return 0;
     }
@@ -359,7 +361,7 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error get lowest marks", e);
         }
         return 0;
     }
@@ -382,7 +384,7 @@ public class StudentDAO {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error get average marks", e);
         }
         return 0;
     }
@@ -423,7 +425,7 @@ public class StudentDAO {
 
             return true;
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error Export Students to CSV", e);
         }
         return false;
     }
