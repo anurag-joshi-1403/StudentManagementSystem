@@ -1,5 +1,7 @@
 package com.anurag.sms.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,4 +27,19 @@ public class Student {
 
     @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false)
+    private String gender;
+
+    @Column(nullable = false)
+    private String course;
+
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(name = "photo")
+    private String photo;
 }
