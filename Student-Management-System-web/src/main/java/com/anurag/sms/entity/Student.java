@@ -43,7 +43,11 @@ public class Student {
     @Column(name = "photo")
     private String photo;
 
-    // Constructor
+    // Default Constructor
+    public Student(){
+        
+    }
+    // Parameterized Constructor
     public Student(Long id, String firstName, String lastName, String email, String phone, String gender, String course, LocalDate dateOfBirth, String address, String photo){
 
         this.id = id;
