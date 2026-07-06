@@ -45,7 +45,7 @@ public class Student {
 
     // Default Constructor
     public Student(){
-        
+
     }
     // Parameterized Constructor
     public Student(Long id, String firstName, String lastName, String email, String phone, String gender, String course, LocalDate dateOfBirth, String address, String photo){
@@ -60,5 +60,68 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.photo = photo;
+    }
+
+    // Creating Getter and Setter................................
+    public String getFirstName(String firstName){
+        return firstName;
+    }
+    public void setFirstName(){
+        this.firstName = firstName;
+    }
+
+    public String getLastName(String lastName){
+        return firstName;
+    }
+    public void setLastName(){
+        this.lastName = lastName;
+    }
+
+    public String getEmail(String email){
+        return email;
+    }
+    public void email(){
+        this.email = email;
+    }
+
+    public int getPhone(int phone){
+        return phone;
+    }
+    public void setPhone(){
+        this.phone = phone;
+
+    public String getGender(String gender){
+        return gender;
+    }
+    public void setGender(){
+        this.gender = gender;
+    }
+
+    public String getCourse(String course){
+        return course;
+    }
+    public void setCourse(){
+        this.course =course;
+    }
+
+    public LocalDate getDateOfBirth(LocalDate dateOfBirth){
+        return dateOfBirth;
+    }
+    public void setDateOfBirth(){
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAddress(String address){
+        return address;
+    }
+    public void setAddress(){
+        this.address =address;
+    }
+
+    public String getPhoto(String photo){
+        return photo;
+    }
+    public void setPhoto(){
+        this.photo =photo;
     }
 }
