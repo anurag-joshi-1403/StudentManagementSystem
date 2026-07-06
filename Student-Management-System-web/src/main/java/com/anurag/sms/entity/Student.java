@@ -42,4 +42,19 @@ public class Student {
 
     @Column(name = "photo")
     private String photo;
+
+    // Constructor
+    public Student(Long id, String firstName, String lastName, String email, String phone, String gender, String course, LocalDate dateOfBirth, String address, String photo){
+
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.gender = gender;
+        this.course = course;
+        this.dateOfBirth = dateOfBirth;
+        this.address = address;
+        this.photo = photo;
+    }
 }
