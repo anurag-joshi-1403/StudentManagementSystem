@@ -19,6 +19,20 @@
             "name": "student_management",
             "database": "student_management",
             "username": "root"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "student_Management_web",
+            "database": "sms_web",
+            "username": "root"
         }
     ],
     "java.debug.settings.onBuildFailureProceed": true,
