@@ -1,13 +1,13 @@
 package com.anurag.sms.service.impl;
 
-import com.anurag.sms.entity.Student;
-import com.anurag.sms.repository.StudentRepository;
-import com.anurag.sms.service.StudentService;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.anurag.sms.entity.Student;
+import com.anurag.sms.repository.StudentRepository;
+import com.anurag.sms.service.StudentService;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -24,7 +24,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Optional<Student> getStudentById(Long id) {
-        return studentRepository.findById();
+        return studentRepository.findById(id);
     }
 
     @Override
