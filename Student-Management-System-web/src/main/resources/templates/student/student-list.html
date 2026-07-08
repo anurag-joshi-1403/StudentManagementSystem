@@ -31,7 +31,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    <tr th:each="student : ${students}">
+                        <td th:text="${student.id}"></td>
+                        <td th:text="${student.firstName}"></td>
+                        <td th:text="${student.lastName}"></td>
+                        <td th:text="${student.email}"></td>
+                        <td th:text="${student.phone}"></td>
+                        <td th:text="${student.course}"></td>
+                        <td>
+                            <a href="#" class ="btn btn-warning btn-sm">Edit</a>
+                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             </div>
