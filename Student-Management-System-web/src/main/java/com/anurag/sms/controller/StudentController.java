@@ -18,11 +18,11 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/Students")
+    @GetMapping("/student")
     public String listStudents(Model model) {
-        List<Student> students = studentService.getAllStudents();
+        List<Student> student = studentService.getAllStudents();
 
-        model.addAttribute("students", students);
+        model.addAttribute("students", student);
 
         return "student/student-list";
     }
