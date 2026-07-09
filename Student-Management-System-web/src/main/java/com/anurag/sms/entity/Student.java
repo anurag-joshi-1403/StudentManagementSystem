@@ -26,7 +26,7 @@ public class Student {
     private String email;
 
     @Column(nullable = false)
-    private String phone;
+    private int phone;
 
     @Column(nullable = false)
     private String gender;
@@ -49,7 +49,7 @@ public class Student {
     }
 
     // Parameterized Constructor
-    public Student(Long id, String firstName, String lastName, String email, String phone, String gender, String course,
+    public Student(Long id, String firstName, String lastName, String email, int phone, String gender, String course,
             LocalDate dateOfBirth, String address, String photo) {
 
         this.id = id;
@@ -65,35 +65,35 @@ public class Student {
     }
 
     // Creating Getter and Setter................................
-    public String getFirstName(String firstName) {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName() {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName(String lastName) {
+    public String getLastName() {
         return firstName;
     }
 
-    public void setLastName() {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getEmail(String email) {
+    public String getEmail() {
         return email;
     }
 
-    public void email() {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public int getPhone(int phone) {
+    public int getPhone() {
         return phone;
     }
 
-    public void setPhone(){
+    public void setPhone(int phone){
         this.phone = phone;
     }
     public String getGender() {
@@ -104,35 +104,35 @@ public class Student {
         this.gender = gender;
     }
 
-    public String getCourse(String course) {
+    public String getCourse() {
         return course;
     }
 
-    public void setCourse() {
+    public void setCourse(String course) {
         this.course = course;
     }
 
-    public LocalDate getDateOfBirth(LocalDate dateOfBirth) {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth() {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getAddress(String address) {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress() {
+    public void setAddress(String address) {
         this.address = address;
     }
 
-    public String getPhoto(String photo) {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto() {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 }
