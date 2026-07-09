@@ -26,7 +26,7 @@ public class Student {
     private String email;
 
     @Column(nullable = false)
-    private int phone;
+    private String phone;
 
     @Column(nullable = false)
     private String gender;
@@ -49,7 +49,7 @@ public class Student {
     }
 
     // Parameterized Constructor
-    public Student(Long id, String firstName, String lastName, String email, int phone, String gender, String course,
+    public Student(Long id, String firstName, String lastName, String email, String phone, String gender, String course,
             LocalDate dateOfBirth, String address, String photo) {
 
         this.id = id;
@@ -65,6 +65,13 @@ public class Student {
     }
 
     // Creating Getter and Setter................................
+
+    public Long getId(){
+        return id;
+    }
+    public void setId(Long id) {
+        this.id=id;
+    }
     public String getFirstName() {
         return firstName;
     }
@@ -74,7 +81,7 @@ public class Student {
     }
 
     public String getLastName() {
-        return firstName;
+        return lastName;
     }
 
     public void setLastName(String lastName) {
@@ -89,11 +96,11 @@ public class Student {
         this.email = email;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone){
+    public void setPhone(String phone){
         this.phone = phone;
     }
     public String getGender() {
