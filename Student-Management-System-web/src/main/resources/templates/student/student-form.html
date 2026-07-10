@@ -7,7 +7,8 @@
   </head>
   <body>
     <div class="card-body">
-      <form th:action="@{/students}" th:object = "${student}" method = "post">
+      <form th:action="@{/students}" th:object = "${student}" method = "post" >
+        <input type="hidden" th:field="*{id}">
         <!-- First Name -->
         <div class="mb-3">
           <label class="form-label">First Name</label>

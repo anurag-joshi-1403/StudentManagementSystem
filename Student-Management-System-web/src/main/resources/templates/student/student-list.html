@@ -18,7 +18,7 @@
             <div class = "mb-3">
                 <a th:href="@{/students/new}" class ="btn btn-primary">Add Student</a>
             </div>
-            <table class="table table-boardered table-hover">
+            <table class="table table-bordered table-hover">
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
@@ -39,7 +39,7 @@
                         <td th:text="${student.phone}"></td>
                         <td th:text="${student.course}"></td>
                         <td>
-                            <a href="#" class ="btn btn-warning btn-sm">Edit</a>
+                            <a th:href="@{/student/edit/{id}(id=${student.id})}" class ="btn btn-warning btn-sm">Edit</a>
                             <a href="#" class="btn btn-danger btn-sm">Delete</a>
                         </td>
                     </tr>
