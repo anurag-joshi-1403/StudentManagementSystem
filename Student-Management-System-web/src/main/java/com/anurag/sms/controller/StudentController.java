@@ -6,11 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.service.StudentService;
+
 
 
 @Controller
@@ -44,6 +46,16 @@ public class StudentController {
 
         redirectAttributes.addFlashAttribute("successMessage", "Student Added Successfully!");
 
-        return "redirect:/students";
+        return "redirect:/students/new";
     }
+
+    @GetMapping("/student/edit/{id}")
+    public String editStudent(@PathVariable Long id, Model model) {
+        Student student = studentService.getStudentById(id);
+        model.addAttribute("student", student);
+        return "student/student-form";
+    }
+
+    
+    
 }
