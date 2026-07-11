@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.service.StudentService;
-
-
 
 @Controller
 public class StudentController {
@@ -28,6 +27,17 @@ public class StudentController {
         List<Student> student = studentService.getAllStudents();
 
         model.addAttribute("students", student);
+
+        return "student/student-list";
+    }
+
+    @GetMapping("/student/search")
+    public String searchStudents(@RequestParam("keyword") String keyword,
+            Model model) {
+
+        List<Student> students = studentService.searchStudents(keyword);
+
+        model.addAttribute("students", students);
 
         return "student/student-list";
     }
@@ -61,6 +71,5 @@ public class StudentController {
         studentService.deleteStudent(id);
         return "redirect:/student";
     }
-    
-    
+
 }
