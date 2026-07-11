@@ -12,12 +12,12 @@ import com.anurag.sms.service.StudentService;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository){
+    public StudentServiceImpl(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 
     @Override
-    public List<Student> getAllStudents(){
+    public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
 
@@ -41,5 +41,14 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.deleteById(id);
     }
 
-    
+    @Override
+    public List<Student> searchStudents(String keyword) {
+        return studentRepository
+                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCourseContainingIgnoreCase(
+                        keyword,
+                        keyword,
+                        keyword,
+                        keyword);
+    }
+
 }
