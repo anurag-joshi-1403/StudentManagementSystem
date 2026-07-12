@@ -7,38 +7,57 @@
   </head>
   <body>
     <div class="card-body">
-      <form th:action="@{/students}" th:object = "${student}" method = "post" >
-        <input type="hidden" th:field="*{id}">
+      <form th:action="@{/student}" th:object="${student}" method="post">
+        <input type="hidden" th:field="*{id}" />
         <!-- First Name -->
         <div class="mb-3">
           <label class="form-label">First Name</label>
           <input
             type="text"
+            th:field="*{firstName}"
             class="form-control"
-            th:field="*{firstName}">
+            th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"
           />
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('firstName')}"
+            th:errors="*{firstName}"
+          ></div>
         </div>
         <!-- Last Name -->
         <div class="mb-3">
           <label class="form-label"> Last Name </label>
           <input
             type="text"
+            th:field="*{lastName}"
             class="form-control"
-            th:field="*{lastName}">          />
+            th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
+          />
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('lastName')}"
+            th:errors="*{lastName}"
+          ></div>
         </div>
         <!-- Email -->
         <div class="mb-3">
           <label class="form-label"> Email </label>
-          <input type="email" class="form-control" th:field="*{email}"/>
+          <input
+            type="text"
+            th:field="*{email}"
+            class="form-control"
+            th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+          />
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('email')}"
+            th:errors="*{email}"
+          ></div>
         </div>
         <!-- Phone -->
         <div class="mb-3">
           <label class="form-label"> Phone </label>
-          <input
-            type="text"
-            class="form-control"
-            th:field="*{phone}">
-          />
+          <input type="text" class="form-control" th:field="*{phone}" />
         </div>
         <!-- Gender -->
         <div class="mb-3">
@@ -48,34 +67,52 @@
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-            <option value="option">Other</option>
+            <option value="Other">Other</option>
           </select>
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('gender')}"
+            th:errors="*{gender}"
+          ></div>
         </div>
         <!-- Course -->
         <div class="mb-3">
           <label class="form-label">Course</label>
-          <input type="text" class="form-control" th:field="*{course}"> />
+          <input type="text" class="form-control" th:field="*{course}" />
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('course')}"
+            th:errors="*{course}"
+          ></div>
         </div>
         <!-- Date of Birth -->
         <div class="mb-3">
           <label class="form-label">Date of Birth</label>
-          <input type="date" class="form-control" th:field="*{dateOfBirth}"/>
+          <input type="date" class="form-control" th:field="*{dateOfBirth}" />
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('dateOfBirth')}"
+            th:errors="*{dateOfBirth}"
+          ></div>
         </div>
         <!-- Address -->
         <div class="mb-3">
-          <label class="form-label"> Address </label>~
+          <label class="form-label"> Address </label>
           <textarea class="form-control" th:field="*{address}"></textarea>
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('address')}"
+            th:errors="*{address}"
+          ></div>
         </div>
         <!-- Add Photo -->
-         <div class="mb-3">
-            <label class="form-label">Photo</label>
-            <input type="text" class ="form-control" th:field="*{photo}">
-         </div>
-         <!-- Add Buttons -->
-          <button type="submit" class="btn btn-success">
-            Save Student
-          </button>
-          <a th:href="@{/student}" class="btn btn-secondary">Cancel</a>
+        <div class="mb-3">
+          <label class="form-label">Photo</label>
+          <input type="file"/>
+        </div>
+        <!-- Add Buttons -->
+        <button type="submit" class="btn btn-success">Save Student</button>
+        <a th:href="@{/student}" class="btn btn-secondary">Cancel</a>
       </form>
     </div>
   </body>
