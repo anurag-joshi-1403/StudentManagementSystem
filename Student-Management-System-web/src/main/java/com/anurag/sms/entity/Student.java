@@ -8,39 +8,53 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "students")
 public class Student {
+
+    @NotBlank(message = "First Name is required")
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @NotBlank(message = "Last Name is required")
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Enter a valid email")
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must contain exactly 10 digits")
+    @Column(nullable = false)
+    private String phone;
+
+    @NotBlank(message = "Please select gender")
+    @Column(nullable = false)
+    private String gender;
+
+    @NotBlank(message = "Course is required")
+    @Column(nullable = false)
+    private String course;
+
+    @NotNull(message = "Date of Birth is required")
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
+
+    @NotBlank(message = "Address is required")
+    @Column(nullable = false)
+    private String address;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String phone;
-
-    @Column(nullable = false)
-    private String gender;
-
-    @Column(nullable = false)
-    private String course;
-
-    @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
-
-    @Column(nullable = false)
-    private String address;
-
-    @Column(name = "photo")
     private String photo;
 
     // Default Constructor
@@ -65,13 +79,14 @@ public class Student {
     }
 
     // Creating Getter and Setter................................
-
-    public Long getId(){
+    public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
-        this.id=id;
+        this.id = id;
     }
+
     public String getFirstName() {
         return firstName;
     }
@@ -100,9 +115,10 @@ public class Student {
         return phone;
     }
 
-    public void setPhone(String phone){
+    public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public String getGender() {
         return gender;
     }
@@ -142,4 +158,5 @@ public class Student {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+
 }
