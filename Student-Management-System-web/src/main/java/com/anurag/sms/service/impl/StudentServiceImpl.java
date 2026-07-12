@@ -60,6 +60,10 @@ public class StudentServiceImpl implements StudentService {
 
         return studentRepository.findAll(pageable);
     }
-    
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return studentRepository.existsByEmail(email);
+    }
 
 }
