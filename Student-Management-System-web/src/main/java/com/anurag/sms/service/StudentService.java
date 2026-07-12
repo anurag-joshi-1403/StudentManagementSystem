@@ -14,4 +14,5 @@ public interface StudentService {
     void deleteStudent(Long id);
     List<Student> searchStudents(String keyword);
     Page<Student> getStudentsByPage(int pageNo);
+    boolean existsByEmail(String email);
 }
