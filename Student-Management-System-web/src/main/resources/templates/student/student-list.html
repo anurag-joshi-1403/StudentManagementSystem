@@ -19,7 +19,7 @@
         <div class="card-body">
           <h3 class="mb-4">Student List</h3>
           <div class="mb-3">
-            <a th:href="@{/students/new}" class="btn btn-primary"
+            <a th:href="@{/student/new}" class="btn btn-primary"
               >Add Student</a
             >
           </div>
@@ -98,7 +98,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/students/page/{pageNo}(pageNo=${currentPage-1})}"
+                  th:href="@{/student/page/{pageNo}(pageNo=${currentPage-1})}"
                 >
                   Previous
                 </a>
@@ -113,7 +113,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/students/page/{pageNo}(pageNo=${i})}"
+                  th:href="@{/student/page/{pageNo}(pageNo=${i})}"
                   th:text="${i}"
                 >
                 </a>
@@ -127,7 +127,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/students/page/{pageNo}(pageNo=${currentPage+1})}"
+                  th:href="@{/student/page/{pageNo}(pageNo=${currentPage+1})}"
                 >
                   Next
                 </a>
