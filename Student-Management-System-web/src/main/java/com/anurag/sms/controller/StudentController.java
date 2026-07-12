@@ -5,15 +5,17 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.service.StudentService;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class StudentController {
@@ -23,13 +25,13 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/students")
+    @GetMapping("/student")
     public String viewHomePage(Model model) {
         List<Student> student = studentService.getAllStudents();
 
         model.addAttribute("students", student);
 
-        return "redirect:/students/page/1";
+        return "redirect:/student/page/1";
     }
 
     @GetMapping("/student/search")
@@ -43,7 +45,7 @@ public class StudentController {
         return "student/student-list";
     }
 
-    @GetMapping("/students/new")
+    @GetMapping("/student/new")
     public String createStudentForm(Model model) {
         Student student = new Student();
 
@@ -51,13 +53,30 @@ public class StudentController {
         return "student/student-form";
     }
 
-    @PostMapping("/students")
-    public String saveStudent(@ModelAttribute("student") Student student, RedirectAttributes redirectAttributes) {
+    @PostMapping("/student")
+    public String saveStudent(
+            @Valid @ModelAttribute("student") Student student,
+            BindingResult result) {
+
+        // Bean Validation
+        if (result.hasErrors()) {
+            return "student/student-form";
+        }
+
+        // Duplicate Email Check
+        if (studentService.existsByEmail(student.getEmail())) {
+
+            result.rejectValue(
+                    "email",
+                    "error.student",
+                    "Email already exists.");
+
+            return "student/student-form";
+        }
+
         studentService.saveStudent(student);
 
-        redirectAttributes.addFlashAttribute("successMessage", "Student Added Successfully!");
-
-        return "redirect:/students/new";
+        return "redirect:/student";
     }
 
     @GetMapping("/student/edit/{id}")
@@ -73,7 +92,7 @@ public class StudentController {
         return "redirect:/student";
     }
 
-    @GetMapping("/students/page/{pageNo}")
+    @GetMapping("/student/page/{pageNo}")
     public String findPaginated(
             @PathVariable int pageNo,
             Model model) {
@@ -91,6 +110,6 @@ public class StudentController {
         model.addAttribute("students", students);
 
         return "student/student-list";
-    }   
+    }
 
 }
