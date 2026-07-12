@@ -2,6 +2,8 @@ package com.anurag.sms.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.anurag.sms.entity.Student;
 public interface StudentService {
     
@@ -11,4 +13,5 @@ public interface StudentService {
     Student updateStudent(Student student);
     void deleteStudent(Long id);
     List<Student> searchStudents(String keyword);
+    Page<Student> getStudentsByPage(int pageNo);
 }
