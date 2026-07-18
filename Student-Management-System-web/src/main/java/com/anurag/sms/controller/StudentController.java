@@ -32,12 +32,18 @@ public class StudentController {
     }
 
     @GetMapping("/student")
-    public String viewHomePage(Model model) {
-        List<Student> student = studentService.getAllStudents();
+    public String listStudents(Model model) {
+        return findPaginated(1, model);
+    }
 
-        model.addAttribute("students", student);
+    @GetMapping("/student/view/{id}")
+    public String viewStudent(@PathVariable Long id, Model model) {
 
-        return "redirect:/student/page/1";
+        Student student = studentService.getStudentById(id);
+
+        model.addAttribute("student", student);
+
+        return "student/student-view";
     }
 
     @GetMapping("/student/search")
