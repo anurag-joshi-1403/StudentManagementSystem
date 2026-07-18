@@ -66,4 +66,18 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.existsByEmail(email);
     }
 
+    @Override
+    public long getTotalStudents() {
+        return studentRepository.count();
+    }
+
+    @Override
+    public long getMaleStudents() {
+        return studentRepository.countByGender("Male");
+    }
+
+    @Override
+    public long getFemaleStudents() {
+        return studentRepository.countByGender("Female");
+    }
 }
