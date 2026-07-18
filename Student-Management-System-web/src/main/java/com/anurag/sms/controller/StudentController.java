@@ -1,5 +1,10 @@
 package com.anurag.sms.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.service.StudentService;
@@ -55,23 +61,46 @@ public class StudentController {
 
     @PostMapping("/student")
     public String saveStudent(
-            @Valid @ModelAttribute("student") Student student,
-            BindingResult result) {
 
-        // Bean Validation
+            @Valid @ModelAttribute("student") Student student,
+            BindingResult result,
+
+            @RequestParam("photoFile") MultipartFile photoFile
+
+    ) throws IOException {
+
         if (result.hasErrors()) {
             return "student/student-form";
         }
 
-        // Duplicate Email Check
+        // Duplicate Email Validation
         if (studentService.existsByEmail(student.getEmail())) {
 
             result.rejectValue(
                     "email",
                     "error.student",
-                    "Email already exists.");
+                    "Email already exists");
 
             return "student/student-form";
+        }
+
+        // Photo Upload
+        if (!photoFile.isEmpty()) {
+
+            String fileName = photoFile.getOriginalFilename();
+
+            Path uploadPath = Paths.get("uploads/student-images");
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Files.copy(
+                    photoFile.getInputStream(),
+                    uploadPath.resolve(fileName),
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            student.setPhoto(fileName);
         }
 
         studentService.saveStudent(student);
