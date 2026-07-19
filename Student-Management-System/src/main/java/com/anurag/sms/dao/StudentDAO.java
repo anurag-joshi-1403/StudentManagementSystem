@@ -50,7 +50,7 @@ public class StudentDAO {
             connection.close();
 
             if (rows > 0) {
-                logger.info("Student Added Succesfully.");
+                logger.info("Student Added SuccesSfully.");
                 return true;
             } else {
                 logger.warning("Failed to Add Student.");
