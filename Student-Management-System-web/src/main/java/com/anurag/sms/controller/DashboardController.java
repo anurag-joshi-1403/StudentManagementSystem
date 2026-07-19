@@ -18,9 +18,17 @@ public class DashboardController {
     @GetMapping("/")
     public String dashboard(Model model) {
 
-        model.addAttribute("totalStudents", studentService.getTotalStudents());
-        model.addAttribute("maleStudents", studentService.getMaleStudents());
-        model.addAttribute("femaleStudents", studentService.getFemaleStudents());
+        long total = studentService.getTotalStudents();
+        long male = studentService.getMaleStudents();
+        long female = studentService.getFemaleStudents();
+
+        System.out.println("Total Students : " + total);
+        System.out.println("Male Students  : " + male);
+        System.out.println("Female Students: " + female);
+
+        model.addAttribute("totalStudents", total);
+        model.addAttribute("maleStudents", male);
+        model.addAttribute("femaleStudents", female);
 
         return "dashboard";
     }
