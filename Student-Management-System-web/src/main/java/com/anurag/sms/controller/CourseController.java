@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.anurag.sms.entity.Course;
@@ -49,8 +50,9 @@ public class CourseController {
             return "course/course-form";
         }
 
-        // Duplicate Course Code Check
-        if (courseService.existsByCourseCode(course.getCourseCode())) {
+        // Duplicate check only for NEW course
+        if (course.getId() == null &&
+                courseService.existsByCourseCode(course.getCourseCode())) {
 
             model.addAttribute("duplicateError",
                     "Course Code already exists.");
@@ -58,10 +60,19 @@ public class CourseController {
             return "course/course-form";
         }
 
-        // Save Course
         courseService.saveCourse(course);
 
         return "redirect:/course";
+    }
+
+    @GetMapping("/course/edit/{id}")
+    public String editCourse(@PathVariable Long id, Model model) {
+
+        Course course = courseService.getCourseById(id);
+
+        model.addAttribute("course", course);
+
+        return "course/course-form";
     }
 
 }
