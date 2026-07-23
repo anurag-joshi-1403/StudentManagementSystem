@@ -75,4 +75,11 @@ public class CourseController {
         return "course/course-form";
     }
 
+    @GetMapping("/course/delete/{id}")
+    public String deleteCourse(@PathVariable Long id) {
+
+        courseService.deleteCourse(id);
+
+        return "redirect:/course";
+    }
 }
