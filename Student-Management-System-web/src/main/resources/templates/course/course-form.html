@@ -20,6 +20,7 @@
 
         <div class="card-body">
           <form th:action="@{/course}" th:object="${course}" method="post">
+            <input type="hidden" th:field="*{id}">
             <div th:if="${duplicateError}" class="alert alert-danger">
               <span th:text="${duplicateError}"></span>
             </div>
