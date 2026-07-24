@@ -1,5 +1,6 @@
 package com.anurag.sms.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.anurag.sms.entity.Course;
 import com.anurag.sms.service.CourseService;
@@ -23,10 +25,28 @@ public class CourseController {
     }
 
     @GetMapping("/course")
-    public String listCourses(Model model) {
+    public String listCourses(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
 
-        model.addAttribute("courses",
-                courseService.getAllCourses());
+        if (keyword != null && !keyword.trim().isEmpty()) {
+
+            model.addAttribute("courses",
+                    courseService.searchCourses(keyword));
+
+        } else {
+            Page<Course> coursePage = courseService.getCoursesByPage(page);
+
+            model.addAttribute("courses", coursePage.getContent());
+
+            model.addAttribute("currentPage", page);
+
+            model.addAttribute("totalPages", coursePage.getTotalPages());
+
+        }
+
+        model.addAttribute("keyword", keyword);
 
         return "course/course-list";
     }
