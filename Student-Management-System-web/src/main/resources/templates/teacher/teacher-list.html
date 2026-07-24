@@ -16,14 +16,38 @@
 
       <div class="card shadow">
         <div class="card-body">
-          <div class="d-flex justify-content-between mb-3">
-            <h4>Teacher List</h4>
+          <div class="row align-items-center mb-3">
+            <!-- Left Side -->
+            <div class="col-md-3">
+              <h4 class="mb-0">Teacher List</h4>
+            </div>
 
-            <a th:href="@{/teacher/new}" class="btn btn-primary">
-              Add Teacher
-            </a>
+            <!-- Right Side -->
+            <div class="col-md-9">
+              <div class="d-flex justify-content-end">
+                <!-- Search Form -->
+                <form th:action="@{/teacher}" method="get" class="d-flex me-2">
+                  <input
+                    type="text"
+                    name="keyword"
+                    class="form-control"
+                    style="width: 250px"
+                    placeholder="Search by Name"
+                    th:value="${keyword}"
+                  />
+
+                  <button type="submit" class="btn btn-success ms-2">
+                    Search
+                  </button>
+                </form>
+
+                <!-- Add Teacher Button -->
+                <a th:href="@{/teacher/new}" class="btn btn-primary">
+                  Add Teacher
+                </a>
+              </div>
+            </div>
           </div>
-
           <table class="table table-bordered table-hover">
             <thead class="table-dark">
               <tr>
