@@ -48,8 +48,12 @@
                 <td th:text="${teacher.department}"></td>
 
                 <td>
-                  <button class="btn btn-warning btn-sm" disabled>Edit</button>
-
+                  <a
+                    th:href="@{/teacher/edit/{id}(id=${teacher.id})}"
+                    class="btn btn-warning btn-sm"
+                  >
+                    Edit
+                  </a>
                   <button class="btn btn-danger btn-sm" disabled>Delete</button>
                 </td>
               </tr>
