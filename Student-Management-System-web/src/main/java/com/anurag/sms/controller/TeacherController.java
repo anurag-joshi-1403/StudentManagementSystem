@@ -79,4 +79,12 @@ public class TeacherController {
         return "teacher/teacher-form";
     }
 
+    @GetMapping("/teacher/delete/{id}")
+    public String deleteTeacher(@PathVariable Long id) {
+
+        teacherService.deleteTeacher(id);
+
+        return "redirect:/teacher";
+    }
+
 }
