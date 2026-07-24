@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.anurag.sms.entity.Teacher;
@@ -66,6 +67,16 @@ public class TeacherController {
         teacherService.saveTeacher(teacher);
 
         return "redirect:/teacher";
+    }
+
+    @GetMapping("/teacher/edit/{id}")
+    public String editTeacher(@PathVariable Long id, Model model) {
+
+        Teacher teacher = teacherService.getTeacherById(id);
+
+        model.addAttribute("teacher", teacher);
+
+        return "teacher/teacher-form";
     }
 
 }
