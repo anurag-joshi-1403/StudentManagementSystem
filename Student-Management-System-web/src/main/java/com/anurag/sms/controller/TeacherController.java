@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.anurag.sms.entity.Teacher;
 import com.anurag.sms.service.TeacherService;
@@ -24,10 +25,25 @@ public class TeacherController {
 
     // Display Teacher List
     @GetMapping("/teacher")
-    public String listTeachers(Model model) {
+    public String listTeachers(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
 
-        model.addAttribute("teachers",
-                teacherService.getAllTeachers());
+        if (keyword != null && !keyword.trim().isEmpty()) {
+
+            model.addAttribute(
+                    "teachers",
+                    teacherService.searchTeachers(keyword));
+
+        } else {
+
+            model.addAttribute(
+                    "teachers",
+                    teacherService.getAllTeachers());
+
+        }
+
+        model.addAttribute("keyword", keyword);
 
         return "teacher/teacher-list";
     }
