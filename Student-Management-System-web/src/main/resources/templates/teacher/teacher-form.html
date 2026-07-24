@@ -1,0 +1,158 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add Teacher</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="container mt-5">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="text-center">Add Teacher</h3>
+        </div>
+
+        <div class="card-body">
+          <form
+            th:action="@{/teacher}"
+            th:object="${teacher}"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <!-- Hidden ID -->
+            <input type="hidden" th:field="*{id}" />
+
+            <!-- Duplicate Email Error -->
+            <div th:if="${duplicateError}" class="alert alert-danger">
+              <span th:text="${duplicateError}"></span>
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+              <label class="form-label"> First Name </label>
+
+              <input type="text" class="form-control" th:field="*{firstName}" />
+
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('firstName')}"
+                th:errors="*{firstName}"
+              ></div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+              <label class="form-label"> Last Name </label>
+
+              <input type="text" class="form-control" th:field="*{lastName}" />
+
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('lastName')}"
+                th:errors="*{lastName}"
+              ></div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label"> Email </label>
+
+              <input type="email" class="form-control" th:field="*{email}" />
+
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('email')}"
+                th:errors="*{email}"
+              ></div>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+              <label class="form-label"> Phone Number </label>
+
+              <input type="text" class="form-control" th:field="*{phone}" />
+
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('phone')}"
+                th:errors="*{phone}"
+              ></div>
+            </div>
+
+            <!-- Department -->
+            <div class="mb-3">
+              <label class="form-label"> Department </label>
+
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{department}"
+              />
+
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('department')}"
+                th:errors="*{department}"
+              ></div>
+            </div>
+
+            <!-- Qualification -->
+            <div class="mb-3">
+              <label class="form-label"> Qualification </label>
+
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{qualification}"
+              />
+
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('qualification')}"
+                th:errors="*{qualification}"
+              ></div>
+            </div>
+
+            <!-- Gender -->
+            <div class="mb-3">
+              <label class="form-label"> Gender </label>
+
+              <select class="form-select" th:field="*{gender}">
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('gender')}"
+                th:errors="*{gender}"
+              ></div>
+            </div>
+
+            <!-- Photo -->
+            <div class="mb-3">
+              <label class="form-label"> Photo </label>
+
+              <input
+                type="file"
+                class="form-control"
+                name="photoFile"
+                accept="image/*"
+              />
+            </div>
+
+            <button type="submit" class="btn btn-success">Save Teacher</button>
+
+            <a th:href="@{/teacher}" class="btn btn-secondary"> Cancel </a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
