@@ -85,12 +85,11 @@ public class TeacherController {
 
             model.addAttribute(
                     "duplicateError",
-                    "Teacher Email already exists.");
+                    "Teacher email already exists.");
 
             return "teacher/teacher-form";
         }
 
-        // Upload Teacher Photo
         if (!photoFile.isEmpty()) {
 
             try {
@@ -99,13 +98,15 @@ public class TeacherController {
 
                 Files.createDirectories(Paths.get(uploadDir));
 
-                String fileName = photoFile.getOriginalFilename();
+                String fileName = System.currentTimeMillis()
+                        + "_"
+                        + photoFile.getOriginalFilename();
 
-                Path path = Paths.get(uploadDir + fileName);
+                Path filePath = Paths.get(uploadDir, fileName);
 
                 Files.copy(
                         photoFile.getInputStream(),
-                        path,
+                        filePath,
                         StandardCopyOption.REPLACE_EXISTING);
 
                 teacher.setPhoto(fileName);
