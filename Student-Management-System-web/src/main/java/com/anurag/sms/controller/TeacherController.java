@@ -1,5 +1,11 @@
 package com.anurag.sms.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.anurag.sms.entity.Teacher;
 import com.anurag.sms.service.TeacherService;
@@ -40,11 +47,11 @@ public class TeacherController {
         } else {
             Page<Teacher> teacherPage = teacherService.getTeachersByPage(page);
 
-            model.addAttribute("teachers",teacherPage.getContent());
+            model.addAttribute("teachers", teacherPage.getContent());
 
-            model.addAttribute("currentPage",page);
+            model.addAttribute("currentPage", page);
 
-            model.addAttribute("totalPages",teacherPage.getTotalPages());
+            model.addAttribute("totalPages", teacherPage.getTotalPages());
         }
 
         model.addAttribute("keyword", keyword);
@@ -66,14 +73,13 @@ public class TeacherController {
     public String saveTeacher(
             @Valid @ModelAttribute("teacher") Teacher teacher,
             BindingResult result,
+            @RequestParam("photoFile") MultipartFile photoFile,
             Model model) {
 
-        // Validation Errors
         if (result.hasErrors()) {
             return "teacher/teacher-form";
         }
 
-        // Duplicate Email Check (only for new teacher)
         if (teacher.getId() == null &&
                 teacherService.existsByEmail(teacher.getEmail())) {
 
@@ -82,6 +88,34 @@ public class TeacherController {
                     "Teacher Email already exists.");
 
             return "teacher/teacher-form";
+        }
+
+        // Upload Teacher Photo
+        if (!photoFile.isEmpty()) {
+
+            try {
+
+                String uploadDir = "uploads/teacher-images/";
+
+                Files.createDirectories(Paths.get(uploadDir));
+
+                String fileName = photoFile.getOriginalFilename();
+
+                Path path = Paths.get(uploadDir + fileName);
+
+                Files.copy(
+                        photoFile.getInputStream(),
+                        path,
+                        StandardCopyOption.REPLACE_EXISTING);
+
+                teacher.setPhoto(fileName);
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            }
+
         }
 
         teacherService.saveTeacher(teacher);
