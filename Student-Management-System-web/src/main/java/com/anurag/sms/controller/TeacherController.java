@@ -1,5 +1,6 @@
 package com.anurag.sms.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +27,7 @@ public class TeacherController {
     // Display Teacher List
     @GetMapping("/teacher")
     public String listTeachers(
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model) {
 
@@ -36,11 +38,13 @@ public class TeacherController {
                     teacherService.searchTeachers(keyword));
 
         } else {
+            Page<Teacher> teacherPage = teacherService.getTeachersByPage(page);
 
-            model.addAttribute(
-                    "teachers",
-                    teacherService.getAllTeachers());
+            model.addAttribute("teachers",teacherPage.getContent());
 
+            model.addAttribute("currentPage",page);
+
+            model.addAttribute("totalPages",teacherPage.getTotalPages());
         }
 
         model.addAttribute("keyword", keyword);
