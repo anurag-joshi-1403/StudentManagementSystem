@@ -118,6 +118,12 @@ public class TeacherController {
             }
 
         }
+        else {
+            if(teacher.getId() != null){
+                Teacher existingTeacher = teacherService.getTeacherById(teacher.getId());
+                teacher.setPhoto(existingTeacher.getPhoto());
+            }
+        }
 
         teacherService.saveTeacher(teacher);
 
@@ -140,6 +146,18 @@ public class TeacherController {
         teacherService.deleteTeacher(id);
 
         return "redirect:/teacher";
+    }
+
+    @GetMapping("/teacher/view/{id}")
+    public String viewTeacher(@PathVariable Long id, Model model) {
+
+        Teacher teacher = teacherService.getTeacherById(id);
+
+        System.out.println("Teacher Photo = " + teacher.getPhoto());
+
+        model.addAttribute("teacher", teacher);
+
+        return "teacher/teacher-view";
     }
 
 }
