@@ -38,7 +38,7 @@
           <div class="text-center mb-4">
             <img
               th:if="${teacher.photo != null}"
-              th:src="@{'/uploads/teacher-images/' + ${teacher.photo}}"
+              th:src="@{/teacher-images/{file}(file=${teacher.photo})}"
               class="teacher-photo"
               alt="Teacher Photo"
             />
