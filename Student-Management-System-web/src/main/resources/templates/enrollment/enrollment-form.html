@@ -30,25 +30,15 @@
             th:object="${enrollment}"
             method="post"
           >
-            <!-- Hidden ID -->
-
             <input type="hidden" th:field="*{id}" />
-
-            <!-- Duplicate Error -->
-
-            <div
-              class="alert alert-danger"
-              th:if="${duplicateError}"
-              th:text="${duplicateError}"
-            ></div>
 
             <!-- Student -->
 
             <div class="mb-3">
-              <label class="form-label"> Student </label>
+              <label class="form-label">Student</label>
 
               <select class="form-select" th:field="*{student}" required>
-                <option value="">---- Select Student ----</option>
+                <option value="">-- Select Student --</option>
 
                 <option
                   th:each="student : ${students}"
@@ -63,10 +53,10 @@
             <!-- Course -->
 
             <div class="mb-3">
-              <label class="form-label"> Course </label>
+              <label class="form-label">Course</label>
 
               <select class="form-select" th:field="*{course}" required>
-                <option value="">---- Select Course ----</option>
+                <option value="">-- Select Course --</option>
 
                 <option
                   th:each="course : ${courses}"
@@ -78,68 +68,39 @@
               <div class="text-danger" th:errors="*{course}"></div>
             </div>
 
-            <!-- Academic Year -->
+            <!-- Subject -->
 
             <div class="mb-3">
-              <label class="form-label"> Academic Year </label>
+              <label class="form-label">Subject</label>
 
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Example : 2026-2027"
-                th:field="*{academicYear}"
-              />
+              <select class="form-select" th:field="*{subject}" required>
+                <option value="">-- Select Subject --</option>
 
-              <div class="text-danger" th:errors="*{academicYear}"></div>
-            </div>
-
-            <!-- Semester -->
-
-            <div class="mb-3">
-              <label class="form-label"> Semester </label>
-
-              <select class="form-select" th:field="*{semester}">
-                <option value="">Select Semester</option>
-
-                <option value="1">Semester 1</option>
-
-                <option value="2">Semester 2</option>
-
-                <option value="3">Semester 3</option>
-
-                <option value="4">Semester 4</option>
-
-                <option value="5">Semester 5</option>
-
-                <option value="6">Semester 6</option>
-
-                <option value="7">Semester 7</option>
-
-                <option value="8">Semester 8</option>
+                <option
+                  th:each="subject : ${subjects}"
+                  th:value="${subject.id}"
+                  th:text="${subject.subjectName}"
+                ></option>
               </select>
 
-              <div class="text-danger" th:errors="*{semester}"></div>
+              <div class="text-danger" th:errors="*{subject}"></div>
             </div>
 
-            <!-- Status -->
+            <!-- Enrollment Date -->
 
             <div class="mb-4">
-              <label class="form-label"> Status </label>
+              <label class="form-label">Enrollment Date</label>
 
-              <select class="form-select" th:field="*{status}">
-                <option value="Active">Active</option>
+              <input
+                type="date"
+                class="form-control"
+                th:field="*{enrollmentDate}"
+              />
 
-                <option value="Inactive">Inactive</option>
-
-                <option value="Completed">Completed</option>
-
-                <option value="Dropped">Dropped</option>
-              </select>
+              <div class="text-danger" th:errors="*{enrollmentDate}"></div>
             </div>
 
-            <!-- Buttons -->
-
-            <button type="submit" class="btn btn-success">
+            <button class="btn btn-success" type="submit">
               <i class="fa-solid fa-floppy-disk"></i>
 
               Save
