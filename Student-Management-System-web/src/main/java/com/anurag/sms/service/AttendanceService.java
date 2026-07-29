@@ -1,5 +1,35 @@
 package com.anurag.sms.service;
 
-public class AttendanceService {
-    
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+
+import com.anurag.sms.entity.Attendance;
+
+public interface AttendanceService {
+
+    // Display All Attendance
+    List<Attendance> getAllAttendance();
+
+    // Get Attendance By ID
+    Attendance getAttendanceById(Long id);
+
+    // Save Attendance
+    Attendance saveAttendance(Attendance attendance);
+
+    // Update Attendance
+    Attendance updateAttendance(Attendance attendance);
+
+    // Delete Attendance
+    void deleteAttendance(Long id);
+
+    // Search Attendance
+    List<Attendance> searchAttendance(String keyword, LocalDate attendanceDate);
+
+    // Pagination
+    Page<Attendance> getAttendanceByPage(int page);
+
+    // Dashboard Count
+    long getTotalAttendance();
 }
