@@ -1,153 +1,169 @@
 package com.anurag.sms.controller;
 
-import com.anurag.sms.entity.Enrollment;
-import com.anurag.sms.service.CourseService;
-import com.anurag.sms.service.EnrollmentService;
-import com.anurag.sms.service.StudentService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.anurag.sms.entity.Enrollment;
+import com.anurag.sms.service.CourseService;
+import com.anurag.sms.service.EnrollmentService;
+import com.anurag.sms.service.StudentService;
+import com.anurag.sms.service.SubjectService;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/enrollment")
 public class EnrollmentController {
 
-    private final EnrollmentService enrollmentService;
-    private final StudentService studentService;
-    private final CourseService courseService;
+        private final EnrollmentService enrollmentService;
+        private final StudentService studentService;
+        private final CourseService courseService;
+        private final SubjectService subjectService;
 
-    public EnrollmentController(
-            EnrollmentService enrollmentService,
-            StudentService studentService,
-            CourseService courseService) {
+        public EnrollmentController(
+                        EnrollmentService enrollmentService,
+                        StudentService studentService,
+                        CourseService courseService,
+                        SubjectService subjectService) {
 
-        this.enrollmentService = enrollmentService;
-        this.studentService = studentService;
-        this.courseService = courseService;
-    }
-
-    // ==========================
-    // Display Enrollment List
-    // ==========================
-
-    @GetMapping
-    public String listEnrollments(
-
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(required = false) String keyword,
-            Model model) {
-
-        if (keyword != null && !keyword.trim().isEmpty()) {
-
-            model.addAttribute("enrollments",
-                    enrollmentService.searchEnrollments(keyword));
-
-        } else {
-
-            Page<Enrollment> enrollmentPage =
-                    enrollmentService.getEnrollmentsByPage(page);
-
-            model.addAttribute("enrollments",
-                    enrollmentPage.getContent());
-
-            model.addAttribute("currentPage", page);
-
-            model.addAttribute("totalPages",
-                    enrollmentPage.getTotalPages());
+                this.enrollmentService = enrollmentService;
+                this.studentService = studentService;
+                this.courseService = courseService;
+                this.subjectService = subjectService;
         }
 
-        model.addAttribute("keyword", keyword);
+        // ==========================
+        // Display Enrollment List
+        // ==========================
 
-        return "enrollment/enrollment-list";
-    }
+        @GetMapping
+        public String listEnrollments(
 
-    // ==========================
-    // Show Add Form
-    // ==========================
+                        @RequestParam(defaultValue = "1") int page,
+                        @RequestParam(required = false) String keyword,
+                        Model model) {
 
-    @GetMapping("/new")
-    public String showEnrollmentForm(Model model) {
+                if (keyword != null && !keyword.trim().isEmpty()) {
 
-        model.addAttribute("enrollment", new Enrollment());
+                        model.addAttribute("enrollments",
+                                        enrollmentService.searchEnrollments(keyword));
 
-        model.addAttribute("students",
-                studentService.getAllStudents());
+                } else {
 
-        model.addAttribute("courses",
-                courseService.getAllCourses());
+                        Page<Enrollment> enrollmentPage = enrollmentService.getEnrollmentsByPage(page);
 
-        return "enrollment/enrollment-form";
-    }
+                        model.addAttribute("enrollments",
+                                        enrollmentPage.getContent());
 
-    // ==========================
-    // Save Enrollment
-    // ==========================
+                        model.addAttribute("currentPage", page);
 
-    @PostMapping
-    public String saveEnrollment(
+                        model.addAttribute("totalPages",
+                                        enrollmentPage.getTotalPages());
+                }
 
-            @Valid
-            @ModelAttribute("enrollment")
-            Enrollment enrollment,
+                model.addAttribute("keyword", keyword);
 
-            BindingResult result,
-
-            Model model) {
-
-        if (result.hasErrors()) {
-
-            model.addAttribute("students",
-                    studentService.getAllStudents());
-
-            model.addAttribute("courses",
-                    courseService.getAllCourses());
-
-            return "enrollment/enrollment-form";
+                return "enrollment/enrollment-list";
         }
 
-        enrollmentService.saveEnrollment(enrollment);
+        // ==========================
+        // Show Add Form
+        // ==========================
 
-        return "redirect:/enrollment";
-    }
+        @GetMapping("/new")
+        public String showEnrollmentForm(Model model) {
 
-    // ==========================
-    // Edit Enrollment
-    // ==========================
+                model.addAttribute("enrollment", new Enrollment());
 
-    @GetMapping("/edit/{id}")
-    public String editEnrollment(
-            @PathVariable Long id,
-            Model model) {
+                model.addAttribute("students",
+                                studentService.getAllStudents());
 
-        model.addAttribute(
-                "enrollment",
-                enrollmentService.getEnrollmentById(id));
+                model.addAttribute("courses",
+                                courseService.getAllCourses());
 
-        model.addAttribute(
-                "students",
-                studentService.getAllStudents());
+                model.addAttribute("subjects",
+                                subjectService.getAllSubjects());
 
-        model.addAttribute(
-                "courses",
-                courseService.getAllCourses());
+                return "enrollment/enrollment-form";
+        }
 
-        return "enrollment/enrollment-form";
-    }
+        // ==========================
+        // Save Enrollment
+        // ==========================
 
-    // ==========================
-    // Delete Enrollment
-    // ==========================
+        @PostMapping
+        public String saveEnrollment(
 
-    @GetMapping("/delete/{id}")
-    public String deleteEnrollment(
-            @PathVariable Long id) {
+                        @Valid @ModelAttribute("enrollment") Enrollment enrollment,
 
-        enrollmentService.deleteEnrollment(id);
+                        BindingResult result,
 
-        return "redirect:/enrollment";
-    }
+                        Model model) {
+
+                if (result.hasErrors()) {
+
+                        model.addAttribute("students",
+                                        studentService.getAllStudents());
+
+                        model.addAttribute("courses",
+                                        courseService.getAllCourses());
+
+                        model.addAttribute("subjects",
+                                        subjectService.getAllSubjects());
+
+                        return "enrollment/enrollment-form";
+                }
+
+                enrollmentService.saveEnrollment(enrollment);
+
+                return "redirect:/enrollment";
+        }
+
+        // ==========================
+        // Edit Enrollment
+        // ==========================
+
+        @GetMapping("/edit/{id}")
+        public String editEnrollment(
+                        @PathVariable Long id,
+                        Model model) {
+
+                model.addAttribute(
+                                "enrollment",
+                                enrollmentService.getEnrollmentById(id));
+
+                model.addAttribute(
+                                "students",
+                                studentService.getAllStudents());
+
+                model.addAttribute(
+                                "courses",
+                                courseService.getAllCourses());
+                
+                model.addAttribute("subjects",
+                        subjectService.getAllSubjects());
+                return "enrollment/enrollment-form";
+        }
+
+        // ==========================
+        // Delete Enrollment
+        // ==========================
+
+        @GetMapping("/delete/{id}")
+        public String deleteEnrollment(
+                        @PathVariable Long id) {
+
+                enrollmentService.deleteEnrollment(id);
+
+                return "redirect:/enrollment";
+        }
 
 }
