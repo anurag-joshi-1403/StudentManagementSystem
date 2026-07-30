@@ -113,11 +113,12 @@
         <ul class="pagination">
           <li
             class="page-item"
-            th:each="i : ${#numbers.sequence(1,totalPages)}"
+            th:classappend ="${currentPage==i} ? 'active'"
+            th:each ="i : ${#numbers.sequence(1, totalPages)}"
           >
             <a
               class="page-link"
-              th:href="@{/fee/page/{page}(page=${i})}"
+              th:href="@{/fee(page=${i})}"
               th:text="${i}"
             >
             </a>
