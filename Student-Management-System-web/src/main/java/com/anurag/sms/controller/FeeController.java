@@ -4,7 +4,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.anurag.sms.entity.Fee;
 import com.anurag.sms.service.FeeService;
@@ -27,9 +32,31 @@ public class FeeController {
 
     // Display Fee List
     @GetMapping
-    public String listFees(Model model) {
+    public String listFees(
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            Model model) {
 
-        model.addAttribute("fees", feeService.getAllFees());
+        Page<Fee> feePage;
+
+        if (keyword == null || keyword.isBlank()) {
+            feePage = feeService.getFeeByPage(page);
+        } else {
+            // We'll implement paginated search later.
+            model.addAttribute("fees", feeService.searchFee(keyword));
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("currentPage", 1);
+            model.addAttribute("totalPages", 1);
+            model.addAttribute("totalItems", feeService.searchFee(keyword).size());
+            model.addAttribute("totalFees", feeService.searchFee(keyword).size());
+
+            return "fee/fee-list";
+        }
+
+        model.addAttribute("fees", feePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", feePage.getTotalPages());
+        model.addAttribute("totalItems", feePage.getTotalElements());
         model.addAttribute("totalFees", feeService.getTotalFees());
 
         return "fee/fee-list";
@@ -104,31 +131,4 @@ public class FeeController {
         return "redirect:/fee";
     }
 
-    // Search Fee
-    @GetMapping("/search")
-    public String searchFee(@RequestParam("keyword") String keyword,
-            Model model) {
-
-        model.addAttribute("fees", feeService.searchFee(keyword));
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("totalFees", feeService.getTotalFees());
-
-        return "fee/fee-list";
-    }
-
-    // Pagination
-    @GetMapping("/page/{pageNo}")
-    public String findPaginated(@PathVariable int pageNo,
-            Model model) {
-
-        Page<Fee> page = feeService.getFeeByPage(pageNo);
-
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("fees", page.getContent());
-        model.addAttribute("totalFees", feeService.getTotalFees());
-
-        return "fee/fee-list";
-    }
 }
