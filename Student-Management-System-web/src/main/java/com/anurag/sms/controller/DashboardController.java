@@ -13,9 +13,10 @@ public class DashboardController {
 
     public DashboardController(StudentService studentService) {
         this.studentService = studentService;
+        System.out.println("===== DashboardController Loaded =====");
     }
 
-    @GetMapping("/")
+    @GetMapping({"/test-dashboard"})
     public String dashboard(Model model) {
 
         long total = studentService.getTotalStudents();
