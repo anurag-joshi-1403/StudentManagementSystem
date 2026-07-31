@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow"
+     th:fragment="navbar">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand fw-bold"
+           th:href="@{/dashboard}">
+
+            Student Management System
+
+        </a>
+
+        <div class="ms-auto">
+
+            <a th:href="@{/logout}"
+               class="btn btn-light">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+</body>
+</html>
