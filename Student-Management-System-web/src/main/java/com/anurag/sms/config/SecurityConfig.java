@@ -53,7 +53,7 @@ public class SecurityConfig {
 
                         .loginProcessingUrl("/login")
 
-                        .defaultSuccessUrl("/dashboard", true)
+                        .defaultSuccessUrl("/test-dashboard", true)
 
                         .failureUrl("/login?error=true")
 
