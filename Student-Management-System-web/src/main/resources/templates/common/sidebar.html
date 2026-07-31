@@ -1,0 +1,32 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="sidebar">
+      <div class="bg-dark text-white vh-100 p-3">
+        <h4 class="text-center mb-4">MENU</h4>
+
+        <div class="list-group">
+          <a th:href="@{/dashboard}" class="list-group-item"> Dashboard </a>
+
+          <a th:href="@{/student}" class="list-group-item"> Students </a>
+
+          <a th:href="@{/teacher}" class="list-group-item"> Teachers </a>
+
+          <a th:href="@{/course}" class="list-group-item"> Courses </a>
+
+          <a th:href="@{/subject}" class="list-group-item"> Subjects </a>
+
+          <a th:href="@{/enrollment}" class="list-group-item"> Enrollment </a>
+
+          <a th:href="@{/attendance}" class="list-group-item"> Attendance </a>
+
+          <a th:href="@{/fee}" class="list-group-item"> Fee </a>
+
+          <a th:href="@{/exam}" class="list-group-item"> Examination </a>
+
+          <a th:href="@{/result}" class="list-group-item"> Results </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
