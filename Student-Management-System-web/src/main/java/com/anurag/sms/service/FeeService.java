@@ -32,4 +32,6 @@ public interface FeeService {
     // Dashboard Count
     long getTotalFees();
 
+    List<Fee> getRecentFees();
+
 }
