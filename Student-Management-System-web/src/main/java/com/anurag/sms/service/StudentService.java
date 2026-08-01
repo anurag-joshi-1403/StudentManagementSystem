@@ -29,4 +29,6 @@ public interface StudentService {
     long getMaleStudents();
 
     long getFemaleStudents();
+
+    public Object getRecentStudents();
 }
