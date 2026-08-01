@@ -20,6 +20,13 @@ public class FeeServiceImpl implements FeeService {
     }
 
     @Override
+    public List<Fee> getRecentFees() {
+
+        return feeRepository.findTop5ByOrderByPaymentDateDesc();
+
+    }
+
+    @Override
     public List<Fee> getAllFees() {
         return feeRepository.findAll();
     }
