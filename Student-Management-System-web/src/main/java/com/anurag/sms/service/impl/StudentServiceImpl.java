@@ -19,6 +19,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<Student> getRecentStudents() {
+
+        return studentRepository.findTop5ByOrderByIdDesc();
+
+    }
+
+    @Override
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
