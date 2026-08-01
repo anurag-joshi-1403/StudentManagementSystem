@@ -19,4 +19,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     long countByGender(String gender);
 
     long countByCourse(String course);
+
+    List<Student> findTop5ByOrderByIdDesc();
 }
