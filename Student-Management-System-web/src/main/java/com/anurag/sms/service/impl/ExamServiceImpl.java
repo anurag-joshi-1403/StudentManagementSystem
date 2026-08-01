@@ -21,6 +21,13 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public List<Exam> getUpcomingExams() {
+
+        return examRepository.findTop5ByOrderByExamDateAsc();
+
+    }
+
+    @Override
     public List<Exam> getAllExams() {
         return examRepository.findAll();
     }
@@ -73,4 +80,5 @@ public class ExamServiceImpl implements ExamService {
     public long getTotalExams() {
         return examRepository.count();
     }
+
 }
