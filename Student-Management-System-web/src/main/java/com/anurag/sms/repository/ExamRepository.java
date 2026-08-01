@@ -14,4 +14,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
             String subjectName,
             LocalDate examDate);
 
+    List<Exam> findTop5ByOrderByExamDateAsc();
 }
