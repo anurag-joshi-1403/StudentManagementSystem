@@ -33,4 +33,5 @@ public interface ExamService {
     // Dashboard Count
     long getTotalExams();
 
+    List<Exam> getUpcomingExams();
 }
