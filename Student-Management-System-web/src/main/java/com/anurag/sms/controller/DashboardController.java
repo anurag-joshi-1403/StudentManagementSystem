@@ -16,52 +16,65 @@ import com.anurag.sms.service.TeacherService;
 @Controller
 public class DashboardController {
 
-    private final StudentService studentService;
-    private final TeacherService teacherService;
-    private final CourseService courseService;
-    private final SubjectService subjectService;
-    private final FeeService feeService;
-    private final EnrollmentService enrollmentService;
-    private final AttendanceService attendanceService;
-    private final ExamService examService;
+        private final StudentService studentService;
+        private final TeacherService teacherService;
+        private final CourseService courseService;
+        private final SubjectService subjectService;
+        private final FeeService feeService;
+        private final EnrollmentService enrollmentService;
+        private final AttendanceService attendanceService;
+        private final ExamService examService;
 
-    public DashboardController(
-            StudentService studentService,
-            TeacherService teacherService,
-            CourseService courseService,
-            SubjectService subjectService,
-            FeeService feeService,
-            EnrollmentService enrollmentService,
-            AttendanceService attendanceService,
-            ExamService examService) {
+        public DashboardController(
+                        StudentService studentService,
+                        TeacherService teacherService,
+                        CourseService courseService,
+                        SubjectService subjectService,
+                        FeeService feeService,
+                        EnrollmentService enrollmentService,
+                        AttendanceService attendanceService,
+                        ExamService examService) {
 
-        this.studentService = studentService;
-        this.teacherService = teacherService;
-        this.courseService = courseService;
-        this.subjectService = subjectService;
-        this.feeService = feeService;
-        this.enrollmentService = enrollmentService;
-        this.attendanceService = attendanceService;
-        this.examService = examService;
+                this.studentService = studentService;
+                this.teacherService = teacherService;
+                this.courseService = courseService;
+                this.subjectService = subjectService;
+                this.feeService = feeService;
+                this.enrollmentService = enrollmentService;
+                this.attendanceService = attendanceService;
+                this.examService = examService;
 
-        System.out.println("===== DashboardController Loaded =====");
-    }
+                System.out.println("===== DashboardController Loaded =====");
+        }
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
+        @GetMapping("/test-dashboard")
+        public String dashboard(Model model) {
 
-        model.addAttribute("totalStudents", studentService.getTotalStudents());
-        model.addAttribute("maleStudents", studentService.getMaleStudents());
-        model.addAttribute("femaleStudents", studentService.getFemaleStudents());
+                model.addAttribute("totalStudents", studentService.getTotalStudents());
+                model.addAttribute("maleStudents", studentService.getMaleStudents());
+                model.addAttribute("femaleStudents", studentService.getFemaleStudents());
 
-        model.addAttribute("totalTeachers", teacherService.getTotalTeachers());
-        model.addAttribute("totalCourses", courseService.getTotalCourses());
-        model.addAttribute("totalSubjects", subjectService.getTotalSubjects());
-        model.addAttribute("totalFees", feeService.getTotalFees());
-        model.addAttribute("totalEnrollments", enrollmentService.getTotalEnrollments());
-        model.addAttribute("totalAttendance", attendanceService.getTotalAttendance());
-        model.addAttribute("totalExams", examService.getTotalExams());
+                model.addAttribute("totalTeachers", teacherService.getTotalTeachers());
+                model.addAttribute("totalCourses", courseService.getTotalCourses());
+                model.addAttribute("totalSubjects", subjectService.getTotalSubjects());
+                model.addAttribute("totalFees", feeService.getTotalFees());
+                model.addAttribute("totalEnrollments", enrollmentService.getTotalEnrollments());
+                model.addAttribute("totalAttendance", attendanceService.getTotalAttendance());
+                model.addAttribute("totalExams", examService.getTotalExams());
 
-        return "dashboard";
-    }
+                model.addAttribute("recentStudents",
+                                studentService.getRecentStudents());
+
+                model.addAttribute("recentFees",
+                                feeService.getRecentFees());
+
+                model.addAttribute("upcomingExams",
+                                examService.getUpcomingExams());
+
+                model.addAttribute("title", "Dashboard");
+
+                model.addAttribute("content", "dashboard/dashboard-content");
+
+                return "layout/layout";
+        }
 }
