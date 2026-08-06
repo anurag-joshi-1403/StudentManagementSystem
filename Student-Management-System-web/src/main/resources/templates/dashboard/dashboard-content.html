@@ -1,0 +1,15 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:replace="~{dashboard/welcome :: welcome}"></div>
+
+    <div th:replace="~{dashboard/stats-cards :: statsCards}"></div>
+
+    <div th:replace="~{dashboard/quick-actions :: quickActions}"></div>
+    <div class="dashboard-panels">
+      <div th:replace="~{dashboard/recent-students :: recentStudents}"></div>
+      <div th:replace="~{dashboard/recent-fees :: recentFees}"></div>
+      <div th:replace="~{dashboard/upcoming-exams :: upcomingExams}"></div>
+    </div>
+  </body>
+</html>
