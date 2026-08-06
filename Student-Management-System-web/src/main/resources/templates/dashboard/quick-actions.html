@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<section class="quick-section"
+         th:fragment="quickActions">
+
+    <h3 class="section-title">
+
+        Quick Actions
+
+    </h3>
+
+    <div class="quick-grid">
+
+        <a th:href="@{/student/new}" class="quick-btn blue">
+
+            <i class="bi bi-person-plus-fill"></i>
+
+            Add Student
+
+        </a>
+
+        <a th:href="@{/teacher/new}" class="quick-btn green">
+
+            <i class="bi bi-person-video3"></i>
+
+            Add Teacher
+
+        </a>
+
+        <a th:href="@{/course/new}" class="quick-btn orange">
+
+            <i class="bi bi-book-fill"></i>
+
+            Add Course
+
+        </a>
+
+        <a th:href="@{/subject/new}" class="quick-btn purple">
+
+            <i class="bi bi-bookmark-fill"></i>
+
+            Add Subject
+
+        </a>
+
+        <a th:href="@{/attendance/new}" class="quick-btn cyan">
+
+            <i class="bi bi-calendar-check-fill"></i>
+
+            Record Attendance
+
+        </a>
+
+        <a th:href="@{/fee/new}" class="quick-btn pink">
+
+            <i class="bi bi-cash-stack"></i>
+
+            Collect Fee
+
+        </a>
+
+        <a th:href="@{/exam/new}" class="quick-btn indigo">
+
+            <i class="bi bi-pencil-square"></i>
+
+            Schedule Exam
+
+        </a>
+
+    </div>
+
+</section>
+
+</body>
+
+</html>

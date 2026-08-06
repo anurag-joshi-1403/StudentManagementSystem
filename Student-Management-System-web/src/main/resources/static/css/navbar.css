@@ -1,0 +1,219 @@
+/* ==========================
+        NAVBAR
+========================== */
+
+.top-navbar{
+
+    height:75px;
+
+    background:linear-gradient(90deg,#4F46E5,#6366F1);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 35px;
+
+    border-radius:18px;
+
+    box-shadow:0 8px 20px rgba(79,70,229,.25);
+
+    margin-bottom:35px;
+
+}
+
+/* LEFT */
+
+.navbar-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.menu-btn{
+
+    width:48px;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.15);
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.menu-btn:hover{
+
+    background:white;
+
+    color:#4F46E5;
+
+}
+
+.search-box{
+
+    width:420px;
+
+    height:48px;
+
+    background:rgba(255,255,255,.15);
+
+    border-radius:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 18px;
+
+    color:white;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:none;
+
+    color:white;
+
+    margin-left:12px;
+
+}
+
+.search-box input::placeholder{
+
+    color:#E5E7EB;
+
+}
+
+/* RIGHT */
+
+.navbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:22px;
+
+}
+
+.nav-icon{
+
+    width:45px;
+
+    height:45px;
+
+    border:none;
+
+    background:rgba(255,255,255,.15);
+
+    color:white;
+
+    border-radius:12px;
+
+    position:relative;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.nav-icon:hover{
+
+    background:white;
+
+    color:#4F46E5;
+
+}
+
+.notify{
+
+    position:absolute;
+
+    top:-5px;
+
+    right:-5px;
+
+    width:18px;
+
+    height:18px;
+
+    background:#EF4444;
+
+    color:white;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:10px;
+
+}
+
+.profile{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    color:white;
+
+}
+
+.profile img{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid white;
+
+}
+
+.profile h6{
+
+    margin:0;
+
+    font-weight:600;
+
+}
+
+.profile small{
+
+    opacity:.85;
+
+}

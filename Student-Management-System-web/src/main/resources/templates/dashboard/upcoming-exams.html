@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="dashboard-panel" th:fragment="upcomingExams">
+
+    <div class="panel-header">
+        <h4>Upcoming Exams</h4>
+        <a th:href="@{/exam}">View All</a>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="student-item" th:each="exam : ${upcomingExams}">
+
+            <div class="student-avatar">
+
+                <i class="bi bi-calendar-event"></i>
+
+            </div>
+
+            <div class="student-info">
+
+                <h6 th:text="${exam.subject.subjectName}">
+                    Java Programming
+                </h6>
+
+                <small th:text="${exam.examDate}">
+                    10 Aug 2026
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

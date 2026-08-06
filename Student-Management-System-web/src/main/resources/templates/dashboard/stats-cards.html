@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div class="stats-grid" th:fragment="statsCards">
+
+    <!-- Students -->
+    <div class="stat-card blue">
+
+        <div class="icon-box blue-icon">
+            <i class="bi bi-people-fill"></i>
+        </div>
+
+        <div class="stat-info">
+            <h6>Students</h6>
+            <h2 th:text="${totalStudents}">0</h2>
+            <p class="up">
+                <i class="bi bi-arrow-up"></i>
+                12% this month
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Teachers -->
+    <div class="stat-card green">
+
+        <div class="icon-box green-icon">
+            <i class="bi bi-person-video3"></i>
+        </div>
+
+        <div class="stat-info">
+            <h6>Teachers</h6>
+            <h2 th:text="${totalTeachers}">0</h2>
+            <p class="up">
+                <i class="bi bi-arrow-up"></i>
+                8% this month
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Courses -->
+    <div class="stat-card orange">
+
+        <div class="icon-box orange-icon">
+            <i class="bi bi-book-fill"></i>
+        </div>
+
+        <div class="stat-info">
+            <h6>Courses</h6>
+            <h2 th:text="${totalCourses}">0</h2>
+            <p class="up">
+                <i class="bi bi-arrow-up"></i>
+                5% this month
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Subjects -->
+    <div class="stat-card pink">
+
+        <div class="icon-box pink-icon">
+            <i class="bi bi-bookmark-fill"></i>
+        </div>
+
+        <div class="stat-info">
+            <h6>Subjects</h6>
+            <h2 th:text="${totalSubjects}">0</h2>
+            <p class="down">
+                <i class="bi bi-arrow-down"></i>
+                2% this month
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Fees -->
+    <div class="stat-card cyan">
+
+        <div class="icon-box cyan-icon">
+            <i class="bi bi-cash-stack"></i>
+        </div>
+
+        <div class="stat-info">
+            <h6>Fees</h6>
+            <h2 th:text="${totalFees}">0</h2>
+            <p class="up">
+                <i class="bi bi-arrow-up"></i>
+                18% this month
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Enrollment -->
+    <div class="stat-card purple">
+
+        <div class="icon-box purple-icon">
+            <i class="bi bi-person-check-fill"></i>
+        </div>
+
+        <div class="stat-info">
+            <h6>Enrollments</h6>
+            <h2 th:text="${totalEnrollments}">0</h2>
+            <p class="up">
+                <i class="bi bi-arrow-up"></i>
+                10% this month
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Attendance -->
+    <div class="stat-card indigo">
+
+        <div class="icon-box indigo-icon">
+            <i class="bi bi-calendar-check-fill"></i>
+        </div>
+
+        <div class="stat-info">
+            <h6>Attendance</h6>
+            <h2 th:text="${totalAttendance}">0</h2>
+            <p class="up">
+                <i class="bi bi-arrow-up"></i>
+                7% this month
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Exams -->
+    <div class="stat-card magenta">
+
+        <div class="icon-box magenta-icon">
+            <i class="bi bi-pencil-square"></i>
+        </div>
+
+        <div class="stat-info">
+            <h6>Exams</h6>
+            <h2 th:text="${totalExams}">0</h2>
+            <p class="down">
+                <i class="bi bi-arrow-down"></i>
+                1% this month
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

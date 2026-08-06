@@ -1,0 +1,131 @@
+.welcome-section {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 35px;
+
+}
+
+.welcome-left h2 {
+
+    font-size: 38px;
+
+    font-weight: 700;
+
+    color: #1F2937;
+
+    margin-bottom: 10px;
+
+}
+
+.welcome-left span {
+
+    color: #4F46E5;
+
+}
+
+.welcome-left p {
+
+    color: #6B7280;
+
+    font-size: 16px;
+
+}
+
+.today-card {
+
+    background: white;
+
+    padding: 15px 24px;
+
+    border-radius: 16px;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    font-weight: 600;
+
+}
+
+.today-card i {
+
+    color: #4F46E5;
+
+    font-size: 22px;
+
+}
+
+/* ======================================
+        DATE CARD
+====================================== */
+
+.date-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:18px 25px;
+
+    border:1px solid #EEF2F7;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+
+}
+
+.date-icon{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:16px;
+
+    background:linear-gradient(135deg,#4F46E5,#6366F1);
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:24px;
+
+}
+
+.date-card h6{
+
+    margin:0;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    color:#111827;
+
+}
+
+.date-card small{
+
+    color:#6B7280;
+
+    font-size:14px;
+
+}

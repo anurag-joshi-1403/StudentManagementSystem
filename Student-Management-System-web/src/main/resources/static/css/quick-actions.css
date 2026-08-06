@@ -1,0 +1,237 @@
+/* ===================================
+        QUICK ACTIONS
+=================================== */
+
+.quick-section{
+
+    background:#ffffff;
+
+    border-radius:20px;
+
+    padding:25px;
+
+    margin-bottom:35px;
+
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
+
+    border:1px solid #edf2f7;
+
+}
+
+.section-title{
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#1F2937;
+
+    margin-bottom:25px;
+
+}
+
+.quick-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    gap:18px;
+
+}
+
+/* ========================= */
+
+.quick-btn{
+
+    text-decoration:none;
+
+    border-radius:16px;
+
+    padding:18px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-weight:600;
+
+    transition:.35s;
+
+    font-size:15px;
+
+    border:1px solid transparent;
+
+}
+
+/* ========================= */
+
+.quick-btn i{
+
+    font-size:28px;
+
+}
+
+/* ========================= */
+
+.quick-btn:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.12);
+
+}
+
+/* ========================= */
+
+.quick-btn.blue{
+
+    background:#EEF4FF;
+
+    color:#2563EB;
+
+}
+
+.quick-btn.green{
+
+    background:#ECFDF5;
+
+    color:#16A34A;
+
+}
+
+.quick-btn.orange{
+
+    background:#FFF7ED;
+
+    color:#EA580C;
+
+}
+
+.quick-btn.purple{
+
+    background:#F3E8FF;
+
+    color:#7C3AED;
+
+}
+
+.quick-btn.cyan{
+
+    background:#ECFEFF;
+
+    color:#0891B2;
+
+}
+
+.quick-btn.pink{
+
+    background:#FDF2F8;
+
+    color:#DB2777;
+
+}
+
+.quick-btn.indigo{
+
+    background:#EEF2FF;
+
+    color:#4F46E5;
+
+}
+
+/* ========================= */
+
+.quick-btn.blue:hover{
+
+    background:#2563EB;
+
+    color:white;
+
+}
+
+.quick-btn.green:hover{
+
+    background:#16A34A;
+
+    color:white;
+
+}
+
+.quick-btn.orange:hover{
+
+    background:#EA580C;
+
+    color:white;
+
+}
+
+.quick-btn.purple:hover{
+
+    background:#7C3AED;
+
+    color:white;
+
+}
+
+.quick-btn.cyan:hover{
+
+    background:#0891B2;
+
+    color:white;
+
+}
+
+.quick-btn.pink:hover{
+
+    background:#DB2777;
+
+    color:white;
+
+}
+
+.quick-btn.indigo:hover{
+
+    background:#4F46E5;
+
+    color:white;
+
+}
+
+/* ========================= */
+
+@media(max-width:1400px){
+
+    .quick-grid{
+
+        grid-template-columns:repeat(4,1fr);
+
+    }
+
+}
+
+@media(max-width:900px){
+
+    .quick-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:600px){
+
+    .quick-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

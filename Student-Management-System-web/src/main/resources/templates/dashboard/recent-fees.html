@@ -1,0 +1,25 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div class="dashboard-panel" th:fragment="recentFees">
+      <div class="panel-header">
+        <h4>Recent Fee Payments</h4>
+        <a th:href="@{/fee}">View All</a>
+      </div>
+
+      <div class="panel-body">
+        <div class="student-item" th:each="fee : ${recentFees}">
+          <div class="student-avatar">₹</div>
+
+          <div class="student-info">
+            <h6 th:text="${fee.student.firstName + ' ' + fee.student.lastName}">
+              Student
+            </h6>
+
+            <small th:text="${fee.amount}"> ₹5000 </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
