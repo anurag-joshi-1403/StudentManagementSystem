@@ -15,4 +15,6 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
 
     List<Fee> findTop5ByOrderByPaymentDateDesc();
 
+    void deleteByStudentId(Long studentId);
+
 }
