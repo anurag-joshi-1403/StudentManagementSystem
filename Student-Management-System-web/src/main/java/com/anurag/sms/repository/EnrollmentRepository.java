@@ -14,4 +14,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             String courseName,
             String subjectName);
 
+            void deleteByStudentId(Long studentId);
 }
