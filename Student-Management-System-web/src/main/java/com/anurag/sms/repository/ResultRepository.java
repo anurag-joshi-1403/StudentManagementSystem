@@ -14,4 +14,5 @@ public interface ResultRepository extends JpaRepository<Result, Long> {
             String grade,
             String resultStatus);
 
+            void deleteByStudentId(Long studentId);
 }
