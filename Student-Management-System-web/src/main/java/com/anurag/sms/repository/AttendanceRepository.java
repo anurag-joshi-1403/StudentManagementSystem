@@ -15,4 +15,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             String subjectName,
             LocalDate attendanceDate);
 
+    void deleteByStudentId(Long studentId);
+
 }
