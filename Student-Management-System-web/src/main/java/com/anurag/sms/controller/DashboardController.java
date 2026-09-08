@@ -47,7 +47,7 @@ public class DashboardController {
                 System.out.println("===== DashboardController Loaded =====");
         }
 
-        @GetMapping("/test-dashboard")
+        @GetMapping("/dashboard")
         public String dashboard(Model model) {
 
                 model.addAttribute("totalStudents", studentService.getTotalStudents());

@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 "/register",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**")
+                                "/images/**",
+                                "/uploads/**")
                         .permitAll()
 
                         // Every other request requires login
@@ -53,7 +54,7 @@ public class SecurityConfig {
 
                         .loginProcessingUrl("/login")
 
-                        .defaultSuccessUrl("/test-dashboard", true)
+                        .defaultSuccessUrl("/dashboard", true)
 
                         .failureUrl("/login?error=true")
 

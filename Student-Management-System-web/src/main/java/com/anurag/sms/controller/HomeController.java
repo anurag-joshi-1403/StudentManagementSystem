@@ -1,12 +1,14 @@
 package com.anurag.sms.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class HomeController {
+
+    // Redirect root URL "/" to the dashboard
     @GetMapping("/")
-    public String home(){
-        return "page1";
+    public String home() {
+        return "redirect:/dashboard";
     }
 }
