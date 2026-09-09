@@ -80,6 +80,13 @@
 
                   <td>
                     <a
+                      th:href="@{/course/view/{id}(id=${course.id})}"
+                      class="btn btn-info btn-sm text-white"
+                    >
+                      View
+                    </a>
+
+                    <a
                       th:href="@{/course/edit/{id}(id=${course.id})}"
                       class="btn btn-warning btn-sm"
                     >
