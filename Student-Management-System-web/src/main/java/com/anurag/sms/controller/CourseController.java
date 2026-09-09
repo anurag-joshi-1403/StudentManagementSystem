@@ -95,6 +95,13 @@ public class CourseController {
         return "course/course-form";
     }
 
+    @GetMapping("/course/view/{id}")
+    public String viewCourse(@PathVariable Long id, Model model) {
+        Course course = courseService.getCourseById(id);
+        model.addAttribute("course", course);
+        return "course/course-view";
+    }
+
     @GetMapping("/course/delete/{id}")
     public String deleteCourse(@PathVariable Long id) {
 
