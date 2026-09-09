@@ -2,10 +2,10 @@ package com.anurag.sms.controller;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,22 +22,22 @@ import com.anurag.sms.service.SubjectService;
 @RequestMapping("/attendance")
 public class AttendanceController {
 
-    @Autowired
-    private AttendanceService attendanceService;
+    private final AttendanceService attendanceService;
+    private final StudentService studentService;
+    private final SubjectService subjectService;
 
-    @Autowired
-    private StudentService studentService;
+    public AttendanceController(AttendanceService attendanceService,
+                                StudentService studentService,
+                                SubjectService subjectService) {
+        this.attendanceService = attendanceService;
+        this.studentService = studentService;
+        this.subjectService = subjectService;
+    }
 
-    @Autowired
-    private SubjectService subjectService;
-
-    // Display Attendance List
+    // Display Attendance List (defaults to paginated view)
     @GetMapping
     public String listAttendance(Model model) {
-
-        model.addAttribute("attendanceList", attendanceService.getAllAttendance());
-
-        return "attendance/attendance-list";
+        return findPaginated(1, model);
     }
 
     // Show Add Attendance Form
@@ -51,9 +51,18 @@ public class AttendanceController {
         return "attendance/attendance-form";
     }
 
-    // Save Attendance
+    // Save Attendance with validation
     @PostMapping("/save")
-    public String saveAttendance(@ModelAttribute("attendance") Attendance attendance) {
+    public String saveAttendance(
+            @jakarta.validation.Valid @ModelAttribute("attendance") Attendance attendance,
+            BindingResult result,
+            Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("students", studentService.getAllStudents());
+            model.addAttribute("subjects", subjectService.getAllSubjects());
+            return "attendance/attendance-form";
+        }
 
         attendanceService.saveAttendance(attendance);
 
@@ -76,10 +85,19 @@ public class AttendanceController {
         return "attendance/attendance-form";
     }
 
-    // Update Attendance
+    // Update Attendance with validation
     @PostMapping("/update/{id}")
-    public String updateAttendance(@PathVariable Long id,
-            @ModelAttribute Attendance attendance) {
+    public String updateAttendance(
+            @PathVariable Long id,
+            @jakarta.validation.Valid @ModelAttribute("attendance") Attendance attendance,
+            BindingResult result,
+            Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("students", studentService.getAllStudents());
+            model.addAttribute("subjects", subjectService.getAllSubjects());
+            return "attendance/attendance-form";
+        }
 
         attendance.setId(id);
 
@@ -108,9 +126,13 @@ public class AttendanceController {
             keyword = "";
         }
 
-        model.addAttribute(
-                "attendanceList",
-                attendanceService.searchAttendance(keyword, attendanceDate));
+        java.util.List<Attendance> searchResults = attendanceService.searchAttendance(keyword, attendanceDate);
+
+        model.addAttribute("attendanceList", searchResults);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("attendanceDate", attendanceDate);
+        model.addAttribute("totalItems", searchResults.size());
+        model.addAttribute("totalAttendance", attendanceService.getTotalAttendance());
 
         return "attendance/attendance-list";
     }
@@ -125,9 +147,10 @@ public class AttendanceController {
 
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("totalAttendance", attendanceService.getTotalAttendance());
         model.addAttribute("attendanceList", page.getContent());
 
         return "attendance/attendance-list";
     }
-
 }
