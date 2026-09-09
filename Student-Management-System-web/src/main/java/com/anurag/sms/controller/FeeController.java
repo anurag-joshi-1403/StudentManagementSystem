@@ -37,29 +37,35 @@ public class FeeController {
             @RequestParam(defaultValue = "1") int page,
             Model model) {
 
-        Page<Fee> feePage;
-
-        if (keyword == null || keyword.isBlank()) {
-            feePage = feeService.getFeeByPage(page);
-        } else {
-            // We'll implement paginated search later.
-            model.addAttribute("fees", feeService.searchFee(keyword));
+        if (keyword != null && !keyword.isBlank()) {
+            java.util.List<Fee> searchResults = feeService.searchFee(keyword);
+            model.addAttribute("fees", searchResults);
             model.addAttribute("keyword", keyword);
             model.addAttribute("currentPage", 1);
             model.addAttribute("totalPages", 1);
-            model.addAttribute("totalItems", feeService.searchFee(keyword).size());
-            model.addAttribute("totalFees", feeService.searchFee(keyword).size());
-
+            model.addAttribute("totalItems", searchResults.size());
+            model.addAttribute("totalFees", feeService.getTotalFees());
             return "fee/fee-list";
         }
 
+        Page<Fee> feePage = feeService.getFeeByPage(page);
         model.addAttribute("fees", feePage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", feePage.getTotalPages());
         model.addAttribute("totalItems", feePage.getTotalElements());
         model.addAttribute("totalFees", feeService.getTotalFees());
+        model.addAttribute("keyword", "");
 
         return "fee/fee-list";
+    }
+
+    // Search Fee mapping to handle /fee/search
+    @GetMapping("/search")
+    public String searchFee(
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            Model model) {
+        return listFees(keyword, page, model);
     }
 
     // Add New Fee Form
