@@ -2,134 +2,185 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <title>Fee Form</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${fee.id == null ? 'Collect Fee' : 'Edit Fee'} + ' | Student Management System'">Fee Form</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
   </head>
 
-  <body>
-    <div class="container mt-5">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h3>Fee Form</h3>
-        </div>
-
-        <div class="card-body">
-          <form
-            th:action="${fee.id == null} ? @{/fee/save} : @{/fee/update/{id}(id=${fee.id})}"
-            th:object="${fee}"
-            method="post"
-          >
-            <!-- Student -->
-
-            <div class="mb-3">
-              <label class="form-label">Student</label>
-
-              <select class="form-select" th:field="*{student}" required>
-                <option value="">Select Student</option>
-
-                <option
-                  th:each="student : ${students}"
-                  th:value="${student.id}"
-                  th:text="${student.firstName + ' ' + student.lastName}"
-                ></option>
-              </select>
+  <body class="bg-light">
+    <div class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white py-3">
+              <h3 class="mb-0 text-center">
+                <i class="bi bi-cash-stack me-2"></i>
+                <span th:text="${fee.id == null ? 'Collect / Add Fee Record' : 'Edit Fee Record'}">Fee Form</span>
+              </h3>
             </div>
 
-            <!-- Fee Type -->
+            <div class="card-body p-4">
+              <form
+                th:action="${fee.id == null} ? @{/fee/save} : @{/fee/update/{id}(id=${fee.id})}"
+                th:object="${fee}"
+                method="post"
+              >
+                <!-- Hidden ID on update -->
+                <input type="hidden" th:field="*{id}" />
 
-            <div class="mb-3">
-              <label class="form-label">Fee Type</label>
+                <!-- Student & Fee Type Row -->
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Student <span class="text-danger">*</span></label>
+                    <select
+                      class="form-select"
+                      th:field="*{student}"
+                      th:classappend="${#fields.hasErrors('student')} ? 'is-invalid'"
+                      required
+                    >
+                      <option value="">-- Select Student --</option>
+                      <option
+                        th:each="student : ${students}"
+                        th:value="${student.id}"
+                        th:text="${student.firstName + ' ' + student.lastName + ' (ID: ' + student.id + ')'}"
+                      ></option>
+                    </select>
+                    <div
+                      class="invalid-feedback"
+                      th:if="${#fields.hasErrors('student')}"
+                      th:errors="*{student}"
+                    ></div>
+                  </div>
 
-              <select class="form-select" th:field="*{feeType}" required>
-                <option value="">Select Fee Type</option>
-                <option value="Tuition">Tuition</option>
-                <option value="Library">Library</option>
-                <option value="Hostel">Hostel</option>
-                <option value="Transport">Transport</option>
-                <option value="Examination">Examination</option>
-                <option value="Miscellaneous">Miscellaneous</option>
-              </select>
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Fee Type <span class="text-danger">*</span></label>
+                    <select
+                      class="form-select"
+                      th:field="*{feeType}"
+                      th:classappend="${#fields.hasErrors('feeType')} ? 'is-invalid'"
+                      required
+                    >
+                      <option value="">-- Select Fee Type --</option>
+                      <option value="Tuition">Tuition Fee</option>
+                      <option value="Library">Library Fee</option>
+                      <option value="Hostel">Hostel Fee</option>
+                      <option value="Transport">Transport Fee</option>
+                      <option value="Examination">Examination Fee</option>
+                      <option value="Miscellaneous">Miscellaneous</option>
+                    </select>
+                    <div
+                      class="invalid-feedback"
+                      th:if="${#fields.hasErrors('feeType')}"
+                      th:errors="*{feeType}"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Amount & Due Date Row -->
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Amount (₹) <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text">₹</span>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        class="form-control"
+                        th:field="*{amount}"
+                        placeholder="e.g. 15000.00"
+                        th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid'"
+                        required
+                      />
+                    </div>
+                    <div
+                      class="invalid-feedback d-block"
+                      th:if="${#fields.hasErrors('amount')}"
+                      th:errors="*{amount}"
+                    ></div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Due Date <span class="text-danger">*</span></label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      th:field="*{dueDate}"
+                      th:classappend="${#fields.hasErrors('dueDate')} ? 'is-invalid'"
+                      required
+                    />
+                    <div
+                      class="invalid-feedback"
+                      th:if="${#fields.hasErrors('dueDate')}"
+                      th:errors="*{dueDate}"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Payment Status & Payment Date Row -->
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Payment Status <span class="text-danger">*</span></label>
+                    <select
+                      class="form-select"
+                      th:field="*{paymentStatus}"
+                      th:classappend="${#fields.hasErrors('paymentStatus')} ? 'is-invalid'"
+                      required
+                    >
+                      <option value="">-- Select Status --</option>
+                      <option value="Paid">Paid</option>
+                      <option value="Pending">Pending</option>
+                    </select>
+                    <div
+                      class="invalid-feedback"
+                      th:if="${#fields.hasErrors('paymentStatus')}"
+                      th:errors="*{paymentStatus}"
+                    ></div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Payment Date</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      th:field="*{paymentDate}"
+                    />
+                    <small class="text-muted">Leave blank if pending</small>
+                  </div>
+                </div>
+
+                <!-- Payment Method Row -->
+                <div class="mb-4">
+                  <label class="form-label fw-semibold">Payment Method</label>
+                  <select class="form-select" th:field="*{paymentMethod}">
+                    <option value="">-- Select Method (Optional) --</option>
+                    <option value="Cash">Cash</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                  </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                  <a th:href="@{/fee}" class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                  </a>
+                  <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-circle me-1"></i>Save Fee Record
+                  </button>
+                </div>
+              </form>
             </div>
-
-            <!-- Amount -->
-
-            <div class="mb-3">
-              <label class="form-label">Amount</label>
-
-              <input
-                type="number"
-                step="0.01"
-                class="form-control"
-                th:field="*{amount}"
-                placeholder="Enter Amount"
-                required
-              />
-            </div>
-
-            <!-- Due Date -->
-
-            <div class="mb-3">
-              <label class="form-label">Due Date</label>
-
-              <input
-                type="date"
-                class="form-control"
-                th:field="*{dueDate}"
-                required
-              />
-            </div>
-
-            <!-- Payment Date -->
-
-            <div class="mb-3">
-              <label class="form-label">Payment Date</label>
-
-              <input
-                type="date"
-                class="form-control"
-                th:field="*{paymentDate}"
-              />
-            </div>
-
-            <!-- Payment Status -->
-
-            <div class="mb-3">
-              <label class="form-label">Payment Status</label>
-
-              <select class="form-select" th:field="*{paymentStatus}" required>
-                <option value="">Select Status</option>
-                <option value="Paid">Paid</option>
-                <option value="Pending">Pending</option>
-              </select>
-            </div>
-
-            <!-- Payment Method -->
-
-            <div class="mb-3">
-              <label class="form-label">Payment Method</label>
-
-              <select class="form-select" th:field="*{paymentMethod}">
-                <option value="">Select Payment Method</option>
-                <option value="Cash">Cash</option>
-                <option value="UPI">UPI</option>
-                <option value="Credit Card">Credit Card</option>
-                <option value="Debit Card">Debit Card</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-              </select>
-            </div>
-
-            <!-- Buttons -->
-
-            <div class="d-flex justify-content-between">
-              <a th:href="@{/fee}" class="btn btn-secondary"> Back </a>
-
-              <button type="submit" class="btn btn-success">Save Fee</button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
