@@ -26,9 +26,12 @@ import jakarta.validation.Valid;
 @Controller
 public class StudentController {
     private final StudentService studentService;
+    private final com.anurag.sms.service.CourseService courseService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService,
+                             com.anurag.sms.service.CourseService courseService) {
         this.studentService = studentService;
+        this.courseService = courseService;
     }
 
     @GetMapping("/student")
@@ -62,44 +65,53 @@ public class StudentController {
         Student student = new Student();
 
         model.addAttribute("student", student);
+        model.addAttribute("courses", courseService.getAllCourses());
         return "student/student-form";
     }
 
     @PostMapping("/student")
     public String saveStudent(
-
             @Valid @ModelAttribute("student") Student student,
             BindingResult result,
-
-            @RequestParam("photoFile") MultipartFile photoFile
-
+            @RequestParam("photoFile") MultipartFile photoFile,
+            Model model
     ) throws IOException {
 
         if (result.hasErrors()) {
+            model.addAttribute("courses", courseService.getAllCourses());
             return "student/student-form";
         }
 
-        // Duplicate Email Validation
-        if (studentService.existsByEmail(student.getEmail())) {
+        // Duplicate Email Validation (only flag if email belongs to another student)
+        boolean emailClash = false;
+        if (student.getId() == null) {
+            emailClash = studentService.existsByEmail(student.getEmail());
+        } else {
+            Student existing = studentService.getStudentById(student.getId());
+            if (existing != null && !existing.getEmail().equalsIgnoreCase(student.getEmail())) {
+                emailClash = studentService.existsByEmail(student.getEmail());
+            }
+        }
 
+        if (emailClash) {
             result.rejectValue(
                     "email",
                     "error.student",
                     "Email already exists");
-
+            model.addAttribute("courses", courseService.getAllCourses());
             return "student/student-form";
         }
 
-        // Photo Upload
+        // Photo Upload Handling
         if (!photoFile.isEmpty()) {
-
-            String fileName = photoFile.getOriginalFilename();
-
-            Path uploadPath = Paths.get("uploads/student-images");
+            String uploadDir = "uploads/student-images/";
+            Path uploadPath = Paths.get(uploadDir);
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
+
+            String fileName = System.currentTimeMillis() + "_" + photoFile.getOriginalFilename();
 
             Files.copy(
                     photoFile.getInputStream(),
@@ -107,6 +119,14 @@ public class StudentController {
                     StandardCopyOption.REPLACE_EXISTING);
 
             student.setPhoto(fileName);
+        } else {
+            // Keep existing photo on edit if no new file was uploaded
+            if (student.getId() != null) {
+                Student existing = studentService.getStudentById(student.getId());
+                if (existing != null) {
+                    student.setPhoto(existing.getPhoto());
+                }
+            }
         }
 
         studentService.saveStudent(student);
@@ -118,6 +138,7 @@ public class StudentController {
     public String editStudent(@PathVariable Long id, Model model) {
         Student student = studentService.getStudentById(id);
         model.addAttribute("student", student);
+        model.addAttribute("courses", courseService.getAllCourses());
         return "student/student-form";
     }
 
