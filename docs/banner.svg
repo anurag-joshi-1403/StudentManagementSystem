@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="1200" height="340" role="img" aria-label="Student Management System">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="cap" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#c4b5fd"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0 L0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.04" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="340" fill="url(#bg)"/>
+  <rect width="1200" height="340" fill="url(#grid)"/>
+
+  <circle cx="1080" cy="70" r="150" fill="#6366f1" fill-opacity="0.13"/>
+  <circle cx="150" cy="300" r="120" fill="#38bdf8" fill-opacity="0.09"/>
+
+  <g transform="translate(92, 104)">
+    <path d="M60 0 L120 30 L60 60 L0 30 Z" fill="url(#cap)"/>
+    <path d="M28 44 L28 78 Q60 100 92 78 L92 44 L60 60 Z" fill="#a5b4fc" fill-opacity="0.85"/>
+    <path d="M120 30 L120 74" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="120" cy="80" r="8" fill="#fbbf24"/>
+  </g>
+
+  <text x="262" y="128" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="54" font-weight="700" fill="#f8fafc">
+    Student Management System
+  </text>
+
+  <rect x="262" y="146" width="160" height="4" rx="2" fill="url(#accent)"/>
+
+  <text x="262" y="192" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="23" fill="#cbd5e1">
+    A full-stack academic ERP built with Spring Boot, Thymeleaf and MySQL
+  </text>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="17" font-weight="600">
+    <rect x="262" y="222" width="122" height="38" rx="19" fill="#ffffff" fill-opacity="0.10" stroke="#7dd3fc" stroke-opacity="0.45"/>
+    <text x="323" y="247" fill="#7dd3fc" text-anchor="middle">Java 21</text>
+
+    <rect x="396" y="222" width="152" height="38" rx="19" fill="#ffffff" fill-opacity="0.10" stroke="#86efac" stroke-opacity="0.45"/>
+    <text x="472" y="247" fill="#86efac" text-anchor="middle">Spring Boot 3</text>
+
+    <rect x="560" y="222" width="136" height="38" rx="19" fill="#ffffff" fill-opacity="0.10" stroke="#fcd34d" stroke-opacity="0.45"/>
+    <text x="628" y="247" fill="#fcd34d" text-anchor="middle">Thymeleaf</text>
+
+    <rect x="708" y="222" width="110" height="38" rx="19" fill="#ffffff" fill-opacity="0.10" stroke="#f0abfc" stroke-opacity="0.45"/>
+    <text x="763" y="247" fill="#f0abfc" text-anchor="middle">MySQL</text>
+
+    <rect x="830" y="222" width="188" height="38" rx="19" fill="#ffffff" fill-opacity="0.10" stroke="#fda4af" stroke-opacity="0.45"/>
+    <text x="924" y="247" fill="#fda4af" text-anchor="middle">Spring Security</text>
+  </g>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" text-anchor="middle">
+    <text x="1062" y="212" font-size="40" font-weight="700" fill="#f8fafc">10</text>
+    <text x="1062" y="234" font-size="13" fill="#94a3b8" letter-spacing="1">MODULES</text>
+    <text x="1062" y="272" font-size="40" font-weight="700" fill="#f8fafc">66</text>
+    <text x="1062" y="294" font-size="13" fill="#94a3b8" letter-spacing="1">ENDPOINTS</text>
+  </g>
+</svg>
