@@ -20,6 +20,14 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 
     List<Exam> findTop5ByOrderByExamDateAsc();
 
+    // Dashboard: exams still ahead of us, rather than the whole table
+    long countByExamDateGreaterThanEqual(LocalDate date);
+
+    // The soonest exams that have not happened yet. The unfiltered
+    // findTop5ByOrderByExamDateAsc above returns the OLDEST five rows,
+    // which made the "Upcoming Exams" panel list past exams.
+    List<Exam> findTop5ByExamDateGreaterThanEqualOrderByExamDateAsc(LocalDate date);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM Exam e WHERE e.subject.id = :subjectId")

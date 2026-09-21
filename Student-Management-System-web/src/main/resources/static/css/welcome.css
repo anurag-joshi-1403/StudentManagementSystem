@@ -1,131 +1,89 @@
+/* ===========================================================
+   Welcome strip
+
+   NOTE: the previous version of this file targeted .welcome-left,
+   .today-card and .date-card — none of which existed in any
+   template, so every rule here was dead. welcome.html now renders
+   the markup these selectors were always written for.
+   =========================================================== */
+
 .welcome-section {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    margin-bottom: 35px;
-
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
 }
 
-.welcome-left h2 {
-
-    font-size: 38px;
-
-    font-weight: 700;
-
-    color: #1F2937;
-
-    margin-bottom: 10px;
-
+.welcome-left h1 {
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
-.welcome-left span {
-
-    color: #4F46E5;
-
+.welcome-left h1 span {
+  color: var(--accent);
 }
 
 .welcome-left p {
-
-    color: #6B7280;
-
-    font-size: 16px;
-
+  margin-block-start: var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
 }
 
-.today-card {
+/* --- Live date / time card ------------------------------- */
 
-    background: white;
-
-    padding: 15px 24px;
-
-    border-radius: 16px;
-
-    box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-    font-weight: 600;
-
+.date-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-.today-card i {
-
-    color: #4F46E5;
-
-    font-size: 22px;
-
+.date-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 20px;
 }
 
-/* ======================================
-        DATE CARD
-====================================== */
-
-.date-card{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:18px;
-
-    background:#fff;
-
-    border-radius:18px;
-
-    padding:18px 25px;
-
-    border:1px solid #EEF2F7;
-
-    box-shadow:0 8px 25px rgba(0,0,0,.05);
-
+.date-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
 }
 
-.date-icon{
-
-    width:58px;
-
-    height:58px;
-
-    border-radius:16px;
-
-    background:linear-gradient(135deg,#4F46E5,#6366F1);
-
-    color:#fff;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:24px;
-
+.date-meta strong {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
-.date-card h6{
-
-    margin:0;
-
-    font-size:17px;
-
-    font-weight:700;
-
-    color:#111827;
-
+.date-meta small {
+  color: var(--text-secondary);
+  /* Tabular figures stop the clock jittering as digits change. */
+  font-variant-numeric: tabular-nums;
 }
 
-.date-card small{
+@media (max-width: 600px) {
+  .welcome-section {
+    align-items: flex-start;
+  }
 
-    color:#6B7280;
+  .welcome-left h1 {
+    font-size: var(--fs-xl);
+  }
 
-    font-size:14px;
-
+  .date-card {
+    inline-size: 100%;
+  }
 }

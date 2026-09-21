@@ -1,193 +1,208 @@
-/* ===========================
+/* ===========================================================
    Sidebar
-=========================== */
+   Sits as a grid child of .app-shell — no fixed positioning and
+   no hardcoded content offset.
+   =========================================================== */
 
-.sidebar{
-
-    width:260px;
-
-    height:100vh;
-
-    position:fixed;
-
-    top:0;
-
-    left:0;
-
-    background:#0F172A;
-
-    display:flex;
-
-    flex-direction:column;
-
-    color:white;
-
-    box-shadow:5px 0 18px rgba(0,0,0,.15);
-
+.sidebar {
+  position: sticky;
+  inset-block-start: 0;
+  display: flex;
+  flex-direction: column;
+  block-size: 100dvh;
+  background: #0d1424;
+  color: #e2e8f0;
+  border-inline-end: 1px solid rgb(255 255 255 / 0.06);
 }
 
-/* ===========================
-   Logo
-=========================== */
+/* --- Logo ------------------------------------------------- */
 
-.sidebar-logo{
-
-    height:72px;
-
-    display:flex;
-
-    align-items:center;
-
-    padding:0 24px;
-
-    gap:12px;
-
-    border-bottom:1px solid rgba(255,255,255,.08);
-
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5);
+  border-block-end: 1px solid rgb(255 255 255 / 0.07);
 }
 
-.sidebar-logo i{
-
-    font-size:28px;
-
-    color:#8B5CF6;
-
+.sidebar-logo-mark {
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-size: 20px;
 }
 
-.sidebar-logo span{
-
-    font-size:20px;
-
-    font-weight:700;
-
+.sidebar-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-inline-size: 0;
 }
 
-/* ===========================
-   Menu Title
-=========================== */
-
-.menu-title{
-
-    padding:22px 24px 10px;
-
-    color:#94A3B8;
-
-    font-size:13px;
-
-    font-weight:600;
-
-    letter-spacing:2px;
-
+.sidebar-logo-text strong {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: #fff;
 }
 
-/* ===========================
-   Menu
-=========================== */
-
-.sidebar-menu{
-
-    list-style:none;
-
-    margin:0;
-
-    padding:0 14px;
-
+.sidebar-logo-text small {
+  font-size: var(--fs-xs);
+  color: #94a3b8;
 }
 
-.sidebar-menu li{
+/* --- Navigation ------------------------------------------- */
 
-    margin-bottom:8px;
-
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding-block: var(--space-4);
+  /* Keeps the scroll thumb from flashing the default light colour
+     against the dark panel. */
+  scrollbar-color: #334155 transparent;
+  scrollbar-width: thin;
 }
 
-.sidebar-menu a{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:16px;
-
-    padding:14px 18px;
-
-    border-radius:14px;
-
-    text-decoration:none;
-
-    color:#CBD5E1;
-
-    transition:.30s;
-
-    font-size:15px;
-
-    font-weight:500;
-
+.menu-title {
+  padding-inline: var(--space-5);
+  padding-block-end: var(--space-2);
+  color: #7c8aa3;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.sidebar-menu a i{
-
-    font-size:19px;
-
-    width:22px;
-
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-inline: var(--space-3);
 }
 
-.sidebar-menu a:hover{
-
-    background:#4338CA;
-
-    color:white;
-
-    transform:translateX(5px);
-
+.sidebar-menu a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-sm);
+  color: #b3c0d4;
+  font-size: var(--fs-base);
+  font-weight: 500;
+  /* Explicit properties, not `all` — the old `transition: .3s`
+     animated layout properties too. */
+  transition: background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 }
 
-.sidebar-menu a.active{
-
-    background:linear-gradient(90deg,#4F46E5,#6366F1);
-
-    color:white;
-
+.sidebar-menu a i {
+  inline-size: 20px;
+  flex-shrink: 0;
+  font-size: 17px;
+  text-align: center;
 }
 
-/* ===========================
-   Footer
-=========================== */
-
-.sidebar-footer{
-
-    margin-top:auto;
-
-    padding:20px 14px;
-
-    border-top:1px solid rgba(255,255,255,.08);
-
+.sidebar-menu a:hover {
+  background: rgb(255 255 255 / 0.07);
+  color: #fff;
 }
 
-.sidebar-footer a{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:16px;
-
-    padding:14px 18px;
-
-    border-radius:14px;
-
-    background:#DC2626;
-
-    color:white;
-
-    text-decoration:none;
-
-    transition:.3s;
-
+.sidebar-menu a.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
 }
 
-.sidebar-footer a:hover{
+.sidebar-menu a.active::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--space-3) * -1);
+  inset-block: 8px;
+  inline-size: 3px;
+  border-start-end-radius: 3px;
+  border-end-end-radius: 3px;
+  background: #a5b4fc;
+}
 
-    background:#EF4444;
+.sidebar-menu a:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 2px;
+}
 
+/* --- Logout ----------------------------------------------- */
+
+.sidebar-footer {
+  padding: var(--space-4) var(--space-3);
+  border-block-start: 1px solid rgb(255 255 255 / 0.07);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 10px var(--space-4);
+  border-radius: var(--radius-sm);
+  background: rgb(239 68 68 / 0.12);
+  color: #fca5a5;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  transition: background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+  color: #fff;
+}
+
+.logout-btn:focus-visible {
+  outline: 2px solid #fca5a5;
+  outline-offset: 2px;
+}
+
+/* --- Narrow viewports ------------------------------------- */
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: static;
+    block-size: auto;
+    border-inline-end: none;
+    border-block-end: 1px solid rgb(255 255 255 / 0.07);
+  }
+
+  .sidebar-nav {
+    padding-block: var(--space-3);
+  }
+
+  .menu-title {
+    display: none;
+  }
+
+  /* Horizontal scroller instead of a tall stack pushing the
+     dashboard off-screen. */
+  .sidebar-menu {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: var(--space-2);
+    padding-block-end: var(--space-2);
+    scrollbar-width: none;
+  }
+
+  .sidebar-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-menu a {
+    white-space: nowrap;
+  }
+
+  .sidebar-menu a.active::before {
+    display: none;
+  }
 }

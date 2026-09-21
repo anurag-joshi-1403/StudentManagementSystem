@@ -1,5 +1,6 @@
 package com.anurag.sms.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,14 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
             String paymentStatus);
 
     List<Fee> findTop5ByOrderByPaymentDateDesc();
+
+    // Dashboard: total money collected, as opposed to the record count
+    // returned by count(). COALESCE keeps an empty table at zero.
+    @Query("SELECT COALESCE(SUM(f.amount), 0) FROM Fee f")
+    BigDecimal sumAllAmounts();
+
+    // Dashboard: "Paid" / "Pending" split
+    long countByPaymentStatus(String paymentStatus);
 
     @Transactional
     @Modifying

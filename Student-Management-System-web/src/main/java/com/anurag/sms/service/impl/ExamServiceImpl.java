@@ -23,8 +23,11 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<Exam> getUpcomingExams() {
 
-        return examRepository.findTop5ByOrderByExamDateAsc();
-
+        // Must agree with getUpcomingExamCount(): without the date filter
+        // the dashboard showed "0 upcoming" on the stat card while the
+        // panel beneath it listed exams that had already happened.
+        return examRepository
+                .findTop5ByExamDateGreaterThanEqualOrderByExamDateAsc(LocalDate.now());
     }
 
     @Override
@@ -79,6 +82,11 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public long getTotalExams() {
         return examRepository.count();
+    }
+
+    @Override
+    public long getUpcomingExamCount() {
+        return examRepository.countByExamDateGreaterThanEqual(LocalDate.now());
     }
 
 }

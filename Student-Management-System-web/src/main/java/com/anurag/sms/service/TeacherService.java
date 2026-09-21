@@ -26,4 +26,7 @@ public interface TeacherService {
 
     long getTotalTeachers();
 
+    // Dashboard: how many distinct departments the faculty spans
+    long getDepartmentCount();
+
 }

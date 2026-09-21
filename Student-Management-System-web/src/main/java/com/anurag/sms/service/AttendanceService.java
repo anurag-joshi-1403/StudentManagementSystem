@@ -32,4 +32,7 @@ public interface AttendanceService {
 
     // Dashboard Count
     long getTotalAttendance();
+
+    // Dashboard: records in a given status ("Present" / "Absent" / "Late")
+    long countByStatus(String status);
 }

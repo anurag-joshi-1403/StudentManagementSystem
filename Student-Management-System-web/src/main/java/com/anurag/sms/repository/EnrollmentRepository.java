@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.anurag.sms.entity.Attendance;
 import com.anurag.sms.entity.Enrollment;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
@@ -19,7 +18,10 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             String courseName,
             String subjectName);
 
-    List<Attendance> findTop5ByOrderByAttendanceDateDesc();
+    // Dashboard: how many individual students appear in the enrollment
+    // table, as opposed to the total number of enrollment rows.
+    @Query("SELECT COUNT(DISTINCT e.student.id) FROM Enrollment e")
+    long countDistinctStudents();
 
     @Transactional
     @Modifying
@@ -28,6 +30,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM Attendance a WHERE a.subject.id = :subjectId")
+    @Query("DELETE FROM Enrollment e WHERE e.subject.id = :subjectId")
     void deleteBySubjectId(@Param("subjectId") Long subjectId);
 }

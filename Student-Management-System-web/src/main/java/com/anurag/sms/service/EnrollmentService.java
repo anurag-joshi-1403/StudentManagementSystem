@@ -32,4 +32,7 @@ public interface EnrollmentService {
     // Dashboard Count
     long getTotalEnrollments();
 
+    // Dashboard: distinct students appearing in the enrollment table
+    long getEnrolledStudentCount();
+
 }

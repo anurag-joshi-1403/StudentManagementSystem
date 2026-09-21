@@ -71,4 +71,9 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository.count();
     }
 
+    @Override
+    public long getDepartmentCount() {
+        return teacherRepository.countDistinctDepartments();
+    }
+
 }

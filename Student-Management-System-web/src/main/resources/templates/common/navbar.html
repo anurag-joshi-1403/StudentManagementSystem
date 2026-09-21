@@ -1,45 +1,66 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <body>
-    <nav class="top-navbar" th:fragment="navbar">
-      <!-- Left Side -->
-
+    <header class="top-navbar" th:fragment="navbar">
       <div class="navbar-left">
-        <button class="menu-btn">
-          <i class="bi bi-list"></i>
-        </button>
-
-        <div class="search-box">
-          <i class="bi bi-search"></i>
-
-          <input type="text" placeholder="Search anything..." />
-        </div>
+        <form class="search-box" th:action="@{/student/search}" method="get" role="search">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <label class="visually-hidden" for="globalSearch">Search students</label>
+          <input
+            id="globalSearch"
+            type="search"
+            name="keyword"
+            placeholder="Search students by name, email or course..."
+            autocomplete="off"
+          />
+        </form>
       </div>
-
-      <!-- Right Side -->
 
       <div class="navbar-right">
         <div class="notification-wrapper">
-          <button class="nav-icon" id="notificationBtn">
-            <i class="bi bi-bell"></i>
-
-            <span class="notify">3</span>
+          <button
+            class="nav-icon"
+            id="notificationBtn"
+            type="button"
+            aria-label="Notifications"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-bell" aria-hidden="true"></i>
+            <span class="notify" aria-hidden="true">3</span>
           </button>
 
           <div id="notificationDropdown">
             <div th:replace="~{common/notification :: notification}"></div>
           </div>
         </div>
-        <div class="profile">
-          <img th:src="@{/images/profile.jpg}" alt="Profile" />
 
-          <div>
-            <h6>Admin User</h6>
-
-            <small>Administrator</small>
-          </div>
+        <!--/* Bound to the authenticated principal rather than a hardcoded
+             name. th:with resolves it once, with a fallback so the
+             fragment still renders outside a security context. */-->
+        <div
+          class="profile"
+          th:with="userName=${#authentication != null ? #authentication.name : 'Guest'}"
+        >
+          <span
+            class="profile-avatar"
+            aria-hidden="true"
+            th:text="${#strings.toUpperCase(#strings.substring(userName, 0, 1))}"
+            >A</span
+          >
+          <span class="profile-meta">
+            <strong th:text="${userName}">Guest</strong>
+            <small
+              th:text="${#authentication != null
+                         ? #strings.replace(
+                             #strings.listJoin(#authentication.authorities, ', '),
+                             'ROLE_', '')
+                         : 'Not signed in'}"
+              >Signed in</small
+            >
+          </span>
         </div>
       </div>
-    </nav>
+    </header>
   </body>
 </html>

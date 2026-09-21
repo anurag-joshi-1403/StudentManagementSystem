@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <!--/* Chart data travels on data-* attributes rather than an inline
+         th:inline="javascript" block: no escaping pitfalls, and the
+         script stays external and CSP-friendly. */-->
+    <section class="charts-grid" th:fragment="charts" aria-label="Analytics">
+      <!-- Gender distribution -->
+      <article class="chart-card">
+        <header class="chart-header">
+          <h2 class="section-title">Student Distribution</h2>
+          <p class="chart-subtitle">By gender</p>
+        </header>
+
+        <div class="chart-body">
+          <div
+            class="chart-canvas-wrap"
+            id="genderChartData"
+            th:attr="
+              data-male=${maleStudents},
+              data-female=${femaleStudents},
+              data-other=${otherStudents}"
+          >
+            <canvas id="genderChart" role="img"
+                    aria-labelledby="genderChartSummary"></canvas>
+          </div>
+
+          <!--/* A <canvas> is opaque to assistive tech, so the same facts
+               are provided as text. */-->
+          <p class="visually-hidden" id="genderChartSummary">
+            Student gender distribution:
+            <span th:text="${maleStudents}">0</span> male,
+            <span th:text="${femaleStudents}">0</span> female,
+            <span th:text="${otherStudents}">0</span> other or unspecified,
+            out of <span th:text="${totalStudents}">0</span> students in total.
+          </p>
+
+          <ul class="chart-legend">
+            <li>
+              <span class="swatch swatch-male" aria-hidden="true"></span>
+              Male
+              <strong th:text="${maleStudents}">0</strong>
+            </li>
+            <li>
+              <span class="swatch swatch-female" aria-hidden="true"></span>
+              Female
+              <strong th:text="${femaleStudents}">0</strong>
+            </li>
+            <li>
+              <span class="swatch swatch-other" aria-hidden="true"></span>
+              Other
+              <strong th:text="${otherStudents}">0</strong>
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- Records per module -->
+      <article class="chart-card">
+        <header class="chart-header">
+          <h2 class="section-title">Records by Module</h2>
+          <p class="chart-subtitle">Total rows held in each module</p>
+        </header>
+
+        <div
+          class="chart-canvas-wrap chart-canvas-wrap-bar"
+          id="moduleChartData"
+          th:attr="
+            data-students=${totalStudents},
+            data-teachers=${totalTeachers},
+            data-courses=${totalCourses},
+            data-subjects=${totalSubjects},
+            data-enrollments=${totalEnrollments},
+            data-attendance=${totalAttendance},
+            data-exams=${totalExams}"
+        >
+          <canvas id="moduleChart" role="img"
+                  aria-labelledby="moduleChartSummary"></canvas>
+        </div>
+
+        <p class="visually-hidden" id="moduleChartSummary">
+          Record counts by module:
+          <span th:text="${totalStudents}">0</span> students,
+          <span th:text="${totalTeachers}">0</span> teachers,
+          <span th:text="${totalCourses}">0</span> courses,
+          <span th:text="${totalSubjects}">0</span> subjects,
+          <span th:text="${totalEnrollments}">0</span> enrollments,
+          <span th:text="${totalAttendance}">0</span> attendance records,
+          <span th:text="${totalExams}">0</span> exams.
+        </p>
+      </article>
+    </section>
+  </body>
+</html>

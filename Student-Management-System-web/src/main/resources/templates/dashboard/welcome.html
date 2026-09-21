@@ -1,22 +1,30 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <section class="welcome-section" th:fragment="welcome">
+      <div class="welcome-left">
+        <h1>
+          Welcome back,
+          <span
+            th:text="${#authentication != null ? #authentication.name : 'there'}"
+            >there</span
+          >
+        </h1>
+        <p>Here's what's happening across your institution today.</p>
+      </div>
 
-<body>
-
-<section class="welcome-section"
-         th:fragment="welcome">
-
-    <h1>
-        Welcome back,
-        <span>Admin!</span>
-        👋
-    </h1>
-
-    <p>
-        Here's what's happening in your system today.
-    </p>
-
-</section>
-
-</body>
+      <!--/* #currentDate and #currentTime are the element IDs dashboard.js
+           has always looked for. Until now they existed nowhere in the
+           project, so its setInterval updated nothing. */-->
+      <div class="date-card">
+        <span class="date-icon" aria-hidden="true">
+          <i class="bi bi-calendar3"></i>
+        </span>
+        <span class="date-meta">
+          <strong id="currentDate">—</strong>
+          <small id="currentTime">—</small>
+        </span>
+      </div>
+    </section>
+  </body>
 </html>

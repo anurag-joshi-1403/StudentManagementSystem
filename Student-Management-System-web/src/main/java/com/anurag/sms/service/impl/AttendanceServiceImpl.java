@@ -75,4 +75,9 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceRepository.count();
     }
 
+    @Override
+    public long countByStatus(String status) {
+        return attendanceRepository.countByStatus(status);
+    }
+
 }

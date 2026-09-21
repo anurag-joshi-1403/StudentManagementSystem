@@ -1,5 +1,6 @@
 package com.anurag.sms.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -76,6 +77,19 @@ public class FeeServiceImpl implements FeeService {
     @Override
     public long getTotalFees() {
         return feeRepository.count();
+    }
+
+    @Override
+    public BigDecimal getTotalFeeAmount() {
+
+        BigDecimal total = feeRepository.sumAllAmounts();
+
+        return total != null ? total : BigDecimal.ZERO;
+    }
+
+    @Override
+    public long countByPaymentStatus(String paymentStatus) {
+        return feeRepository.countByPaymentStatus(paymentStatus);
     }
 
 }

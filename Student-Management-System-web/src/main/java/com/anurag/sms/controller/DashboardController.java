@@ -50,9 +50,20 @@ public class DashboardController {
         @GetMapping("/dashboard")
         public String dashboard(Model model) {
 
-                model.addAttribute("totalStudents", studentService.getTotalStudents());
-                model.addAttribute("maleStudents", studentService.getMaleStudents());
-                model.addAttribute("femaleStudents", studentService.getFemaleStudents());
+                long totalStudents = studentService.getTotalStudents();
+                long maleStudents = studentService.getMaleStudents();
+                long femaleStudents = studentService.getFemaleStudents();
+
+                model.addAttribute("totalStudents", totalStudents);
+                model.addAttribute("maleStudents", maleStudents);
+                model.addAttribute("femaleStudents", femaleStudents);
+
+                // The student form also offers "Other", and a record can predate
+                // the gender field entirely. Deriving the remainder keeps the
+                // gender chart reconciled with the headline student count
+                // instead of silently under-reporting.
+                model.addAttribute("otherStudents",
+                                Math.max(0, totalStudents - maleStudents - femaleStudents));
 
                 model.addAttribute("totalTeachers", teacherService.getTotalTeachers());
                 model.addAttribute("totalCourses", courseService.getTotalCourses());
@@ -61,6 +72,18 @@ public class DashboardController {
                 model.addAttribute("totalEnrollments", enrollmentService.getTotalEnrollments());
                 model.addAttribute("totalAttendance", attendanceService.getTotalAttendance());
                 model.addAttribute("totalExams", examService.getTotalExams());
+
+                // Supporting facts shown beneath each stat card. These replace
+                // the hardcoded "12% this month" figures, which were computed
+                // from nothing.
+                model.addAttribute("departmentCount", teacherService.getDepartmentCount());
+                model.addAttribute("totalCredits", subjectService.getTotalCredits());
+                model.addAttribute("totalFeeAmount", feeService.getTotalFeeAmount());
+                model.addAttribute("paidFees", feeService.countByPaymentStatus("Paid"));
+                model.addAttribute("pendingFees", feeService.countByPaymentStatus("Pending"));
+                model.addAttribute("enrolledStudents", enrollmentService.getEnrolledStudentCount());
+                model.addAttribute("presentCount", attendanceService.countByStatus("Present"));
+                model.addAttribute("upcomingExamCount", examService.getUpcomingExamCount());
 
                 model.addAttribute("recentStudents",
                                 studentService.getRecentStudents());
@@ -71,9 +94,17 @@ public class DashboardController {
                 model.addAttribute("upcomingExams",
                                 examService.getUpcomingExams());
 
-                model.addAttribute("title", "Dashboard");
+                model.addAttribute("title", "Dashboard | Student Management System");
 
-                model.addAttribute("content", "dashboard/dashboard-content");
+                // Drives the highlighted sidebar entry. Each controller that
+                // adopts the shared layout sets its own key here.
+                model.addAttribute("activeNav", "dashboard");
+
+                // Fragment selector, not just a template name: without the
+                // ":: fragment" part Thymeleaf injects the entire document,
+                // <html> and <body> tags included.
+                model.addAttribute("content",
+                                "dashboard/dashboard-content :: dashboardContent");
 
                 return "layout/layout";
         }

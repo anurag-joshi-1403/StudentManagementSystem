@@ -1,41 +1,40 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-
-<div class="dashboard-panel" th:fragment="upcomingExams">
-
-    <div class="panel-header">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div class="dashboard-panel" th:fragment="upcomingExams">
+      <div class="panel-header">
         <h4>Upcoming Exams</h4>
-        <a th:href="@{/exam}">View All</a>
-    </div>
+        <a th:href="@{/exam}">
+          View all
+          <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+        </a>
+      </div>
 
-    <div class="panel-body">
-
-        <div class="student-item" th:each="exam : ${upcomingExams}">
-
-            <div class="student-avatar">
-
-                <i class="bi bi-calendar-event"></i>
-
-            </div>
-
-            <div class="student-info">
-
-                <h6 th:text="${exam.subject.subjectName}">
-                    Java Programming
-                </h6>
-
-                <small th:text="${exam.examDate}">
-                    10 Aug 2026
-                </small>
-
-            </div>
-
+      <div class="panel-body">
+        <div class="panel-empty" th:if="${#lists.isEmpty(upcomingExams)}">
+          <i class="bi bi-calendar-x" aria-hidden="true"></i>
+          <p>No exams scheduled ahead.</p>
+          <a th:href="@{/exam/new}">Schedule an exam</a>
         </div>
 
+        <div class="student-item" th:each="exam : ${upcomingExams}">
+          <div class="student-avatar" aria-hidden="true">
+            <i class="bi bi-calendar-event"></i>
+          </div>
+
+          <div class="student-info">
+            <h6 th:text="${exam.examName}">Mid Term</h6>
+            <small>
+              <span th:text="${exam.subject.subjectName}">Java Programming</span>
+              &middot;
+              <span
+                th:text="${#temporals.format(exam.examDate, 'dd MMM yyyy')}"
+                >10 Aug 2026</span
+              >
+            </small>
+          </div>
+        </div>
+      </div>
     </div>
-
-</div>
-
-</body>
+  </body>
 </html>

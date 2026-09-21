@@ -1,22 +1,39 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <body>
     <div class="dashboard-panel" th:fragment="recentFees">
       <div class="panel-header">
         <h4>Recent Fee Payments</h4>
-        <a th:href="@{/fee}">View All</a>
+        <a th:href="@{/fee}">
+          View all
+          <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+        </a>
       </div>
 
       <div class="panel-body">
+        <div class="panel-empty" th:if="${#lists.isEmpty(recentFees)}">
+          <i class="bi bi-receipt" aria-hidden="true"></i>
+          <p>No fee payments recorded yet.</p>
+          <a th:href="@{/fee/new}">Collect a fee</a>
+        </div>
+
         <div class="student-item" th:each="fee : ${recentFees}">
-          <div class="student-avatar">₹</div>
+          <div class="student-avatar" aria-hidden="true">
+            <i class="bi bi-currency-rupee"></i>
+          </div>
 
           <div class="student-info">
             <h6 th:text="${fee.student.firstName + ' ' + fee.student.lastName}">
               Student
             </h6>
-
-            <small th:text="${fee.amount}"> ₹5000 </small>
+            <small>
+              <span th:text="${fee.feeType}">Tuition</span>
+              &middot;
+              <span
+                th:text="'₹' + ${#numbers.formatDecimal(fee.amount, 1, 'COMMA', 2, 'POINT')}"
+                >₹0.00</span
+              >
+            </small>
           </div>
         </div>
       </div>

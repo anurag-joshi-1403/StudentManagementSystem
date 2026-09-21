@@ -35,4 +35,7 @@ public interface SubjectService {
     // Dashboard Count
     long getTotalSubjects();
 
+    // Dashboard: total credits across the whole catalogue
+    long getTotalCredits();
+
 }

@@ -97,4 +97,9 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectRepository.count();
     }
 
+    @Override
+    public long getTotalCredits() {
+        return subjectRepository.sumAllCredits();
+    }
+
 }

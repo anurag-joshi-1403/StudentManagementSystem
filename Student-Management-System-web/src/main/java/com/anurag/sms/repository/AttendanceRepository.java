@@ -19,7 +19,10 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             LocalDate attendanceDate);
 
     List<Attendance> findTop5ByOrderByAttendanceDateDesc();
-    
+
+    // Dashboard: "Present" / "Absent" / "Late" split
+    long countByStatus(String status);
+
 
     @Transactional
     @Modifying

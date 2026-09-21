@@ -1,18 +1,27 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <body>
     <div class="dashboard-panel" th:fragment="recentStudents">
       <div class="panel-header">
         <h4>Recent Students</h4>
-
-        <a th:href="@{/student}">View All</a>
+        <a th:href="@{/student}">
+          View all
+          <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+        </a>
       </div>
 
       <div class="panel-body">
+        <div class="panel-empty" th:if="${#lists.isEmpty(recentStudents)}">
+          <i class="bi bi-people" aria-hidden="true"></i>
+          <p>No students added yet.</p>
+          <a th:href="@{/student/new}">Add your first student</a>
+        </div>
+
         <div class="student-item" th:each="student : ${recentStudents}">
           <div
             class="student-avatar"
-            th:text="${#strings.substring(student.firstName,0,1)}"
+            aria-hidden="true"
+            th:text="${#strings.toUpperCase(#strings.substring(student.firstName, 0, 1))}"
           >
             A
           </div>
@@ -21,8 +30,7 @@
             <h6 th:text="${student.firstName + ' ' + student.lastName}">
               Student Name
             </h6>
-
-            <small th:text="${student.email}"> email@gmail.com </small>
+            <small th:text="${student.email}">email@example.com</small>
           </div>
         </div>
       </div>

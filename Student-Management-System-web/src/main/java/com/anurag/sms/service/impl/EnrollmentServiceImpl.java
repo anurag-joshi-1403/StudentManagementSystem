@@ -66,4 +66,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return enrollmentRepository.count();
     }
 
+    @Override
+    public long getEnrolledStudentCount() {
+        return enrollmentRepository.countDistinctStudents();
+    }
+
 }

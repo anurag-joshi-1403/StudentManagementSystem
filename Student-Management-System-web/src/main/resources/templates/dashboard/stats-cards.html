@@ -1,155 +1,128 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
-<body>
-
-<div class="stats-grid" th:fragment="statsCards">
-
-    <!-- Students -->
-    <div class="stat-card blue">
-
-        <div class="icon-box blue-icon">
-            <i class="bi bi-people-fill"></i>
-        </div>
-
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <!--/* Every sub-fact below is derived from a real query. The previous
+         version showed invented figures ("12% this month") that were not
+         computed from anything. */-->
+    <section class="stats-grid" th:fragment="statsCards" aria-label="Key statistics">
+      <!-- Students -->
+      <article class="stat-card">
+        <span class="icon-box tint-blue" aria-hidden="true">
+          <i class="bi bi-people-fill"></i>
+        </span>
         <div class="stat-info">
-            <h6>Students</h6>
-            <h2 th:text="${totalStudents}">0</h2>
-            <p class="up">
-                <i class="bi bi-arrow-up"></i>
-                12% this month
-            </p>
+          <p class="stat-label">Students</p>
+          <p class="stat-value" th:text="${#numbers.formatInteger(totalStudents, 1, 'COMMA')}">0</p>
+          <p class="stat-meta">
+            <span th:text="${maleStudents} + ' male'">0 male</span>
+            <span class="dot" aria-hidden="true">·</span>
+            <span th:text="${femaleStudents} + ' female'">0 female</span>
+            <th:block th:if="${otherStudents > 0}">
+              <span class="dot" aria-hidden="true">·</span>
+              <span th:text="${otherStudents} + ' other'">0 other</span>
+            </th:block>
+          </p>
         </div>
+      </article>
 
-    </div>
-
-    <!-- Teachers -->
-    <div class="stat-card green">
-
-        <div class="icon-box green-icon">
-            <i class="bi bi-person-video3"></i>
-        </div>
-
+      <!-- Teachers -->
+      <article class="stat-card">
+        <span class="icon-box tint-green" aria-hidden="true">
+          <i class="bi bi-person-video3"></i>
+        </span>
         <div class="stat-info">
-            <h6>Teachers</h6>
-            <h2 th:text="${totalTeachers}">0</h2>
-            <p class="up">
-                <i class="bi bi-arrow-up"></i>
-                8% this month
-            </p>
+          <p class="stat-label">Teachers</p>
+          <p class="stat-value" th:text="${#numbers.formatInteger(totalTeachers, 1, 'COMMA')}">0</p>
+          <p class="stat-meta" th:text="'across ' + ${departmentCount} + ' department' + (${departmentCount} == 1 ? '' : 's')">
+            across 0 departments
+          </p>
         </div>
+      </article>
 
-    </div>
-
-    <!-- Courses -->
-    <div class="stat-card orange">
-
-        <div class="icon-box orange-icon">
-            <i class="bi bi-book-fill"></i>
-        </div>
-
+      <!-- Courses -->
+      <article class="stat-card">
+        <span class="icon-box tint-amber" aria-hidden="true">
+          <i class="bi bi-book-fill"></i>
+        </span>
         <div class="stat-info">
-            <h6>Courses</h6>
-            <h2 th:text="${totalCourses}">0</h2>
-            <p class="up">
-                <i class="bi bi-arrow-up"></i>
-                5% this month
-            </p>
+          <p class="stat-label">Courses</p>
+          <p class="stat-value" th:text="${#numbers.formatInteger(totalCourses, 1, 'COMMA')}">0</p>
+          <p class="stat-meta" th:text="${totalSubjects} + ' subjects in catalogue'">
+            0 subjects in catalogue
+          </p>
         </div>
+      </article>
 
-    </div>
-
-    <!-- Subjects -->
-    <div class="stat-card pink">
-
-        <div class="icon-box pink-icon">
-            <i class="bi bi-bookmark-fill"></i>
-        </div>
-
+      <!-- Subjects -->
+      <article class="stat-card">
+        <span class="icon-box tint-pink" aria-hidden="true">
+          <i class="bi bi-bookmark-fill"></i>
+        </span>
         <div class="stat-info">
-            <h6>Subjects</h6>
-            <h2 th:text="${totalSubjects}">0</h2>
-            <p class="down">
-                <i class="bi bi-arrow-down"></i>
-                2% this month
-            </p>
+          <p class="stat-label">Subjects</p>
+          <p class="stat-value" th:text="${#numbers.formatInteger(totalSubjects, 1, 'COMMA')}">0</p>
+          <p class="stat-meta" th:text="${totalCredits} + ' credits total'">0 credits total</p>
         </div>
+      </article>
 
-    </div>
-
-    <!-- Fees -->
-    <div class="stat-card cyan">
-
-        <div class="icon-box cyan-icon">
-            <i class="bi bi-cash-stack"></i>
-        </div>
-
+      <!-- Fees: the headline is now money collected, not a record count -->
+      <article class="stat-card">
+        <span class="icon-box tint-cyan" aria-hidden="true">
+          <i class="bi bi-cash-stack"></i>
+        </span>
         <div class="stat-info">
-            <h6>Fees</h6>
-            <h2 th:text="${totalFees}">0</h2>
-            <p class="up">
-                <i class="bi bi-arrow-up"></i>
-                18% this month
-            </p>
+          <p class="stat-label">Fees Collected</p>
+          <p
+            class="stat-value stat-value-sm"
+            th:text="'₹' + ${#numbers.formatInteger(totalFeeAmount, 1, 'COMMA')}"
+          >
+            ₹0
+          </p>
+          <p class="stat-meta">
+            <span th:text="${paidFees} + ' paid'">0 paid</span>
+            <span class="dot" aria-hidden="true">·</span>
+            <span th:text="${pendingFees} + ' pending'">0 pending</span>
+          </p>
         </div>
+      </article>
 
-    </div>
-
-    <!-- Enrollment -->
-    <div class="stat-card purple">
-
-        <div class="icon-box purple-icon">
-            <i class="bi bi-person-check-fill"></i>
-        </div>
-
+      <!-- Enrollments -->
+      <article class="stat-card">
+        <span class="icon-box tint-purple" aria-hidden="true">
+          <i class="bi bi-person-check-fill"></i>
+        </span>
         <div class="stat-info">
-            <h6>Enrollments</h6>
-            <h2 th:text="${totalEnrollments}">0</h2>
-            <p class="up">
-                <i class="bi bi-arrow-up"></i>
-                10% this month
-            </p>
+          <p class="stat-label">Enrollments</p>
+          <p class="stat-value" th:text="${#numbers.formatInteger(totalEnrollments, 1, 'COMMA')}">0</p>
+          <p class="stat-meta" th:text="${enrolledStudents} + ' unique students'">
+            0 unique students
+          </p>
         </div>
+      </article>
 
-    </div>
-
-    <!-- Attendance -->
-    <div class="stat-card indigo">
-
-        <div class="icon-box indigo-icon">
-            <i class="bi bi-calendar-check-fill"></i>
-        </div>
-
+      <!-- Attendance -->
+      <article class="stat-card">
+        <span class="icon-box tint-indigo" aria-hidden="true">
+          <i class="bi bi-calendar-check-fill"></i>
+        </span>
         <div class="stat-info">
-            <h6>Attendance</h6>
-            <h2 th:text="${totalAttendance}">0</h2>
-            <p class="up">
-                <i class="bi bi-arrow-up"></i>
-                7% this month
-            </p>
+          <p class="stat-label">Attendance</p>
+          <p class="stat-value" th:text="${#numbers.formatInteger(totalAttendance, 1, 'COMMA')}">0</p>
+          <p class="stat-meta" th:text="${presentCount} + ' marked present'">0 marked present</p>
         </div>
+      </article>
 
-    </div>
-
-    <!-- Exams -->
-    <div class="stat-card magenta">
-
-        <div class="icon-box magenta-icon">
-            <i class="bi bi-pencil-square"></i>
-        </div>
-
+      <!-- Exams -->
+      <article class="stat-card">
+        <span class="icon-box tint-rose" aria-hidden="true">
+          <i class="bi bi-pencil-square"></i>
+        </span>
         <div class="stat-info">
-            <h6>Exams</h6>
-            <h2 th:text="${totalExams}">0</h2>
-            <p class="down">
-                <i class="bi bi-arrow-down"></i>
-                1% this month
-            </p>
+          <p class="stat-label">Exams</p>
+          <p class="stat-value" th:text="${#numbers.formatInteger(totalExams, 1, 'COMMA')}">0</p>
+          <p class="stat-meta" th:text="${upcomingExamCount} + ' upcoming'">0 upcoming</p>
         </div>
-
-    </div>
-
-</div>
-
-</body>
+      </article>
+    </section>
+  </body>
 </html>
