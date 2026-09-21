@@ -7,16 +7,35 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Subject;
+import com.anurag.sms.repository.AttendanceRepository;
+import com.anurag.sms.repository.EnrollmentRepository;
+import com.anurag.sms.repository.ExamRepository;
 import com.anurag.sms.repository.SubjectRepository;
 import com.anurag.sms.service.SubjectService;
+import org.springframework.transaction.annotation.Transactional;
+
+// import com.anurag.sms.repository.AttendanceRepository;
+// import com.anurag.sms.repository.EnrollmentRepository;
+// import com.anurag.sms.repository.ExamRepository;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
 
     private final SubjectRepository subjectRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final ExamRepository examRepository;
 
-    public SubjectServiceImpl(SubjectRepository subjectRepository) {
+    public SubjectServiceImpl(
+            SubjectRepository subjectRepository,
+            AttendanceRepository attendanceRepository,
+            EnrollmentRepository enrollmentRepository,
+            ExamRepository examRepository) {
+
         this.subjectRepository = subjectRepository;
+        this.attendanceRepository = attendanceRepository;
+        this.enrollmentRepository = enrollmentRepository;
+        this.examRepository = examRepository;
     }
 
     @Override
@@ -40,7 +59,15 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+    @Transactional
     public void deleteSubject(Long id) {
+
+        attendanceRepository.deleteBySubjectId(id);
+
+        enrollmentRepository.deleteBySubjectId(id);
+
+        examRepository.deleteBySubjectId(id);
+
         subjectRepository.deleteById(id);
     }
 
