@@ -9,13 +9,33 @@ import org.springframework.stereotype.Service;
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.repository.StudentRepository;
 import com.anurag.sms.service.StudentService;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.anurag.sms.repository.AttendanceRepository;
+import com.anurag.sms.repository.EnrollmentRepository;
+import com.anurag.sms.repository.FeeRepository;
+import com.anurag.sms.repository.ResultRepository;
 
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final FeeRepository feeRepository;
+    private final ResultRepository resultRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(
+            StudentRepository studentRepository,
+            AttendanceRepository attendanceRepository,
+            EnrollmentRepository enrollmentRepository,
+            FeeRepository feeRepository,
+            ResultRepository resultRepository) {
+
         this.studentRepository = studentRepository;
+        this.attendanceRepository = attendanceRepository;
+        this.enrollmentRepository = enrollmentRepository;
+        this.feeRepository = feeRepository;
+        this.resultRepository = resultRepository;
     }
 
     @Override
@@ -46,7 +66,17 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public void deleteStudent(Long id) {
+
+        attendanceRepository.deleteByStudentId(id);
+
+        enrollmentRepository.deleteByStudentId(id);
+
+        feeRepository.deleteByStudentId(id);
+
+        resultRepository.deleteByStudentId(id);
+
         studentRepository.deleteById(id);
     }
 
