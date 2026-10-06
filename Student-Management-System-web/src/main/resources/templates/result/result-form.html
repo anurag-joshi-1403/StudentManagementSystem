@@ -33,7 +33,12 @@
             <div class="mb-3">
               <label class="form-label"> Student </label>
 
-              <select class="form-select" th:field="*{student}" required>
+              <select
+                class="form-select"
+                th:field="*{student}"
+                th:classappend="${#fields.hasErrors('student')} ? 'is-invalid'"
+                required
+              >
                 <option value="">Select Student</option>
 
                 <option
@@ -42,6 +47,11 @@
                   th:text="${student.firstName + ' ' + student.lastName}"
                 ></option>
               </select>
+              <div
+                class="invalid-feedback"
+                th:if="${#fields.hasErrors('student')}"
+                th:errors="*{student}"
+              ></div>
             </div>
 
             <!-- Exam -->
@@ -49,7 +59,12 @@
             <div class="mb-3">
               <label class="form-label"> Exam </label>
 
-              <select class="form-select" th:field="*{exam}" required>
+              <select
+                class="form-select"
+                th:field="*{exam}"
+                th:classappend="${#fields.hasErrors('exam')} ? 'is-invalid'"
+                required
+              >
                 <option value="">Select Exam</option>
 
                 <option
@@ -58,6 +73,11 @@
                   th:text="${exam.examName}"
                 ></option>
               </select>
+              <div
+                class="invalid-feedback"
+                th:if="${#fields.hasErrors('exam')}"
+                th:errors="*{exam}"
+              ></div>
             </div>
 
             <!-- Obtained Marks -->
@@ -69,10 +89,16 @@
                 type="number"
                 class="form-control"
                 th:field="*{obtainedMarks}"
+                th:classappend="${#fields.hasErrors('obtainedMarks')} ? 'is-invalid'"
                 min="0"
                 placeholder="Enter Obtained Marks"
                 required
               />
+              <div
+                class="invalid-feedback"
+                th:if="${#fields.hasErrors('obtainedMarks')}"
+                th:errors="*{obtainedMarks}"
+              ></div>
             </div>
 
             <!-- Grade -->
