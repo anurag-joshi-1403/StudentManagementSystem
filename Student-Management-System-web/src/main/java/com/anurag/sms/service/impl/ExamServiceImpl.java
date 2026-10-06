@@ -6,18 +6,23 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.anurag.sms.entity.Exam;
 import com.anurag.sms.repository.ExamRepository;
+import com.anurag.sms.repository.ResultRepository;
 import com.anurag.sms.service.ExamService;
 
 @Service
 public class ExamServiceImpl implements ExamService {
 
     private final ExamRepository examRepository;
+    private final ResultRepository resultRepository;
 
-    public ExamServiceImpl(ExamRepository examRepository) {
+    public ExamServiceImpl(ExamRepository examRepository,
+                           ResultRepository resultRepository) {
         this.examRepository = examRepository;
+        this.resultRepository = resultRepository;
     }
 
     @Override
@@ -52,7 +57,13 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    @Transactional
     public void deleteExam(Long id) {
+
+        // Results hold a NOT NULL foreign key to the exam, so they must be
+        // removed first or MySQL rejects the delete (#25).
+        resultRepository.deleteByExamId(id);
+
         examRepository.deleteById(id);
     }
 
