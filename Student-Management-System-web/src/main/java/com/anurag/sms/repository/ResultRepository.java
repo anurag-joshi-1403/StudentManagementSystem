@@ -29,4 +29,12 @@ public interface ResultRepository extends JpaRepository<Result, Long> {
     @Modifying
     @Query("DELETE FROM Result r WHERE r.exam.id = :examId")
     void deleteByExamId(@Param("examId") Long examId);
+
+    // Bulk JPQL deletes cannot join through r.exam.subject, so the
+    // subject's exams are matched with a subquery instead.
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Result r WHERE r.exam.id IN "
+            + "(SELECT e.id FROM Exam e WHERE e.subject.id = :subjectId)")
+    void deleteByExamSubjectId(@Param("subjectId") Long subjectId);
 }
