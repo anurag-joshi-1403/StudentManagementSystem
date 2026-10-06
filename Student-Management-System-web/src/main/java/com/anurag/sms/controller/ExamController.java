@@ -5,11 +5,14 @@ import java.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.anurag.sms.entity.Exam;
 import com.anurag.sms.service.ExamService;
 import com.anurag.sms.service.SubjectService;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/exam")
@@ -45,7 +48,16 @@ public class ExamController {
 
     // Save Exam
     @PostMapping("/save")
-    public String saveExam(@ModelAttribute("exam") Exam exam) {
+    public String saveExam(@Valid @ModelAttribute("exam") Exam exam,
+                           BindingResult result,
+                           Model model) {
+
+        // Without @Valid the entity's constraints only fired inside
+        // Hibernate at insert time, which surfaced as a 500 page (#12).
+        if (result.hasErrors()) {
+            model.addAttribute("subjects", subjectService.getAllSubjects());
+            return "exam/exam-form";
+        }
 
         examService.saveExam(exam);
 
@@ -69,9 +81,19 @@ public class ExamController {
     // Update Exam
     @PostMapping("/update/{id}")
     public String updateExam(@PathVariable Long id,
-                             @ModelAttribute Exam exam) {
+                             @Valid @ModelAttribute("exam") Exam exam,
+                             BindingResult result,
+                             Model model) {
 
+        // Set before the error check: the form picks its action from
+        // exam.id, so without it a corrected form would post to /save
+        // and create a duplicate instead of updating.
         exam.setId(id);
+
+        if (result.hasErrors()) {
+            model.addAttribute("subjects", subjectService.getAllSubjects());
+            return "exam/exam-form";
+        }
 
         examService.updateExam(exam);
 
@@ -94,13 +116,15 @@ public class ExamController {
             @RequestParam(required = false) LocalDate examDate,
             Model model) {
 
-        if (keyword == null) {
-            keyword = "";
-        }
-
+        // A missing keyword stays null: the service treats null and blank
+        // as "no keyword filter", so the date can narrow results on its own.
         model.addAttribute(
                 "examList",
                 examService.searchExam(keyword, examDate));
+
+        // Echoed back so the search boxes keep what was searched for.
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("examDate", examDate);
 
         return "exam/exam-list";
     }
