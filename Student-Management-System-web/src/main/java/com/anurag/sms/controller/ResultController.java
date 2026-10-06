@@ -3,12 +3,15 @@ package com.anurag.sms.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.anurag.sms.entity.Result;
 import com.anurag.sms.service.ExamService;
 import com.anurag.sms.service.ResultService;
 import com.anurag.sms.service.StudentService;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/result")
@@ -48,7 +51,18 @@ public class ResultController {
 
     // Save Result
     @PostMapping("/save")
-    public String saveResult(@ModelAttribute("result") Result result) {
+    public String saveResult(@Valid @ModelAttribute("result") Result result,
+                             BindingResult bindingResult,
+                             Model model) {
+
+        // Must run before the service: its grade calculation dereferences
+        // the exam and the marks, so a blank one used to throw a
+        // NullPointerException, and bad marks failed in Hibernate (#12).
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("students", studentService.getAllStudents());
+            model.addAttribute("exams", examService.getAllExams());
+            return "result/result-form";
+        }
 
         resultService.saveResult(result);
 
@@ -75,9 +89,20 @@ public class ResultController {
     // Update Result
     @PostMapping("/update/{id}")
     public String updateResult(@PathVariable Long id,
-                               @ModelAttribute Result result) {
+                               @Valid @ModelAttribute("result") Result result,
+                               BindingResult bindingResult,
+                               Model model) {
 
+        // Set before the error check: the form picks its action from
+        // result.id, so without it a corrected form would post to /save
+        // and create a duplicate instead of updating.
         result.setId(id);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("students", studentService.getAllStudents());
+            model.addAttribute("exams", examService.getAllExams());
+            return "result/result-form";
+        }
 
         resultService.updateResult(result);
 
