@@ -141,11 +141,16 @@
   border-block-start: 1px solid rgb(255 255 255 / 0.07);
 }
 
+/* A <button> (logout must POST), styled to fill the footer the way
+   the original link did. theme.css already resets its font and color. */
 .logout-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
+  inline-size: 100%;
+  border: 0;
+  cursor: pointer;
   padding: 10px var(--space-4);
   border-radius: var(--radius-sm);
   background: rgb(239 68 68 / 0.12);

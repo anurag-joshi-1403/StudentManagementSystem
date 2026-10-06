@@ -131,10 +131,15 @@
       </nav>
 
       <div class="sidebar-footer">
-        <a th:href="@{/logout}" class="logout-btn">
-          <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-          <span>Logout</span>
-        </a>
+        <!--/* A form, not a link: with CSRF enabled Spring Security only
+             accepts POST /logout, and a GET just 404s while the session
+             stays alive. th:action adds the CSRF token. */-->
+        <form th:action="@{/logout}" method="post">
+          <button type="submit" class="logout-btn">
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+            <span>Logout</span>
+          </button>
+        </form>
       </div>
     </aside>
   </body>
