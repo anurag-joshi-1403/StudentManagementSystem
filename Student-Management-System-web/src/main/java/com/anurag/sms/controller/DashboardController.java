@@ -94,18 +94,8 @@ public class DashboardController {
                 model.addAttribute("upcomingExams",
                                 examService.getUpcomingExams());
 
-                model.addAttribute("title", "Dashboard | Student Management System");
-
-                // Drives the highlighted sidebar entry. Each controller that
-                // adopts the shared layout sets its own key here.
-                model.addAttribute("activeNav", "dashboard");
-
-                // Fragment selector, not just a template name: without the
-                // ":: fragment" part Thymeleaf injects the entire document,
-                // <html> and <body> tags included.
-                model.addAttribute("content",
-                                "dashboard/dashboard-content :: dashboardContent");
-
-                return "layout/layout";
+                return LayoutView.render(model,
+                                "dashboard/dashboard-content :: dashboardContent",
+                                "dashboard", "Dashboard");
         }
 }

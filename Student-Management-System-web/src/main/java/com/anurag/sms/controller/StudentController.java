@@ -46,7 +46,7 @@ public class StudentController {
 
         model.addAttribute("student", student);
 
-        return "student/student-view";
+        return LayoutView.render(model, "student/student-view :: content", "student", "Student Profile");
     }
 
     @GetMapping("/student/search")
@@ -65,7 +65,7 @@ public class StudentController {
 
         model.addAttribute("totalItems", students.size());
 
-        return "student/student-list";
+        return LayoutView.render(model, "student/student-list :: content", "student", "Students");
     }
 
     @GetMapping("/student/new")
@@ -74,7 +74,7 @@ public class StudentController {
 
         model.addAttribute("student", student);
         model.addAttribute("courses", courseService.getAllCourses());
-        return "student/student-form";
+        return LayoutView.render(model, "student/student-form :: content", "student", "Add Student");
     }
 
     @PostMapping("/student")
@@ -87,7 +87,8 @@ public class StudentController {
 
         if (result.hasErrors()) {
             model.addAttribute("courses", courseService.getAllCourses());
-            return "student/student-form";
+            return LayoutView.render(model, "student/student-form :: content", "student",
+                    student.getId() == null ? "Add Student" : "Edit Student");
         }
 
         // Duplicate Email Validation (only flag if email belongs to another student)
@@ -107,7 +108,8 @@ public class StudentController {
                     "error.student",
                     "Email already exists");
             model.addAttribute("courses", courseService.getAllCourses());
-            return "student/student-form";
+            return LayoutView.render(model, "student/student-form :: content", "student",
+                    student.getId() == null ? "Add Student" : "Edit Student");
         }
 
         // Photo Upload Handling
@@ -147,7 +149,7 @@ public class StudentController {
         Student student = studentService.getStudentById(id);
         model.addAttribute("student", student);
         model.addAttribute("courses", courseService.getAllCourses());
-        return "student/student-form";
+        return LayoutView.render(model, "student/student-form :: content", "student", "Edit Student");
     }
 
     @GetMapping("/student/delete/{id}")
@@ -173,7 +175,7 @@ public class StudentController {
 
         model.addAttribute("students", students);
 
-        return "student/student-list";
+        return LayoutView.render(model, "student/student-list :: content", "student", "Students");
     }
 
 }

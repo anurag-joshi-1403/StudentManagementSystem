@@ -45,7 +45,7 @@ public class FeeController {
             model.addAttribute("totalPages", 1);
             model.addAttribute("totalItems", searchResults.size());
             model.addAttribute("totalFees", feeService.getTotalFees());
-            return "fee/fee-list";
+            return LayoutView.render(model, "fee/fee-list :: content", "fee", "Fees");
         }
 
         Page<Fee> feePage = feeService.getFeeByPage(page);
@@ -56,7 +56,7 @@ public class FeeController {
         model.addAttribute("totalFees", feeService.getTotalFees());
         model.addAttribute("keyword", "");
 
-        return "fee/fee-list";
+        return LayoutView.render(model, "fee/fee-list :: content", "fee", "Fees");
     }
 
     // Search Fee mapping to handle /fee/search
@@ -75,7 +75,7 @@ public class FeeController {
         model.addAttribute("fee", new Fee());
         model.addAttribute("students", studentService.getAllStudents());
 
-        return "fee/fee-form";
+        return LayoutView.render(model, "fee/fee-form :: content", "fee", "Add Fee");
     }
 
     // Save Fee
@@ -88,7 +88,7 @@ public class FeeController {
 
             model.addAttribute("students", studentService.getAllStudents());
 
-            return "fee/fee-form";
+            return LayoutView.render(model, "fee/fee-form :: content", "fee", "Add Fee");
         }
 
         feeService.saveFee(fee);
@@ -104,7 +104,7 @@ public class FeeController {
         model.addAttribute("fee", feeService.getFeeById(id));
         model.addAttribute("students", studentService.getAllStudents());
 
-        return "fee/fee-form";
+        return LayoutView.render(model, "fee/fee-form :: content", "fee", "Edit Fee");
     }
 
     // Update Fee
@@ -118,7 +118,7 @@ public class FeeController {
 
             model.addAttribute("students", studentService.getAllStudents());
 
-            return "fee/fee-form";
+            return LayoutView.render(model, "fee/fee-form :: content", "fee", "Edit Fee");
         }
 
         fee.setId(id);

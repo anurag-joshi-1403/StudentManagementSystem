@@ -35,7 +35,7 @@ public class ResultController {
 
         model.addAttribute("resultList", resultService.getAllResults());
 
-        return "result/result-list";
+        return LayoutView.render(model, "result/result-list :: content", "result", "Results");
     }
 
     // Show Add Result Form
@@ -46,7 +46,7 @@ public class ResultController {
         model.addAttribute("students", studentService.getAllStudents());
         model.addAttribute("exams", examService.getAllExams());
 
-        return "result/result-form";
+        return LayoutView.render(model, "result/result-form :: content", "result", "Add Result");
     }
 
     // Save Result
@@ -61,7 +61,7 @@ public class ResultController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("students", studentService.getAllStudents());
             model.addAttribute("exams", examService.getAllExams());
-            return "result/result-form";
+            return LayoutView.render(model, "result/result-form :: content", "result", "Add Result");
         }
 
         resultService.saveResult(result);
@@ -83,7 +83,7 @@ public class ResultController {
         model.addAttribute("exams",
                 examService.getAllExams());
 
-        return "result/result-form";
+        return LayoutView.render(model, "result/result-form :: content", "result", "Edit Result");
     }
 
     // Update Result
@@ -101,7 +101,7 @@ public class ResultController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("students", studentService.getAllStudents());
             model.addAttribute("exams", examService.getAllExams());
-            return "result/result-form";
+            return LayoutView.render(model, "result/result-form :: content", "result", "Edit Result");
         }
 
         resultService.updateResult(result);
@@ -131,7 +131,7 @@ public class ResultController {
                 "resultList",
                 resultService.searchResult(keyword));
 
-        return "result/result-list";
+        return LayoutView.render(model, "result/result-list :: content", "result", "Results");
     }
 
     // Pagination
@@ -145,7 +145,7 @@ public class ResultController {
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("resultList", page.getContent());
 
-        return "result/result-list";
+        return LayoutView.render(model, "result/result-list :: content", "result", "Results");
     }
 
 }

@@ -33,7 +33,7 @@ public class ExamController {
 
         model.addAttribute("examList", examService.getAllExams());
 
-        return "exam/exam-list";
+        return LayoutView.render(model, "exam/exam-list :: content", "exam", "Exams");
     }
 
     // Show Add Exam Form
@@ -43,7 +43,7 @@ public class ExamController {
         model.addAttribute("exam", new Exam());
         model.addAttribute("subjects", subjectService.getAllSubjects());
 
-        return "exam/exam-form";
+        return LayoutView.render(model, "exam/exam-form :: content", "exam", "Add Exam");
     }
 
     // Save Exam
@@ -56,7 +56,7 @@ public class ExamController {
         // Hibernate at insert time, which surfaced as a 500 page (#12).
         if (result.hasErrors()) {
             model.addAttribute("subjects", subjectService.getAllSubjects());
-            return "exam/exam-form";
+            return LayoutView.render(model, "exam/exam-form :: content", "exam", "Add Exam");
         }
 
         examService.saveExam(exam);
@@ -75,7 +75,7 @@ public class ExamController {
         model.addAttribute("subjects",
                 subjectService.getAllSubjects());
 
-        return "exam/exam-form";
+        return LayoutView.render(model, "exam/exam-form :: content", "exam", "Edit Exam");
     }
 
     // Update Exam
@@ -92,7 +92,7 @@ public class ExamController {
 
         if (result.hasErrors()) {
             model.addAttribute("subjects", subjectService.getAllSubjects());
-            return "exam/exam-form";
+            return LayoutView.render(model, "exam/exam-form :: content", "exam", "Edit Exam");
         }
 
         examService.updateExam(exam);
@@ -126,7 +126,7 @@ public class ExamController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("examDate", examDate);
 
-        return "exam/exam-list";
+        return LayoutView.render(model, "exam/exam-list :: content", "exam", "Exams");
     }
 
     // Pagination
@@ -141,7 +141,7 @@ public class ExamController {
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("examList", page.getContent());
 
-        return "exam/exam-list";
+        return LayoutView.render(model, "exam/exam-list :: content", "exam", "Exams");
     }
 
 }

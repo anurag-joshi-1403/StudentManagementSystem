@@ -56,7 +56,7 @@ public class TeacherController {
 
         model.addAttribute("keyword", keyword);
 
-        return "teacher/teacher-list";
+        return LayoutView.render(model, "teacher/teacher-list :: content", "teacher", "Teachers");
     }
 
     // Open Add Teacher Form
@@ -66,7 +66,7 @@ public class TeacherController {
         model.addAttribute("teacher",
                 new Teacher());
 
-        return "teacher/teacher-form";
+        return LayoutView.render(model, "teacher/teacher-form :: content", "teacher", "Add Teacher");
     }
 
     @PostMapping("/teacher")
@@ -77,7 +77,8 @@ public class TeacherController {
             Model model) {
 
         if (result.hasErrors()) {
-            return "teacher/teacher-form";
+            return LayoutView.render(model, "teacher/teacher-form :: content", "teacher",
+                    teacher.getId() == null ? "Add Teacher" : "Edit Teacher");
         }
 
         if (teacher.getId() == null &&
@@ -87,7 +88,8 @@ public class TeacherController {
                     "duplicateError",
                     "Teacher email already exists.");
 
-            return "teacher/teacher-form";
+            return LayoutView.render(model, "teacher/teacher-form :: content", "teacher",
+                    teacher.getId() == null ? "Add Teacher" : "Edit Teacher");
         }
 
         if (!photoFile.isEmpty()) {
@@ -137,7 +139,7 @@ public class TeacherController {
 
         model.addAttribute("teacher", teacher);
 
-        return "teacher/teacher-form";
+        return LayoutView.render(model, "teacher/teacher-form :: content", "teacher", "Edit Teacher");
     }
 
     @GetMapping("/teacher/delete/{id}")
@@ -157,7 +159,7 @@ public class TeacherController {
 
         model.addAttribute("teacher", teacher);
 
-        return "teacher/teacher-view";
+        return LayoutView.render(model, "teacher/teacher-view :: content", "teacher", "Teacher Profile");
     }
 
 }

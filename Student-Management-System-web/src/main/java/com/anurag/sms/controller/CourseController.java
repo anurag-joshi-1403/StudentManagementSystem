@@ -48,7 +48,7 @@ public class CourseController {
 
         model.addAttribute("keyword", keyword);
 
-        return "course/course-list";
+        return LayoutView.render(model, "course/course-list :: content", "course", "Courses");
     }
 
     @GetMapping("/course/new")
@@ -57,7 +57,7 @@ public class CourseController {
         model.addAttribute("course",
                 new com.anurag.sms.entity.Course());
 
-        return "course/course-form";
+        return LayoutView.render(model, "course/course-form :: content", "course", "Add Course");
     }
 
     @PostMapping("/course")
@@ -67,7 +67,8 @@ public class CourseController {
 
         // Validation Errors
         if (result.hasErrors()) {
-            return "course/course-form";
+            return LayoutView.render(model, "course/course-form :: content", "course",
+                    course.getId() == null ? "Add Course" : "Edit Course");
         }
 
         // Duplicate check only for NEW course
@@ -77,7 +78,8 @@ public class CourseController {
             model.addAttribute("duplicateError",
                     "Course Code already exists.");
 
-            return "course/course-form";
+            return LayoutView.render(model, "course/course-form :: content", "course",
+                    course.getId() == null ? "Add Course" : "Edit Course");
         }
 
         courseService.saveCourse(course);
@@ -92,14 +94,14 @@ public class CourseController {
 
         model.addAttribute("course", course);
 
-        return "course/course-form";
+        return LayoutView.render(model, "course/course-form :: content", "course", "Edit Course");
     }
 
     @GetMapping("/course/view/{id}")
     public String viewCourse(@PathVariable Long id, Model model) {
         Course course = courseService.getCourseById(id);
         model.addAttribute("course", course);
-        return "course/course-view";
+        return LayoutView.render(model, "course/course-view :: content", "course", "Course Details");
     }
 
     @GetMapping("/course/delete/{id}")

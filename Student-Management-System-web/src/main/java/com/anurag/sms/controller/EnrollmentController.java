@@ -71,7 +71,7 @@ public class EnrollmentController {
 
                 model.addAttribute("keyword", keyword);
 
-                return "enrollment/enrollment-list";
+                return LayoutView.render(model, "enrollment/enrollment-list :: content", "enrollment", "Enrollments");
         }
 
         // ==========================
@@ -92,7 +92,7 @@ public class EnrollmentController {
                 model.addAttribute("subjects",
                                 subjectService.getAllSubjects());
 
-                return "enrollment/enrollment-form";
+                return LayoutView.render(model, "enrollment/enrollment-form :: content", "enrollment", "Add Enrollment");
         }
 
         // ==========================
@@ -119,7 +119,8 @@ public class EnrollmentController {
                         model.addAttribute("subjects",
                                         subjectService.getAllSubjects());
 
-                        return "enrollment/enrollment-form";
+                        return LayoutView.render(model, "enrollment/enrollment-form :: content", "enrollment",
+                                enrollment.getId() == null ? "Add Enrollment" : "Edit Enrollment");
                 }
 
                 enrollmentService.saveEnrollment(enrollment);
@@ -150,7 +151,7 @@ public class EnrollmentController {
                 
                 model.addAttribute("subjects",
                         subjectService.getAllSubjects());
-                return "enrollment/enrollment-form";
+                return LayoutView.render(model, "enrollment/enrollment-form :: content", "enrollment", "Edit Enrollment");
         }
 
         // ==========================

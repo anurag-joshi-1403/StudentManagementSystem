@@ -52,7 +52,7 @@ public class SubjectController {
 
         model.addAttribute("keyword", keyword);
 
-        return "subject/subject-list";
+        return LayoutView.render(model, "subject/subject-list :: content", "subject", "Subjects");
     }
 
     // Show Add Subject Form
@@ -61,7 +61,7 @@ public class SubjectController {
 
         model.addAttribute("subject", new Subject());
 
-        return "subject/subject-form";
+        return LayoutView.render(model, "subject/subject-form :: content", "subject", "Add Subject");
     }
 
     // Save Subject
@@ -72,7 +72,8 @@ public class SubjectController {
             Model model) {
 
         if (result.hasErrors()) {
-            return "subject/subject-form";
+            return LayoutView.render(model, "subject/subject-form :: content", "subject",
+                    subject.getId() == null ? "Add Subject" : "Edit Subject");
         }
 
         // Duplicate Subject Code Check
@@ -83,7 +84,8 @@ public class SubjectController {
                     "duplicateError",
                     "Subject Code already exists.");
 
-            return "subject/subject-form";
+            return LayoutView.render(model, "subject/subject-form :: content", "subject",
+                    subject.getId() == null ? "Add Subject" : "Edit Subject");
         }
 
         subjectService.saveSubject(subject);
@@ -102,7 +104,7 @@ public class SubjectController {
 
         model.addAttribute("subject", subject);
 
-        return "subject/subject-form";
+        return LayoutView.render(model, "subject/subject-form :: content", "subject", "Edit Subject");
     }
 
     // Delete Subject

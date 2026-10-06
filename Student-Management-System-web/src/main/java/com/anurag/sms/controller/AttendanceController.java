@@ -48,7 +48,7 @@ public class AttendanceController {
         model.addAttribute("students", studentService.getAllStudents());
         model.addAttribute("subjects", subjectService.getAllSubjects());
 
-        return "attendance/attendance-form";
+        return LayoutView.render(model, "attendance/attendance-form :: content", "attendance", "Add Attendance");
     }
 
     // Save Attendance with validation
@@ -61,7 +61,7 @@ public class AttendanceController {
         if (result.hasErrors()) {
             model.addAttribute("students", studentService.getAllStudents());
             model.addAttribute("subjects", subjectService.getAllSubjects());
-            return "attendance/attendance-form";
+            return LayoutView.render(model, "attendance/attendance-form :: content", "attendance", "Add Attendance");
         }
 
         attendanceService.saveAttendance(attendance);
@@ -82,7 +82,7 @@ public class AttendanceController {
         model.addAttribute("subjects",
                 subjectService.getAllSubjects());
 
-        return "attendance/attendance-form";
+        return LayoutView.render(model, "attendance/attendance-form :: content", "attendance", "Edit Attendance");
     }
 
     // Update Attendance with validation
@@ -96,7 +96,7 @@ public class AttendanceController {
         if (result.hasErrors()) {
             model.addAttribute("students", studentService.getAllStudents());
             model.addAttribute("subjects", subjectService.getAllSubjects());
-            return "attendance/attendance-form";
+            return LayoutView.render(model, "attendance/attendance-form :: content", "attendance", "Edit Attendance");
         }
 
         attendance.setId(id);
@@ -132,7 +132,7 @@ public class AttendanceController {
         model.addAttribute("totalItems", searchResults.size());
         model.addAttribute("totalAttendance", attendanceService.getTotalAttendance());
 
-        return "attendance/attendance-list";
+        return LayoutView.render(model, "attendance/attendance-list :: content", "attendance", "Attendance");
     }
 
     // Pagination
@@ -149,6 +149,6 @@ public class AttendanceController {
         model.addAttribute("totalAttendance", attendanceService.getTotalAttendance());
         model.addAttribute("attendanceList", page.getContent());
 
-        return "attendance/attendance-list";
+        return LayoutView.render(model, "attendance/attendance-list :: content", "attendance", "Attendance");
     }
 }
