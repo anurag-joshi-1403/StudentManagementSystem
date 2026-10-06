@@ -57,6 +57,14 @@ public class StudentController {
 
         model.addAttribute("students", students);
 
+        // student-list.html's pager does arithmetic on these, so they must be
+        // present even though search results are not paginated yet (#11).
+        model.addAttribute("currentPage", 1);
+
+        model.addAttribute("totalPages", 1);
+
+        model.addAttribute("totalItems", students.size());
+
         return "student/student-list";
     }
 
