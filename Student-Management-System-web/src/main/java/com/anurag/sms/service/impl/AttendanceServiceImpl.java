@@ -48,19 +48,13 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public List<Attendance> searchAttendance(String keyword, LocalDate attendanceDate) {
 
-        if (attendanceDate != null) {
-            return attendanceRepository
-                    .findByStudentFirstNameContainingIgnoreCaseOrSubjectSubjectNameContainingIgnoreCaseOrAttendanceDate(
-                            keyword,
-                            keyword,
-                            attendanceDate);
-        }
+        // A blank keyword means "no keyword filter", which the query
+        // expresses as null. Passing "" would match every row (#26).
+        String trimmed = (keyword == null || keyword.isBlank())
+                ? null
+                : keyword.trim();
 
-        return attendanceRepository
-                .findByStudentFirstNameContainingIgnoreCaseOrSubjectSubjectNameContainingIgnoreCaseOrAttendanceDate(
-                        keyword,
-                        keyword,
-                        LocalDate.of(1900, 1, 1));
+        return attendanceRepository.search(trimmed, attendanceDate);
     }
 
     @Override
