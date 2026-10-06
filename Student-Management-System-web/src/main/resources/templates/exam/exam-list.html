@@ -27,11 +27,17 @@
             name="keyword"
             class="form-control"
             placeholder="Search by Exam or Subject"
+            th:value="${keyword}"
           />
         </div>
 
         <div class="col-md-3">
-          <input type="date" name="examDate" class="form-control" />
+          <input
+            type="date"
+            name="examDate"
+            class="form-control"
+            th:value="${examDate}"
+          />
         </div>
 
         <div class="col-md-2">
@@ -88,6 +94,10 @@
                 Delete
               </a>
             </td>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(examList)}">
+            <td colspan="7" class="text-center text-muted">No exams found.</td>
           </tr>
         </tbody>
       </table>
