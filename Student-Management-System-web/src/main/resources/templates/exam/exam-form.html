@@ -38,8 +38,12 @@
                     <input type="text"
                            class="form-control"
                            th:field="*{examName}"
+                           th:classappend="${#fields.hasErrors('examName')} ? 'is-invalid'"
                            placeholder="Enter Exam Name"
                            required>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('examName')}"
+                         th:errors="*{examName}"></div>
                 </div>
 
                 <!-- Subject -->
@@ -49,6 +53,7 @@
 
                     <select class="form-select"
                             th:field="*{subject}"
+                            th:classappend="${#fields.hasErrors('subject')} ? 'is-invalid'"
                             required>
 
                         <option value="">Select Subject</option>
@@ -60,6 +65,9 @@
                         </option>
 
                     </select>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('subject')}"
+                         th:errors="*{subject}"></div>
 
                 </div>
 
@@ -71,7 +79,11 @@
                     <input type="date"
                            class="form-control"
                            th:field="*{examDate}"
+                           th:classappend="${#fields.hasErrors('examDate')} ? 'is-invalid'"
                            required>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('examDate')}"
+                         th:errors="*{examDate}"></div>
                 </div>
 
                 <!-- Total Marks -->
@@ -82,9 +94,13 @@
                     <input type="number"
                            class="form-control"
                            th:field="*{totalMarks}"
+                           th:classappend="${#fields.hasErrors('totalMarks')} ? 'is-invalid'"
                            min="1"
                            placeholder="Enter Total Marks"
                            required>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('totalMarks')}"
+                         th:errors="*{totalMarks}"></div>
                 </div>
 
                 <!-- Passing Marks -->
@@ -95,9 +111,13 @@
                     <input type="number"
                            class="form-control"
                            th:field="*{passingMarks}"
+                           th:classappend="${#fields.hasErrors('passingMarks')} ? 'is-invalid'"
                            min="1"
                            placeholder="Enter Passing Marks"
                            required>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('passingMarks')}"
+                         th:errors="*{passingMarks}"></div>
                 </div>
 
                 <!-- Buttons -->
