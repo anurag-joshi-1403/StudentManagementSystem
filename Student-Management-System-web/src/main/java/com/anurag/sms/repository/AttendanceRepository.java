@@ -26,8 +26,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> search(@Param("keyword") String keyword,
                             @Param("attendanceDate") LocalDate attendanceDate);
 
-    List<Attendance> findTop5ByOrderByAttendanceDateDesc();
-
     // Dashboard: "Present" / "Absent" / "Late" split
     long countByStatus(String status);
 
