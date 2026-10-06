@@ -32,4 +32,9 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     @Modifying
     @Query("DELETE FROM Enrollment e WHERE e.subject.id = :subjectId")
     void deleteBySubjectId(@Param("subjectId") Long subjectId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Enrollment e WHERE e.course.id = :courseId")
+    void deleteByCourseId(@Param("courseId") Long courseId);
 }
