@@ -70,19 +70,13 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<Exam> searchExam(String keyword, LocalDate examDate) {
 
-        if (keyword == null) {
-            keyword = "";
-        }
+        // A blank keyword means "no keyword filter", which the query
+        // expresses as null. Passing "" would match every row (#26).
+        String trimmed = (keyword == null || keyword.isBlank())
+                ? null
+                : keyword.trim();
 
-        if (examDate == null) {
-            examDate = LocalDate.of(1900, 1, 1);
-        }
-
-        return examRepository
-                .findByExamNameContainingIgnoreCaseOrSubjectSubjectNameContainingIgnoreCaseOrExamDate(
-                        keyword,
-                        keyword,
-                        examDate);
+        return examRepository.search(trimmed, examDate);
     }
 
     @Override
