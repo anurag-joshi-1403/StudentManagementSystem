@@ -10,6 +10,7 @@ import com.anurag.sms.entity.Subject;
 import com.anurag.sms.repository.AttendanceRepository;
 import com.anurag.sms.repository.EnrollmentRepository;
 import com.anurag.sms.repository.ExamRepository;
+import com.anurag.sms.repository.ResultRepository;
 import com.anurag.sms.repository.SubjectRepository;
 import com.anurag.sms.service.SubjectService;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +26,20 @@ public class SubjectServiceImpl implements SubjectService {
     private final AttendanceRepository attendanceRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final ExamRepository examRepository;
+    private final ResultRepository resultRepository;
 
     public SubjectServiceImpl(
             SubjectRepository subjectRepository,
             AttendanceRepository attendanceRepository,
             EnrollmentRepository enrollmentRepository,
-            ExamRepository examRepository) {
+            ExamRepository examRepository,
+            ResultRepository resultRepository) {
 
         this.subjectRepository = subjectRepository;
         this.attendanceRepository = attendanceRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.examRepository = examRepository;
+        this.resultRepository = resultRepository;
     }
 
     @Override
@@ -65,6 +69,10 @@ public class SubjectServiceImpl implements SubjectService {
         attendanceRepository.deleteBySubjectId(id);
 
         enrollmentRepository.deleteBySubjectId(id);
+
+        // Results point at this subject's exams, so they must go before
+        // the exams themselves or MySQL rejects the delete (#25).
+        resultRepository.deleteByExamSubjectId(id);
 
         examRepository.deleteBySubjectId(id);
 
