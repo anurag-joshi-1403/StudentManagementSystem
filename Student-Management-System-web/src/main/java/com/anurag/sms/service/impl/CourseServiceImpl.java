@@ -5,18 +5,23 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.anurag.sms.entity.Course;
 import com.anurag.sms.repository.CourseRepository;
+import com.anurag.sms.repository.EnrollmentRepository;
 import com.anurag.sms.service.CourseService;
 
 @Service
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository,
+                             EnrollmentRepository enrollmentRepository) {
         this.courseRepository = courseRepository;
+        this.enrollmentRepository = enrollmentRepository;
     }
 
     @Override
@@ -40,7 +45,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public void deleteCourse(Long id) {
+
+        // Enrollments hold a NOT NULL foreign key to the course, so they
+        // must be removed first or MySQL rejects the delete (#25).
+        enrollmentRepository.deleteByCourseId(id);
+
         courseRepository.deleteById(id);
     }
 
