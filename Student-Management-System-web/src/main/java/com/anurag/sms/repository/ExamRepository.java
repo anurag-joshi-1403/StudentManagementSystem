@@ -13,10 +13,18 @@ import com.anurag.sms.entity.Exam;
 
 public interface ExamRepository extends JpaRepository<Exam, Long> {
 
-    List<Exam> findByExamNameContainingIgnoreCaseOrSubjectSubjectNameContainingIgnoreCaseOrExamDate(
-            String examName,
-            String subjectName,
-            LocalDate examDate);
+    // Keyword and date are each optional (null = no filter) and must BOTH
+    // match. The derived OR-query this replaces ignored the date whenever
+    // the keyword was blank, because Containing("") matches every row (#26).
+    @Query("""
+            SELECT e FROM Exam e
+            WHERE (:keyword IS NULL
+                   OR LOWER(e.examName)            LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(e.subject.subjectName) LIKE LOWER(CONCAT('%', :keyword, '%')))
+              AND (:examDate IS NULL OR e.examDate = :examDate)
+            """)
+    List<Exam> search(@Param("keyword") String keyword,
+                      @Param("examDate") LocalDate examDate);
 
     List<Exam> findTop5ByOrderByExamDateAsc();
 
