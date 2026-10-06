@@ -122,10 +122,8 @@ public class AttendanceController {
             @RequestParam(required = false) LocalDate attendanceDate,
             Model model) {
 
-        if (keyword == null) {
-            keyword = "";
-        }
-
+        // A missing keyword stays null: the service treats null and blank
+        // as "no keyword filter", so the date can narrow results on its own.
         java.util.List<Attendance> searchResults = attendanceService.searchAttendance(keyword, attendanceDate);
 
         model.addAttribute("attendanceList", searchResults);
