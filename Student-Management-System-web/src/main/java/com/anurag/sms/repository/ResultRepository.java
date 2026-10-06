@@ -24,4 +24,9 @@ public interface ResultRepository extends JpaRepository<Result, Long> {
     @Modifying
     @Query("DELETE FROM Result r WHERE r.student.id = :studentId")
     void deleteByStudentId(@Param("studentId") Long studentId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Result r WHERE r.exam.id = :examId")
+    void deleteByExamId(@Param("examId") Long examId);
 }
