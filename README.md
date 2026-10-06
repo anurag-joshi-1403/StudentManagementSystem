@@ -523,9 +523,10 @@ cd StudentManagementSystem/Student-Management-System-web
 # 2️⃣  Create the database (tables are generated automatically on first run)
 mysql -u root -p -e "CREATE DATABASE sms_web;"
 
-# 3️⃣  Point the app at your MySQL — edit src/main/resources/application.properties
-#     spring.datasource.username=root
-#     spring.datasource.password=<your-password>
+# 3️⃣  Give the app your MySQL password; it is read from the environment, never committed
+export DB_PASSWORD=<your-password>      # macOS / Linux
+setx DB_PASSWORD "<your-password>"      # Windows (then open a new terminal)
+#     DB_USERNAME is optional and defaults to root
 
 # 4️⃣  Build & run
 ./mvnw spring-boot:run          # macOS / Linux
