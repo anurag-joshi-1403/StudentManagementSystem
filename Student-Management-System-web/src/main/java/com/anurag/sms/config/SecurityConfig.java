@@ -40,8 +40,7 @@ public class SecurityConfig {
                                 "/register",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**",
-                                "/uploads/**")
+                                "/images/**")
                         .permitAll()
 
                         // Every other request requires login
