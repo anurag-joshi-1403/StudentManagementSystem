@@ -19,7 +19,7 @@
 ![Endpoints](https://img.shields.io/badge/Endpoints-66-blueviolet?style=flat-square)
 ![Entities](https://img.shields.io/badge/JPA_Entities-10-orange?style=flat-square)
 ![Views](https://img.shields.io/badge/Thymeleaf_Views-36-green?style=flat-square)
-![LOC](https://img.shields.io/badge/Java_LOC-4.4k-yellow?style=flat-square)
+![LOC](https://img.shields.io/badge/Java_LOC-4.5k-yellow?style=flat-square)
 
 <br/>
 
@@ -76,7 +76,7 @@ reads real numbers from the database — not hardcoded placeholders.
 | JPA entities / repositories | `10` / `10` |
 | Service classes | `21` |
 | Thymeleaf templates | `36` |
-| Lines of Java | `4.4k` |
+| Lines of Java | `4.5k` |
 
 </td>
 </tr>
@@ -112,7 +112,7 @@ reads real numbers from the database — not hardcoded placeholders.
 | 🐬 | ![MySQL](https://img.shields.io/badge/MySQL_8-4479A1?style=flat&logo=mysql&logoColor=white) | Relational database (`sms_web`) |
 | 🎨 | ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=flat&logo=thymeleaf&logoColor=white) ![Bootstrap](https://img.shields.io/badge/Bootstrap_5.3-7952B3?style=flat&logo=bootstrap&logoColor=white) ![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=flat&logo=chartdotjs&logoColor=white) | Server-rendered HTML, responsive UI, dashboard charts |
 | ✔️ | ![Validation](https://img.shields.io/badge/Jakarta_Bean_Validation-F8B500?style=flat&logo=jakartaee&logoColor=black) | `@NotBlank`, `@Email`, `@Pattern` form checks |
-| 🛠️ | ![Maven](https://img.shields.io/badge/Maven-C71A36?style=flat&logo=apachemaven&logoColor=white) ![Lombok](https://img.shields.io/badge/Lombok-BC4521?style=flat&logo=lombok&logoColor=white) | Build & dependency management, boilerplate reduction |
+| 🛠️ | ![Maven](https://img.shields.io/badge/Maven-C71A36?style=flat&logo=apachemaven&logoColor=white) | Build & dependency management (wrapper included) |
 
 </div>
 
@@ -274,7 +274,7 @@ password with **BCrypt**, assigns `ROLE_STUDENT`, and saves the user — the raw
 
 ## 💾 Database Schema
 
-Ten tables, **eight foreign-key relationships**. Hibernate creates them automatically from the
+Ten tables, **nine foreign-key relationships**. Hibernate creates them automatically from the
 entity classes (`ddl-auto=update`) — no SQL script needed.
 
 ```mermaid
@@ -312,21 +312,21 @@ erDiagram
         Long id PK
         String firstName
         String lastName
-        String email UK
+        String email
         String department
         String qualification
         String photo
     }
     COURSE {
         Long id PK
-        String courseCode UK
+        String courseCode
         String courseName
         String duration
         Double fees
     }
     SUBJECT {
         Long id PK
-        String subjectCode UK
+        String subjectCode
         String subjectName
         String semester
         Integer credits
@@ -371,7 +371,8 @@ erDiagram
     }
 ```
 
-<sub>`PK` primary key · `FK` foreign key · `UK` unique. `USER` and `TEACHER` are standalone tables.</sub>
+<sub>`PK` primary key · `FK` foreign key · `UK` unique in the database. `USER` and `TEACHER` are standalone tables.
+Course code, subject code and teacher email are checked for duplicates in code when a record is created.</sub>
 
 ---
 
@@ -412,8 +413,9 @@ flowchart TD
 
 ## 🔗 Data Integrity
 
-Deleting a parent record never leaves orphaned rows. `deleteStudent()` runs inside one
-`@Transactional` boundary — if any step fails, **everything rolls back**.
+Every parent delete removes its dependent rows first, so it never trips a foreign-key error and
+never leaves orphans. Each one runs inside a single `@Transactional` boundary: if any step
+fails, **everything rolls back**. `deleteStudent()` is the largest:
 
 ```mermaid
 flowchart LR
@@ -435,8 +437,19 @@ flowchart LR
     style RB fill:#78350f,stroke:#f59e0b,color:#fff
 ```
 
-Each child delete is a `@Modifying` JPQL bulk query in its repository — e.g.
-`DELETE FROM Fee f WHERE f.student.id = :studentId`. The same pattern protects `deleteSubject()`.
+Each child delete is a `@Modifying` JPQL bulk query in its repository, for example
+`DELETE FROM Fee f WHERE f.student.id = :studentId`. The same pattern covers every table that
+other rows point at:
+
+| Deleting a… | Clears first, in order |
+|---|---|
+| 👨‍🎓 Student | attendance → enrollments → fees → results |
+| 📖 Subject | attendance → enrollments → results of its exams → exams |
+| 📚 Course | enrollments |
+| 🧾 Exam | results |
+
+<sub>Bulk JPQL deletes cannot join, so a subject's exam results are matched with a subquery:
+`DELETE FROM Result r WHERE r.exam.id IN (SELECT e.id FROM Exam e WHERE e.subject.id = :subjectId)`.</sub>
 
 ---
 
@@ -495,8 +508,9 @@ Student-Management-System-web/
 | 🏆 Result | `/result` | `GET /` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `GET /delete/{id}` · `GET /search` · `GET /page/{n}` |
 | 💰 Fee | `/fee` | `GET /` · `GET /search` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `GET /delete/{id}` |
 
-**Public** (no login needed): `/`, `/login`, `/register`, `/css/**`, `/js/**`, `/images/**`, `/uploads/**`.
-**Everything else** requires an authenticated session.
+**Public** (no login needed): `/`, `/login`, `/register`, `/css/**`, `/js/**`, `/images/**`.
+**Everything else** requires an authenticated session, including uploaded photos, which are served
+at `/student-images/**` and `/teacher-images/**`.
 
 </details>
 
@@ -626,7 +640,6 @@ Short, plain-English definitions of the terms used in this project — enough to
 | **Multipart** | The form encoding used to upload files (student / teacher photos). |
 | **Maven / `pom.xml`** | Build tool and its config file — lists dependencies, compiles, and packages the `.jar`. |
 | **`mvnw`** | Maven *wrapper* — downloads the right Maven version so you don't install it yourself. |
-| **Lombok** | Annotation library that generates getters/setters/constructors at compile time. |
 
 </details>
 
@@ -673,6 +686,6 @@ Short, plain-English definitions of the terms used in this project — enough to
 
 <br/>
 
-<sub>Built with ☕ Java 21 · 🍃 Spring Boot 3.5 · 🐬 MySQL 8 — last verified against source on 21 Sep 2026</sub>
+<sub>Built with ☕ Java 21 · 🍃 Spring Boot 3.5 · 🐬 MySQL 8 — last verified against source on 7 Oct 2026</sub>
 
 </div>
