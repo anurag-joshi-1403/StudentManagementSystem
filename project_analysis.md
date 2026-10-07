@@ -11,14 +11,14 @@
 ![Build](https://img.shields.io/badge/Build-passing-brightgreen?style=flat-square&logo=apachemaven&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-1_passing-yellowgreen?style=flat-square&logo=junit5&logoColor=white)
 ![Mappings](https://img.shields.io/badge/Request_mappings-68-blueviolet?style=flat-square)
-![LOC](https://img.shields.io/badge/Java_LOC-4.4k-yellow?style=flat-square)
-![Resolved](https://img.shields.io/badge/Resolved-8-success?style=flat-square)
-![Open](https://img.shields.io/badge/Open_issues-23-orange?style=flat-square)
-![Verified](https://img.shields.io/badge/Verified-6_Oct_2026-informational?style=flat-square)
+![LOC](https://img.shields.io/badge/Java_LOC-4.5k-yellow?style=flat-square)
+![Resolved](https://img.shields.io/badge/Resolved-15-success?style=flat-square)
+![Open](https://img.shields.io/badge/Open_issues-18-orange?style=flat-square)
+![Verified](https://img.shields.io/badge/Verified-7_Oct_2026-informational?style=flat-square)
 
-*Last verified against source: **6 Oct 2026** · commit `9d957c6`*
+*Last verified against source: **7 Oct 2026** · commit `fefbd5a`*
 
-[📘 README](README.md) · [🗺️ Roadmap](PROJECT_ROADMAP.md) · [🧪 Backlog](#-engineering-backlog) · [🚧 Remaining Work](#-remaining-work)
+[📘 README](README.md) · [🗺️ Roadmap](PROJECT_ROADMAP.md) · [✅ Task Board](TASKS.md) · [🧪 Backlog](#-engineering-backlog) · [🚧 Remaining Work](#-remaining-work)
 
 </div>
 
@@ -43,18 +43,19 @@
 |---|:---:|---|
 | 🛠️ **Compile & package** | 🟢 Pass | `mvnw test` → `BUILD SUCCESS` |
 | 🚀 **Startup** | 🟢 Pass | Context boots against MySQL · **68** request mappings (66 app + 2 Spring `/error`) |
-| 🔑 **Authentication** | 🟢 Solid | BCrypt, custom `UserDetailsService`, CSRF tokens on every `th:action` form |
+| 🔑 **Authentication** | 🟢 Solid | BCrypt, custom `UserDetailsService`, CSRF tokens on every `th:action` form, POST logout |
 | 🧮 **Business logic** | 🟢 Working | Grade engine, gender split, fee totals, upcoming-exam filter all read real data |
+| ✔️ **Form validation** | 🟢 Working | Bean Validation runs on all 10 entity forms and re-renders field errors |
 | 🧪 **Test suite** | 🟡 Smoke only | `Tests run: 1, Failures: 0` — `contextLoads()` has no assertions |
-| 🔍 **Search** | 🟡 Partial | Keyword search works in 8 of 9 modules · Student search returns 500 · date-only filters return every row |
-| 🔗 **Referential integrity** | 🟡 Partial | Student delete is fully transactional · Course, Exam and Subject deletes can hit FK errors |
+| 🔍 **Search** | 🟢 Working | Keyword search works in all 9 modules · attendance and exam date filters combine with the keyword |
+| 🔗 **Referential integrity** | 🟢 Solid | All four parent deletes (Student, Course, Exam, Subject) clear dependent rows in one transaction |
 | 🎨 **UI consistency** | 🟡 Partial | Dashboard uses the shared layout · 9 modules are standalone pages |
 | 🛡️ **Authorization** | 🔴 Missing | Single role, open self-registration, state-changing GET links |
 
-> 🔄 **Since the 21 Sep review:** no Java, template or CSS files have changed. Only `README.md`,
-> `docs/banner.svg` and the `thymeleaf-extras-springsecurity6` dependency landed. This pass was a deeper
-> line-by-line audit of all 63 Java files and 36 templates. It re-checked every earlier finding and
-> found **9 new issues (#23–#31)**, three of them High severity.
+> 🔄 **6 Oct 2026:** a line-by-line audit of all 63 Java files and 36 templates found **9 new issues
+> (#23–#31)**. Stage A of the [Task Board](TASKS.md) then fixed **six issues** (#12, #13, #23, #24,
+> #25, #26) and part of #5, each one reproduced before the fix and re-checked after it. Testing turned
+> up two more: **#32** (fixed) and **#33** (open).
 
 ---
 
@@ -73,8 +74,9 @@
 | 🗄️ Repositories | `10` |
 | 📦 JPA entities | `10` |
 | 🔗 `@ManyToOne` relationships | `9` |
-| ✍️ `@Modifying` JPQL deletes | `7` |
+| ✍️ `@Modifying` JPQL deletes | `10` |
 | 📊 Aggregate `@Query`s | `4` |
+| 🔍 Search `@Query`s | `2` |
 | 📨 DTOs | `1` real + `3` empty stubs |
 | 🧰 Utilities | `3` empty stubs |
 
@@ -91,7 +93,7 @@
 | ⚡ JS files | `3` *(dashboard, charts, notifications)* |
 | 🧪 Test classes | `1` |
 | 📄 Java files | `63` |
-| 📏 Lines of Java | `4,405` |
+| 📏 Lines of Java | `4,512` |
 
 </td>
 </tr>
@@ -107,7 +109,7 @@
 | 🔐 | Spring Security 6 · `thymeleaf-extras-springsecurity6` | Form login, BCrypt; `#authentication` drives the navbar |
 | 🗄️ | Spring Data JPA · Hibernate · MySQL (`sms_web`) | `ddl-auto=update`; open-in-view left at its default (`true`) |
 | 🎨 | Thymeleaf · Bootstrap **5.3.3 / 5.3.8** · Bootstrap Icons 1.11.3 · Chart.js 4.4.3 | Two Bootstrap versions in use (#17); Font Awesome 6.5.2 on 3 pages (#31) |
-| ✔️ | Jakarta Bean Validation | Enforced on 8 of 10 entity forms (#12) |
+| ✔️ | Jakarta Bean Validation | Enforced on all 10 entity forms |
 | 🛠️ | Maven wrapper · Lombok | ⚠️ Lombok is declared but **never imported**. All getters and setters are hand-written (#30) |
 
 ---
@@ -120,20 +122,20 @@ each one goes beyond that, and the cards below list what's built. Everything sti
 
 | # | Module | List | Form | Detail | Search | Paging | `@Valid` | Delete | Open issues |
 |:---:|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|---|
-| 1 | 🔐 Auth | — | ✅ | — | — | — | ✅ | — | #3 #24 |
-| 2 | 👨‍🎓 Student | ✅ | ✅ 📷 | ✅ | ❌ 500 | ✅ | ✅ | ✅ cascade | #7 #23 |
+| 1 | 🔐 Auth | — | ✅ | — | — | — | ✅ | — | #3 |
+| 2 | 👨‍🎓 Student | ✅ | ✅ 📷 | ✅ | ✅ | ✅ | ✅ | ✅ cascade | #7 |
 | 3 | 👨‍🏫 Teacher | ✅ | ✅ 📷 | ✅ | ✅ | ✅ | ✅ | ✅ | #7 #27 #29 |
-| 4 | 📚 Course | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ FK | #25 #27 |
-| 5 | 📖 Subject | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ⚠️ FK | #25 #27 |
+| 4 | 📚 Course | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ cascade | #27 |
+| 5 | 📖 Subject | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ cascade | #27 |
 | 6 | 📝 Enrollment | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | #27 |
-| 7 | 🗓️ Attendance | ✅ | ✅ | ❌ | ⚠️ date | ✅ | ✅ | ✅ | #13 #26 |
+| 7 | 🗓️ Attendance | ✅ | ✅ | ❌ | ✅ +date | ✅ | ✅ | ✅ | — |
 | 8 | 💰 Fee | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | #28 |
-| 9 | 🧾 Exam | ✅ | ⚠️ | ❌ | ⚠️ date | ⚠️ | ❌ | ⚠️ FK | #11 #12 #25 #26 |
-| 10 | 🏆 Result | ✅ | ⚠️ | ❌ | ✅ | ⚠️ | ❌ | ✅ | #11 #12 #28 |
-| 11 | 📊 Dashboard | — | — | — | via navbar → #23 | — | — | — | #15 |
+| 9 | 🧾 Exam | ✅ | ✅ | ❌ | ✅ +date | ⚠️ | ✅ | ✅ cascade | #11 |
+| 10 | 🏆 Result | ✅ | ✅ | ❌ | ✅ | ⚠️ | ✅ | ✅ | #11 #28 |
+| 11 | 📊 Dashboard | — | — | — | via navbar ✅ | — | — | — | #15 |
 
-<sub>📷 photo upload · ⚠️ FK = delete fails when child rows exist (see [Referential Integrity](#-referential-integrity)) ·
-⚠️ date = date-only filter ignored · Paging ⚠️ = default list loads every row</sub>
+<sub>📷 photo upload · cascade = dependent rows are cleared first (see [Referential Integrity](#-referential-integrity)) ·
++date = keyword and date filters combine · Paging ⚠️ = default list loads every row</sub>
 
 <details>
 <summary><b>🔐 1. Authentication</b>: registration, login, session</summary>
@@ -145,6 +147,7 @@ each one goes beyond that, and the cards below list what's built. Everything sti
 - [x] `UserServiceImpl.registerUser`: duplicate username/email guards, password confirmation, BCrypt hashing, default `ROLE_STUDENT`
 - [x] `AuthController`: `GET /login`, `GET /register`, `POST /register` (`@Valid` + `BindingResult`, service errors surfaced on the form)
 - [x] `CustomUserDetailsService` honours the `enabled` flag; `SecurityConfig` wires `DaoAuthenticationProvider`
+- [x] Sidebar logout is a `POST /logout` form, so the CSRF token is sent and the session ends
 - [x] `auth/login.html`, `auth/register.html`
 
 </details>
@@ -182,7 +185,7 @@ each one goes beyond that, and the cards below list what's built. Everything sti
 
 - [x] `Course` entity: `courseCode`, `courseName`, `duration`, `fees` (`Double`, ≥ 0), `description`
 - [x] `CourseRepository`: name/code search, `existsByCourseCode`
-- [x] `CourseServiceImpl`: CRUD, pagination, search
+- [x] `CourseServiceImpl`: CRUD, pagination, search, `@Transactional` delete that clears enrollments first
 - [x] `CourseController`: 6 routes including `GET /course/view/{id}`
 - [x] `course-list.html` · `course-form.html` · `course-view.html`
 
@@ -195,7 +198,7 @@ each one goes beyond that, and the cards below list what's built. Everything sti
 
 - [x] `Subject` entity: `subjectCode`, `subjectName`, `semester`, `credits` (≥ 1), `department`. ⚠️ No `Course` relationship
 - [x] `SubjectRepository`: name/code search, `existsBySubjectCode`, `sumAllCredits`
-- [x] `SubjectServiceImpl`: `@Transactional` delete clears attendance → enrollments → exams first
+- [x] `SubjectServiceImpl`: `@Transactional` delete clears attendance → enrollments → exam results → exams first
 - [x] `SubjectController`: 5 routes
 - [x] `subject-list.html` · `subject-form.html`
 
@@ -220,7 +223,7 @@ each one goes beyond that, and the cards below list what's built. Everything sti
 <br/>
 
 - [x] `Attendance` entity: `student`, `subject`, `attendanceDate`, `status`, `remarks`
-- [x] `AttendanceRepository`: keyword + date search, `countByStatus`, bulk deletes by student / subject
+- [x] `AttendanceRepository`: keyword + date `@Query` search (each optional, both must match), `countByStatus`, bulk deletes by student / subject
 - [x] `AttendanceServiceImpl`: CRUD, pagination, status counts
 - [x] `AttendanceController`: 8 routes (separate `/save` and `/update/{id}`)
 - [x] `attendance-list.html` · `attendance-form.html`
@@ -246,9 +249,9 @@ each one goes beyond that, and the cards below list what's built. Everything sti
 <br/>
 
 - [x] `Exam` entity: `examName`, `subject`, `examDate`, `totalMarks` (≥ 1), `passingMarks` (≥ 1)
-- [x] `ExamRepository`: name/subject/date search, upcoming count and top-5 (`examDate >= today`)
-- [x] `ExamServiceImpl`: CRUD, pagination, upcoming exams
-- [x] `ExamController`: 8 routes
+- [x] `ExamRepository`: name/subject + date `@Query` search (each optional, both must match), upcoming count and top-5 (`examDate >= today`)
+- [x] `ExamServiceImpl`: CRUD, pagination, upcoming exams, `@Transactional` delete that clears results first
+- [x] `ExamController`: 8 routes; `@Valid` on save and update, with field errors on the form
 - [x] `exam-list.html` · `exam-form.html`
 
 </details>
@@ -261,7 +264,7 @@ each one goes beyond that, and the cards below list what's built. Everything sti
 - [x] `Result` entity: `student`, `exam`, `obtainedMarks` (0–1000), `grade`, `resultStatus`
 - [x] `ResultRepository`: 4-field search, bulk delete by student
 - [x] `ResultServiceImpl`: **auto-computes percentage, six-band grade and pass/fail** from the exam's own thresholds on every save and update
-- [x] `ResultController`: 8 routes; the form binds whole `Exam` entities, so the grade engine sees real marks
+- [x] `ResultController`: 8 routes; `@Valid` on save and update; the form binds whole `Exam` entities, so the grade engine sees real marks
 - [x] `result-list.html` · `result-form.html`
 
 </details>
@@ -305,29 +308,28 @@ flowchart LR
     EN -->|subject_id| SU
     AT -->|subject_id| SU
     EX -->|subject_id| SU
-    EN -.->|"course_id ✖"| CO
-    RE -.->|"exam_id ✖"| EX
-
-    linkStyle 7,8 stroke:#ef4444,stroke-width:2px,color:#ef4444
+    EN -->|course_id| CO
+    RE -->|exam_id| EX
 
     style ST fill:#065f46,stroke:#10b981,color:#fff
-    style SU fill:#78350f,stroke:#f59e0b,color:#fff
-    style CO fill:#7f1d1d,stroke:#ef4444,color:#fff
-    style EX fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style SU fill:#065f46,stroke:#10b981,color:#fff
+    style CO fill:#065f46,stroke:#10b981,color:#fff
+    style EX fill:#065f46,stroke:#10b981,color:#fff
 ```
 
-<sub>Arrows point from child to parent. **Solid** = cleared before the parent is deleted · **red dashed** =
-not cleared, so the parent delete fails · node colour = outcome of deleting that parent.</sub>
+<sub>Arrows point from child to parent. Every arrow is now cleared before its parent is deleted, so all four
+parents (green) delete safely. Until 6 Oct 2026 the `course_id` and `exam_id` arrows were not cleared (#25).</sub>
 
 | Delete operation | Children cleared first | Outcome |
 |---|---|:---:|
 | `StudentServiceImpl.deleteStudent` | attendance → enrollments → fees → results, in one `@Transactional` | 🟢 Safe |
-| `SubjectServiceImpl.deleteSubject` | attendance → enrollments → exams | 🟠 Fails if any of those exams has results |
-| `CourseServiceImpl.deleteCourse` | none | 🔴 Fails if the course has enrollments |
-| `ExamServiceImpl.deleteExam` | none | 🔴 Fails if the exam has results |
+| `SubjectServiceImpl.deleteSubject` | attendance → enrollments → results of its exams → exams | 🟢 Safe |
+| `CourseServiceImpl.deleteCourse` | enrollments | 🟢 Safe |
+| `ExamServiceImpl.deleteExam` | results | 🟢 Safe |
 | Teacher · Enrollment · Attendance · Fee · Result | no children | 🟢 Safe |
 
-Each failure surfaces as a `DataIntegrityViolationException` rendered as a Whitelabel 500 page (#8, #25).
+No delete path is known to fail now. Any future constraint error would still show the Whitelabel 500 page
+until a global exception handler lands (#8, task B3).
 
 ---
 
@@ -344,6 +346,8 @@ Each failure surfaces as a `DataIntegrityViolationException` rendered as a White
 | Password storage | BCrypt via a `PasswordEncoder` bean |
 | Login & session | Form login, custom `UserDetailsService`, `enabled` flag honoured |
 | CSRF on forms | On by default; Thymeleaf injects `_csrf` into every `th:action` POST form |
+| Logout | `POST /logout` form with the CSRF token; the session is invalidated |
+| Secrets | DB credentials read from `DB_USERNAME` / `DB_PASSWORD` environment variables |
 | Output escaping | No `th:utext` anywhere, so all model data is HTML-escaped |
 | Registration guards | Username and email uniqueness, password confirmation |
 | Route protection | Everything outside the public allowlist requires a session |
@@ -357,8 +361,7 @@ Each failure surfaces as a `DataIntegrityViolationException` rendered as a White
 |---|:---:|
 | No roles + open self-registration | #3 |
 | Deletes via GET links | #4 |
-| Logout via GET (silently fails) | #24 |
-| DB password in source, already pushed | #5 |
+| Leaked DB password still in git history, not rotated | #5 |
 | Unvalidated uploads served same-origin | #7 |
 | Whitelabel errors · DEBUG/TRACE logging | #8 · #29 |
 
@@ -377,16 +380,16 @@ Each failure surfaces as a `DataIntegrityViolationException` rendered as a White
 
 ```mermaid
 pie showData
-    title Backlog by severity (31 items)
-    "Resolved" : 8
+    title Backlog by severity (33 items)
+    "Resolved" : 15
     "Critical" : 3
-    "High" : 6
-    "Medium" : 5
-    "Low" : 9
+    "High" : 3
+    "Medium" : 2
+    "Low" : 10
 ```
 
 <details>
-<summary><b>✅ Resolved (8)</b></summary>
+<summary><b>✅ Resolved (15)</b></summary>
 
 <br/>
 
@@ -396,10 +399,17 @@ pie showData
 | 2 | `deleteBySubjectId` targeted the wrong entity → FK violation | `EnrollmentRepository.java` | `21 Sep 2026` |
 | 9 | "Total Fees" displayed a record count, not a currency sum | `FeeServiceImpl.java` | `21 Sep 2026` |
 | 10 | "Upcoming Exams" listed the 5 oldest exams, with no date filter | `ExamServiceImpl.java` | `21 Sep 2026` |
+| 12 | Exam and Result forms lacked `@Valid`: invalid input reached Hibernate (or a `NullPointerException` in the grade calculation) and showed a 500 page | `ExamController.java` · `ResultController.java` | `6 Oct 2026` |
+| 13 | Magic-date sentinel `1900-01-01` stood in for "no date" in search | `AttendanceServiceImpl.java` · `ExamServiceImpl.java` | `6 Oct 2026` |
 | 14 | Navbar hardcoded "Admin User" regardless of session | `common/navbar.html` | `21 Sep 2026` |
 | 16 | Gender statistics computed but never rendered | `stats-cards.html` · `charts.html` | `21 Sep 2026` |
 | 21 | `footer.css` contained a copy of `footer.html`, so the footer rendered unstyled | `static/css/footer.css` | `21 Sep 2026` |
 | 22 | `welcome.css` targeted markup that did not exist; live clock had no elements to update | `welcome.css` · `welcome.html` | `21 Sep 2026` |
+| 23 | Student search returned 500 because the pager values were missing from the model | `StudentController.java` | `6 Oct 2026` |
+| 24 | Logout sent `GET /logout`, which 404'd and left the session alive; now a CSRF-protected POST form | `common/sidebar.html` | `6 Oct 2026` |
+| 25 | Course, exam and subject deletes violated foreign keys (500); each now clears its dependent rows in one transaction | `CourseServiceImpl` · `ExamServiceImpl` · `SubjectServiceImpl` | `6 Oct 2026` |
+| 26 | Date-only search returned every row; keyword and date are now each optional and must both match | `AttendanceRepository` · `ExamRepository` | `6 Oct 2026` |
+| 32 | Every edit form with a date opened with an empty date box: `LocalDate` printed in a locale short style (`12/10/26`) that `<input type="date">` rejects | `application.properties` (`spring.mvc.format.date=iso`) | `6 Oct 2026` |
 
 </details>
 
@@ -412,12 +422,12 @@ pie showData
 |:---:|---|---|:---:|
 | 3 | No role enforcement, and `/register` is public: anyone can self-register and immediately gets full create/edit/delete rights | `SecurityConfig.java:48` · `UserServiceImpl.java:55` | `2` |
 | 4 | Deletes exposed as GET links, so browser prefetch, crawlers or a link on another site can trigger them, and CSRF protection doesn't cover GET | 9 `*-list.html` templates | `2` |
-| 5 | Database password committed in plaintext and present on `origin/main` | `application.properties:6` | `2` |
+| 5 | Database password committed in plaintext and present on `origin/main`. Since 6 Oct it is read from `${DB_PASSWORD}`, but the old value is still in git history and has not been rotated ([task A4](TASKS.md), deferred) | `application.properties` history | `2` |
 
 </details>
 
 <details open>
-<summary><b>🟠 High (6)</b></summary>
+<summary><b>🟠 High (3)</b></summary>
 
 <br/>
 
@@ -426,29 +436,23 @@ pie showData
 | 6 | Only the dashboard renders through the shared layout, so the sidebar and navbar disappear on every other page | All non-dashboard controllers | `1` |
 | 7 | Uploads have no type, size or filename checks (100 MB limit, client filename used as-is). Files are served same-origin, so an uploaded `.html`/`.svg` would run as stored XSS. Replaced photos are never deleted | `StudentController.java:107` · `TeacherController.java:97` · `application.properties:22-23` | `2` |
 | 8 | No global exception handler, so a bad id (`orElseThrow()`) or FK error shows a Whitelabel 500 | *(missing `@ControllerAdvice`)* | `1` |
-| 23 🆕 | **Student search returns 500**, including from the navbar search box on every page. `searchStudents` never sets `currentPage`/`totalPages`, and the list's pagination block then evaluates `null - 1` and `#numbers.sequence(1, null)` | `StudentController.java:52-61` · `student-list.html:131,141` | `1` |
-| 24 🆕 | **Logout doesn't log out.** The sidebar sends `GET /logout`, but with CSRF enabled Spring Security only accepts `POST /logout`. The request falls through to a 404 and the session stays alive | `common/sidebar.html:134` | `2` |
-| 25 🆕 | **Three deletes violate foreign keys** → 500: a course with enrollments, an exam with results, a subject whose exams have results | `CourseServiceImpl.java:44` · `ExamServiceImpl.java:56` · `SubjectServiceImpl.java:69` | `3` |
 
 </details>
 
 <details>
-<summary><b>🟡 Medium (5)</b></summary>
+<summary><b>🟡 Medium (2)</b></summary>
 
 <br/>
 
 | # | Issue | Location | Phase |
 |:---:|---|---|:---:|
 | 11 | Pagination bypassed: all 9 search paths return an unpaginated `List`, and `GET /exam` and `GET /result` load every row | 9 controllers · `ExamController.java:28` · `ResultController.java:30` | `3` |
-| 12 | `@Valid` missing, so Exam and Result constraints never run and their forms have no `th:errors` | `ExamController.java:48,72` · `ResultController.java:51,78` | `3` |
-| 13 | Magic-date sentinel `1900-01-01` stands in for "no date" | `AttendanceServiceImpl.java:63` · `ExamServiceImpl.java:67` | `3` |
-| 26 🆕 | Date-only search returns every row. A blank keyword becomes `""`, `Containing("")` matches all rows, and the clauses are OR-ed, so the date is ignored (keyword + date also gives a union, not an intersection) | `AttendanceController.java:125` · `ExamServiceImpl.java:62` | `3` |
 | 27 🆕 | Uniqueness is checked only on create and only in app code. Course code, subject code and teacher email can be duplicated through edit, none has a DB `unique` constraint, and duplicate enrollments are accepted | `Course.java:21` · `Subject.java:17` · `Teacher.java:28` · `CourseController.java:74` | `3` |
 
 </details>
 
 <details>
-<summary><b>🟢 Low (9)</b></summary>
+<summary><b>🟢 Low (10)</b></summary>
 
 <br/>
 
@@ -463,6 +467,7 @@ pie showData
 | 29 🆕 | Debug leftovers: `System.out.println` in two controllers, a failed teacher-photo write swallowed by `printStackTrace()`, and DEBUG/TRACE logging plus `show-sql` in the default profile | `DashboardController.java:47` · `TeacherController.java:116,156` · `application.properties:14,25-26` | `2` |
 | 30 🆕 | Dead code and config: Lombok never imported; the `/uploads/**` permit rule matches nothing (photos are served at `/student-images/**` and `/teacher-images/**`); 4 unused repository methods; `getRecentStudents()` typed as `Object` | `pom.xml` · `SecurityConfig.java:44` · `StudentService.java:33` | `1` |
 | 31 🆕 | External runtime dependencies: `via.placeholder.com` for missing teacher photos; Font Awesome loaded on 3 pages alongside Bootstrap Icons | `teacher-list.html:79` · `teacher-view.html:48` · enrollment and subject templates | `1` |
+| 33 🆕 | Non-numeric input in a number field (only possible by bypassing the browser's number box) shows Spring's raw "Failed to convert…" message | *(no `messages.properties`)* | `3` |
 
 </details>
 
@@ -485,31 +490,33 @@ pie showData
 
 ## 📝 Documentation Drift
 
-Statements in the companion documents that no longer match the source. Fix these before sharing the repository.
+Statements in the companion documents that had stopped matching the source. **All eight were corrected on
+7 Oct 2026** ([task A12](TASKS.md)); the table stays as a record of what changed.
 
-| Claim | Where | Actual |
-|---|---|---|
-| "Eight foreign-key relationships" | README · Roadmap | **Nine**. Both documents' own ER diagrams draw nine edges |
-| `courseCode`, `subjectCode`, `Teacher.email` marked `UK` | README · Roadmap ER diagrams | Only `Student.email`, `User.username` and `User.email` are unique in the database (#27) |
-| "Safe Deletes: no orphan rows" · "the same pattern protects `deleteSubject()`" | README | True for Student only. Subject, Course and Exam deletes can fail (#25) |
-| Lombok listed for "boilerplate reduction" | README tech stack | Declared, never used (#30) |
-| `/uploads/**` listed as a public route | README routes | Photos are served at `/student-images/**` and `/teacher-images/**` and require login |
-| "35 views" · "4,278 lines of Java" | Roadmap | **36** templates · **4,405** lines |
-| "Search bypasses pagination in 5 modules" | Roadmap #11 | All 9 search paths, and Student's crashes (#23) |
-| Sentinel at `ExamServiceImpl.java:64` | Roadmap #13 | Line **67** |
+| Claim | Where | Actual | Status |
+|---|---|---|:---:|
+| "Eight foreign-key relationships" | README · Roadmap | **Nine**. Both documents' own ER diagrams draw nine edges | ✅ Fixed |
+| `courseCode`, `subjectCode`, `Teacher.email` marked `UK` | README · Roadmap ER diagrams | Only `Student.email`, `User.username` and `User.email` are unique in the database (#27) | ✅ Markers removed |
+| "Safe Deletes: no orphan rows" · "the same pattern protects `deleteSubject()`" | README | Was true for Student only; true for all four parent deletes since #25 was fixed | ✅ Reworded |
+| Lombok listed for "boilerplate reduction" | README tech stack | Declared, never used (#30) | ✅ Removed from README |
+| `/uploads/**` listed as a public route | README routes | Photos are served at `/student-images/**` and `/teacher-images/**` and require login | ✅ Fixed |
+| "35 views" · "4,278 lines of Java" | Roadmap | **36** templates · **4,512** lines (as of `fefbd5a`) | ✅ Fixed |
+| "Search bypasses pagination in 5 modules" | Roadmap #11 | All 9 search paths | ✅ Fixed |
+| Sentinel at `ExamServiceImpl.java:64` | Roadmap #13 | #13 is resolved; the sentinel is gone | ✅ Moved to Resolved |
 
 ---
 
 ## 🚧 Remaining Work
 
-> Everything still to do, in one place: **39 tasks**, made up of the 23 open backlog issues plus 16 features
-> and chores. They're ordered as a plan: quick wins first, then the four [roadmap](PROJECT_ROADMAP.md) phases.
-> Issue numbers point to the [Engineering Backlog](#-engineering-backlog) for file and line details. Tick
-> items off here as they land.
+> Everything still to do, in one place: **39 tasks**, made up of the 23 open backlog issues (as of the
+> morning audit) plus 16 features and chores. They're ordered as a plan: quick wins first, then the four
+> [roadmap](PROJECT_ROADMAP.md) phases. Issue numbers point to the [Engineering Backlog](#-engineering-backlog)
+> for file and line details. The [Task Board](TASKS.md) splits this list into 101 single-sitting steps and
+> tracks their progress.
 
 ```mermaid
 flowchart LR
-    QW["⚡ Quick wins<br/><b>7 tasks</b><br/><i>search · logout · deletes</i>"]
+    QW["⚡ Quick wins<br/><b>6 of 7 done</b><br/><i>search · logout · deletes</i>"]
     P1["🟠 Phase 1 · Unify UI<br/><b>6 tasks</b><br/><i>shared layout · error pages</i>"]
     P2["🟡 Phase 2 · Secure<br/><b>5 tasks</b><br/><i>roles · POST deletes · uploads</i>"]
     P3["🟢 Phase 3 · Complete<br/><b>14 tasks</b><br/><i>detail views · reports · CSV</i>"]
@@ -517,7 +524,7 @@ flowchart LR
 
     QW --> P1 --> P2 --> P3 --> P4
 
-    style QW fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style QW fill:#065f46,stroke:#10b981,color:#fff
     style P1 fill:#7c2d12,stroke:#f97316,color:#fff
     style P2 fill:#713f12,stroke:#eab308,color:#fff
     style P3 fill:#065f46,stroke:#10b981,color:#fff
@@ -530,13 +537,13 @@ flowchart LR
 
 Each one is small, and the first two fix flows a reviewer is likely to click in their first minute.
 
-- [ ] **Fix the student search crash** (#23): put `currentPage = 1` and `totalPages = 1` on the model in `searchStudents`, or guard the pagination `<nav>` with `th:if` · *~2 lines*
-- [ ] **Make logout work** (#24): replace the sidebar `<a>` with a `<form method="post" th:action="@{/logout}">` and a button · *~5 lines*
-- [ ] **Rotate the database password** (#5): read it from `${DB_PASSWORD}` and change the old one, which is already on GitHub · *1 line + rotation*
-- [ ] **Fix the three failing deletes** (#25): clear enrollments by course and results by exam first, under `@Transactional` · *~20 lines*
-- [ ] **Make date-only search filter by date** (#26): pass `null` instead of `""` for a blank keyword, or switch to an AND-semantics `@Query` · *~10 lines*
-- [ ] **Validate the Exam and Result forms** (#12): add `@Valid` + `BindingResult` to the 4 handlers and `th:errors` to both forms · *~30 lines*
-- [ ] **Correct the README and roadmap** to match the [Documentation Drift](#-documentation-drift) table, once the fixes above have landed · *docs only*
+- [x] **Fix the student search crash** (#23): put `currentPage = 1` and `totalPages = 1` on the model in `searchStudents`, or guard the pagination `<nav>` with `th:if` · *~2 lines*
+- [x] **Make logout work** (#24): replace the sidebar `<a>` with a `<form method="post" th:action="@{/logout}">` and a button · *~5 lines*
+- [ ] **Rotate the database password** (#5): read it from `${DB_PASSWORD}` and change the old one, which is already on GitHub · *1 line + rotation* · ✅ env var done 6 Oct; rotation deferred because other local projects share `root`
+- [x] **Fix the three failing deletes** (#25): clear enrollments by course and results by exam first, under `@Transactional` · *~20 lines*
+- [x] **Make date-only search filter by date** (#26): pass `null` instead of `""` for a blank keyword, or switch to an AND-semantics `@Query` · *~10 lines*
+- [x] **Validate the Exam and Result forms** (#12): add `@Valid` + `BindingResult` to the 4 handlers and `th:errors` to both forms · *~30 lines*
+- [x] **Correct the README and roadmap** to match the [Documentation Drift](#-documentation-drift) table, once the fixes above have landed · *docs only*
 
 ### 🟠 Phase 1 · Unify the UI
 
@@ -570,7 +577,7 @@ Each one is small, and the first two fix flows a reviewer is likely to click in 
 **🔧 Correctness**
 
 - [ ] **Paginate search results** and the `/exam` and `/result` lists (#11)
-- [ ] **Drop the `1900-01-01` date sentinel** (#13)
+- [x] **Drop the `1900-01-01` date sentinel** (#13)
 - [ ] **Enforce uniqueness** (#27): `unique = true` on course code, subject code and teacher email, checks on edit as well as create, no duplicate enrollments
 - [ ] **Sanity-check marks and amounts** (#28): obtained ≤ total, passing ≤ total, no negative fees; decide whether a pass can carry grade F
 - [ ] **Implement or delete the empty stubs** (#18): the 3 DTOs and `DateUtil`
@@ -620,16 +627,16 @@ Recorded but deliberately unscheduled, because each needs a schema migration or 
 
 | Module | Backend | Frontend | Status | Notes |
 |---|:---:|:---:|:---:|---|
-| 🔐 Auth | ✅ | ✅ | 🟡 | Login/register solid; logout broken (#24); no roles (#3) |
-| 👨‍🎓 Student | ✅ | ✅ | 🟡 | Full CRUD + detail view; **search returns 500** (#23) |
+| 🔐 Auth | ✅ | ✅ | 🟡 | Login, register and logout work; no roles yet (#3) |
+| 👨‍🎓 Student | ✅ | ✅ | 🟢 | Full CRUD, detail view and search |
 | 👨‍🏫 Teacher | ✅ | ✅ | 🟢 | Full CRUD + detail view; minor duplicate/upload gaps |
-| 📚 Course | ✅ | ✅ | 🟡 | Full CRUD + detail view; delete fails when enrolled (#25) |
-| 📖 Subject | ✅ | ⚠️ | 🟡 | View page missing; delete fails when exams have results |
+| 📚 Course | ✅ | ✅ | 🟢 | Full CRUD + detail view; delete clears enrollments first |
+| 📖 Subject | ✅ | ⚠️ | 🟢 | View page missing |
 | 📝 Enrollment | ✅ | ⚠️ | 🟢 | View page missing |
-| 🗓️ Attendance | ✅ | ⚠️ | 🟡 | View/report missing; date filter ignored (#26) |
+| 🗓️ Attendance | ✅ | ⚠️ | 🟢 | View/report missing |
 | 💰 Fee | ✅ | ⚠️ | 🟢 | View/receipt missing |
-| 🧾 Exam | ⚠️ | ⚠️ | 🟠 | No validation, delete FK error, date filter ignored, no view |
-| 🏆 Result | ⚠️ | ⚠️ | 🟡 | Grade engine works; no validation (#12); no marksheet |
+| 🧾 Exam | ✅ | ⚠️ | 🟢 | View page missing |
+| 🏆 Result | ✅ | ⚠️ | 🟡 | Grade engine and validation work; marks not capped at the exam total (#28); no marksheet |
 | 📊 Dashboard | ✅ | ✅ | 🟢 | Real data + charts; notifications still static |
 | 🎨 Shared layout | ✅ | ❌ | 🟠 | Only the dashboard renders through `layout.html` |
 | 🛡️ Roles/permissions | ❌ | ❌ | 🔴 | Not implemented |
@@ -639,15 +646,15 @@ Recorded but deliberately unscheduled, because each needs a schema migration or 
 <div align="center">
 
 ![Surface](https://img.shields.io/badge/Feature_surface-~70%25-blue?style=for-the-badge)
-![Working](https://img.shields.io/badge/Working_as_intended-~55%25-orange?style=for-the-badge)
+![Working](https://img.shields.io/badge/Working_as_intended-~62%25-yellowgreen?style=for-the-badge)
 
 </div>
 
-> **Feature surface (~70%)** is unchanged: no code has landed since 21 Sep, and all 10 modules still have
-> working backends and list/form UI. **Working as intended** drops from ~60% to **~55%** because this audit
-> found failures in flows that were previously counted as done: student search (#23), logout (#24) and
-> three delete paths (#25). Clearing the [quick wins](#-quick-wins--do-first) gets it back above 60%. The phased plan
-> is in [PROJECT_ROADMAP.md](PROJECT_ROADMAP.md).
+> **Feature surface (~70%)** is unchanged: Stage A repaired existing flows rather than adding features.
+> **Working as intended** rises from the morning's ~55% to an estimated **~62%**: student search, logout,
+> the three failing deletes, date filtering and Exam/Result validation all work now, and every edit form
+> keeps its date (#32). The phased plan is in [PROJECT_ROADMAP.md](PROJECT_ROADMAP.md), and the
+> step-by-step board is [TASKS.md](TASKS.md).
 
 ---
 
@@ -661,6 +668,9 @@ Recorded but deliberately unscheduled, because each needs a schema migration or 
 | 🚪 #24 logout | Spring Security `LogoutConfigurer`: with CSRF enabled the logout matcher is `POST`-only | `GET /logout` is never handled |
 | 🔗 #25 deletes | Traced every `delete*()` against the 9 `@JoinColumn(nullable = false)` FKs | 3 unhandled parent → child paths |
 | 📖 Everything else | Line-by-line read of all 63 Java files, 36 templates, `pom.xml`, `application.properties` | File and line references in the backlog |
+| 🧪 Stage A fixes | Each fix reproduced on the running app (`:8080`), then re-checked on a second instance built from the fixed source (`:8081`); logout, form errors and edit-form dates also checked in headless Edge | Every check passes · `mvnw test` green |
 
-<sub>The application was not exercised through a signed-in browser session, to avoid writing test accounts
-into the local `sms_web` database. #23 and #24 are confirmed from framework behaviour, not from a click-through.</sub>
+<sub>The morning audit did not sign in, to avoid writing test accounts into the local `sms_web` database, so #23
+and #24 were first confirmed from framework behaviour. The Stage A checks did sign in, with a dedicated `qa_tester`
+account and made-up `@example.com` test data, and reproduced both; every temporary record they created was
+deleted afterwards.</sub>
