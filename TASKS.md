@@ -46,13 +46,13 @@ Suggested commit style: `fix(student): search no longer crashes (#23)`.</sub>
 | Stage | What it gets you | Tasks | Time | Done |
 |---|---|:---:|:---:|:---:|
 | 🧰 [0 · Get Ready](#-stage-0--get-ready) | App running with linked test data | 2 | ~35 min | ✅ 2 / 2 |
-| ⚡ [A · Quick Wins](#-stage-a--quick-wins) | Every crash and broken button a reviewer would hit is fixed | 12 | ~4.5 h | 3 / 12 |
-| 🟠 [B · One Application](#-stage-b--one-application) | Sidebar on every page, designed error pages | 18 | ~10 h | 0 / 18 |
+| ⚡ [A · Quick Wins](#-stage-a--quick-wins) | Every crash and broken button a reviewer would hit is fixed | 12 | ~4.5 h | 11 / 12 · A4 deferred |
+| 🟠 [B · One Application](#-stage-b--one-application) | Sidebar on every page, designed error pages | 18 | ~10 h | ✅ 18 / 18 |
 | 🟡 [C · Security](#-stage-c--security--data-integrity) | Roles, POST deletes, safe uploads, no secrets in git | 15 | ~8 h | 0 / 15 |
 | 🟢 [D · Correctness](#-stage-d--correctness) | Paged search, unique codes, valid marks | 14 | ~7 h | 0 / 14 |
 | 🟢 [E · New Features](#-stage-e--new-features) | Detail pages, marksheet, receipts, reports, CSV | 20 | ~16 h | 0 / 20 |
 | 🔵 [F · Showcase](#-stage-f--showcase-polish) | Notifications, PDF, profile, tests, CI, screenshots | 20 | ~17 h | 0 / 20 |
-| | **Total** | **101** | **~63 h** | **5 / 101** |
+| | **Total** | **101** | **~63 h** | **31 / 101** |
 
 ```mermaid
 flowchart LR
@@ -132,26 +132,27 @@ flowchart LR
 - [ ] **A4 · Change the leaked MySQL password** · `#5` · ⏱ 10 min
   - The old password is already on GitHub in the commit history, so removing it from the file isn't enough on its own. In MySQL, run `ALTER USER 'root'@'localhost' IDENTIFIED BY '<new password>';`, then update `DB_PASSWORD`.
   - ✅ **Done when** the old password no longer works in MySQL and the app still starts.
+  - ⏸️ **Deferred on 6 Oct 2026.** `root` only accepts connections from this PC, which limits the risk. Changing it would also cut off 7 other local project databases (`student_management`, `spring_boot_db`, `online_inventory_system`, `college_2`, `project_1`, `jsp`, `myfirstsql`) and saved Workbench connections. When you do it, update those projects' settings at the same time. Option: give this app its own MySQL user limited to `sms_web`, so that changing the `root` password never affects it.
 
-- [ ] **A5 · Fix course delete** · `#25` · ⏱ 20 min
+- [x] **A5 · Fix course delete** · `#25` · ⏱ 20 min
   - Add `deleteByCourseId` to `EnrollmentRepository`, copying the existing `deleteBySubjectId` (`DELETE FROM Enrollment e WHERE e.course.id = :courseId`).
   - Inject `EnrollmentRepository` into `CourseServiceImpl`, mark `deleteCourse()` `@Transactional`, and clear the enrollments before calling `deleteById`.
   - 📂 `repository/EnrollmentRepository.java` · `service/impl/CourseServiceImpl.java:43`
   - ✅ **Done when** a course with an enrollment can be deleted and its enrollment is removed too.
 
-- [ ] **A6 · Fix exam delete** · `#25` · ⏱ 15 min
+- [x] **A6 · Fix exam delete** · `#25` · ⏱ 15 min
   - Add `ResultRepository.deleteByExamId` (`DELETE FROM Result r WHERE r.exam.id = :examId`), then make `deleteExam()` `@Transactional` and clear the results first.
   - 📂 `repository/ResultRepository.java` · `service/impl/ExamServiceImpl.java:56`
   - ✅ **Done when** an exam with results can be deleted.
 
-- [ ] **A7 · Fix subject delete when its exams have results** · `#25` · ⏱ 15 min
+- [x] **A7 · Fix subject delete when its exams have results** · `#25` · ⏱ 15 min
   - Add `ResultRepository.deleteByExamSubjectId` using a subquery, because a bulk JPQL delete can't join through `r.exam.subject`:
     `DELETE FROM Result r WHERE r.exam.id IN (SELECT e.id FROM Exam e WHERE e.subject.id = :subjectId)`
   - Call it **before** `examRepository.deleteBySubjectId(id)`.
   - 📂 `service/impl/SubjectServiceImpl.java:69`
   - ✅ **Done when** a subject whose exam has results can be deleted.
 
-- [ ] **A8 · Make the attendance search filter by date** · `#26` `#13` · ⏱ 45 min
+- [x] **A8 · Make the attendance search filter by date** · `#26` `#13` · ⏱ 45 min
   - Replace the derived OR-query with one that combines keyword AND date and treats both as optional:
     ```java
     @Query("""
@@ -167,23 +168,27 @@ flowchart LR
   - 📂 `repository/AttendanceRepository.java` · `service/impl/AttendanceServiceImpl.java:63` · `controller/AttendanceController.java:125`
   - ✅ **Done when** a date alone returns only that day's rows, keyword plus date returns rows matching both, and an empty search returns everything.
 
-- [ ] **A9 · Make the exam search filter by date** · `#26` `#13` · ⏱ 30 min
+- [x] **A9 · Make the exam search filter by date** · `#26` `#13` · ⏱ 30 min
   - Repeat A8 for exams (exam name and subject name, with `examDate`), and remove the placeholder date there too.
   - 📂 `repository/ExamRepository.java` · `service/impl/ExamServiceImpl.java:62-67` · `controller/ExamController.java:97`
   - ✅ **Done when** the three checks from A8 pass on the Exam page.
 
-- [ ] **A10 · Validate the Exam form** · `#12` · ⏱ 30 min
+- [x] **A10 · Validate the Exam form** · `#12` · ⏱ 30 min
   - Add `@Valid` + `BindingResult` to `saveExam` and `updateExam`. On errors, add `subjects` back to the model and return the form, as `AttendanceController.saveAttendance` does. In `updateExam`, call `exam.setId(id)` before returning so the form still posts to the update URL.
   - Under each input, add `<div class="text-danger" th:if="${#fields.hasErrors('totalMarks')}" th:errors="*{totalMarks}"></div>`.
   - 📂 `controller/ExamController.java:48,72` · `exam/exam-form.html`
   - ✅ **Done when** total marks of `0` shows "Total marks must be greater than 0" and nothing is saved.
+  - 📝 **Found while doing this (6 Oct 2026):**
+    - The constraints did run before, but only inside Hibernate at insert time, so invalid input gave a **500 page**, not a silent save. The `#12` wording in `project_analysis.md` ("never run") needs correcting in A12.
+    - **New bug, fixed:** every edit form with a date (Exam, Attendance, Student, Fee, Enrollment) opened with an **empty date box**. Spring printed dates in a short local style (`12/10/26`) that `<input type="date">` rejects, so no edit could be saved without retyping the date. One line, `spring.mvc.format.date=iso` in `application.properties`, fixes all five.
+    - Still open: typing letters into a number field (only possible by bypassing the browser) shows Spring's raw "Failed to convert…" message. Fix it with a `messages.properties` entry such as `typeMismatch.java.lang.Integer=Please enter a whole number.`
 
-- [ ] **A11 · Validate the Result form** · `#12` · ⏱ 30 min
-  - Same as A10 for `saveResult` and `updateResult`. Add `students` and `exams` back to the model on errors.
+- [x] **A11 · Validate the Result form** · `#12` · ⏱ 30 min
+  - Same as A10 for `saveResult` and `updateResult`. Add `students` and `exams` back to the model on errors. Expect the same "before" behaviour as A10: a 500 page, not a silent save.
   - 📂 `controller/ResultController.java:51,78` · `result/result-form.html`
   - ✅ **Done when** marks of `-5` show "Marks cannot be negative".
 
-- [ ] **A12 · Correct the facts in the README and roadmap** · ⏱ 30 min
+- [x] **A12 · Correct the facts in the README and roadmap** · ⏱ 30 min
   - Work through the [Documentation Drift](project_analysis.md#-documentation-drift) table. Now that A5–A7 are done, the "safe deletes" claim is true, so reword it rather than deleting it.
   - 📂 `README.md` · `PROJECT_ROADMAP.md`
   - ✅ **Done when** every row in the drift table is either fixed or no longer applies.
@@ -194,26 +199,35 @@ flowchart LR
 
 **Goal:** the sidebar and navbar stay visible on every page, and errors show designed pages instead of the Whitelabel page.
 
-- [ ] **B1 · Add styled error pages** · `#8` · ⏱ 45 min
+> 📝 **Done 7 Oct 2026, with these extras beyond the task text:**
+> - **B1/B3:** one shared error-page fragment (`common/error-page.html`) styled from `theme.css`, plus a `409` page for constraint errors.
+> - **B4:** Bootstrap's reboot tightened heading line-height on the dashboard; `theme.css` now sets headings to `line-height: inherit`, which made the dashboard pixel-identical again apart from the live clock and chart anti-aliasing.
+> - **B6:** removed the student list's duplicate "Student Management System" `<h1>`; the other 8 list pages never had one.
+> - **B7:** dropped `teacher-view`'s `body { background }` rule, which would have overridden the app canvas inside the shell.
+> - **B16:** the student pages also had a broken fallback image (`/images/default-user.png` never existed); all four fallbacks now use `images/default-avatar.svg`.
+> - **B17:** removing Lombok also removed the `maven-compiler-plugin` block, which existed only to run Lombok's annotation processor.
+> - **B18:** `git mv` staged the rename. Run `mvnw clean` once if your IDE reports a "wrong name" error for `WebConfig`.
+
+- [x] **B1 · Add styled error pages** · `#8` · ⏱ 45 min
   - Create `error/404.html`, `error/403.html` (Stage C needs it), `error/500.html` and a generic `error.html` for any other status (for example 405). Spring Boot picks these up by status code with no controller code. Give each one a "Back to dashboard" button.
   - ✅ **Done when** `/does-not-exist` shows your 404 page.
 
-- [ ] **B2 · Use one "not found" exception in all services** · `#8` · ⏱ 30 min
+- [x] **B2 · Use one "not found" exception in all services** · `#8` · ⏱ 30 min
   - Create `exception/ResourceNotFoundException` with `@ResponseStatus(HttpStatus.NOT_FOUND)`. Use it in place of the bare `orElseThrow()` and `new RuntimeException(...)` calls in the 9 `get…ById` methods.
   - 📂 `service/impl/`: Attendance `:30` · Course `:29` · Enrollment `:29` · Exam `:41` · Fee `:38` · Result `:31` · Student `:55` · Subject `:48` · Teacher `:30`
   - ✅ **Done when** `/student/view/99999` shows the 404 page.
 
-- [ ] **B3 · Show a friendly message for linked-record errors** · `#8` · ⏱ 30 min
+- [x] **B3 · Show a friendly message for linked-record errors** · `#8` · ⏱ 30 min
   - Add a `@ControllerAdvice` class `GlobalExceptionHandler` with an `@ExceptionHandler(DataIntegrityViolationException.class)` that renders an error page saying "This record is still linked to other records."
   - ✅ **Done when** temporarily removing the A5 cleanup and deleting an enrolled course shows your page. Put the cleanup back afterwards.
 
-- [ ] **B4 · Load Bootstrap in the shared layout** · `#6` `#17` · ⏱ 45 min
+- [x] **B4 · Load Bootstrap in the shared layout** · `#6` `#17` · ⏱ 45 min
   - Module pages are built with Bootstrap classes, but `layout.html` deliberately doesn't load Bootstrap's CSS. Add Bootstrap **5.3.8** CSS **before** `theme.css` so your own styles take precedence, and add `bootstrap.bundle.min.js` before the other scripts.
   - Check the dashboard. If Bootstrap changes its look, fix the conflicting rules in your CSS (usually `body`, headings, `.card` and `.btn`).
   - 📂 `layout/layout.html:20-40`
   - ✅ **Done when** the dashboard looks the same as it did without Bootstrap.
 
-- [ ] **B5 · Add a small helper for layout views** · ⏱ 20 min
+- [x] **B5 · Add a small helper for layout views** · ⏱ 20 min
   - Every converted page needs the same three model attributes: `title`, `activeNav` and `content`. Put them in one helper, for example `LayoutView.render(model, "student/student-list :: content", "student", "Students")`, which returns `"layout/layout"`.
   - Switch `DashboardController` to the helper to prove it works.
   - ✅ **Done when** the dashboard still renders, now through the helper.
@@ -224,50 +238,50 @@ flowchart LR
 > 3. Use the `activeNav` key the sidebar already expects: `student`, `teacher`, `course`, `subject`, `enrollment`, `attendance`, `fee`, `exam`, `result`.
 > 4. **Check:** sidebar and navbar are visible · the right item is highlighted · add, edit, delete and search still work · a validation error shows the form inside the layout.
 
-- [ ] **B6 · Convert Student** · `#6` · ⏱ 1 h *(the first one takes longest)*
+- [x] **B6 · Convert Student** · `#6` · ⏱ 1 h *(the first one takes longest)*
   - 📂 `student-list` · `student-form` · `student-view` · `StudentController`
   - ✅ **Done when** the recipe checks pass and student photos still display.
-- [ ] **B7 · Convert Teacher** · `#6` · ⏱ 45 min
+- [x] **B7 · Convert Teacher** · `#6` · ⏱ 45 min
   - 📂 `teacher-list` · `teacher-form` · `teacher-view` (move its inline `<style>` into the fragment) · `TeacherController`
   - ✅ **Done when** the recipe checks pass.
-- [ ] **B8 · Convert Course** · `#6` · ⏱ 40 min
+- [x] **B8 · Convert Course** · `#6` · ⏱ 40 min
   - 📂 `course-list` · `course-form` · `course-view` · `CourseController`
   - ✅ **Done when** the recipe checks pass.
-- [ ] **B9 · Convert Subject and swap Font Awesome for Bootstrap Icons** · `#6` `#31` · ⏱ 40 min
+- [x] **B9 · Convert Subject and swap Font Awesome for Bootstrap Icons** · `#6` `#31` · ⏱ 40 min
   - 📂 `subject-list` · `subject-form` · `SubjectController`
   - ✅ **Done when** the recipe checks pass and the page loads no Font Awesome.
-- [ ] **B10 · Convert Enrollment and swap Font Awesome for Bootstrap Icons** · `#6` `#31` · ⏱ 40 min
+- [x] **B10 · Convert Enrollment and swap Font Awesome for Bootstrap Icons** · `#6` `#31` · ⏱ 40 min
   - 📂 `enrollment-list` · `enrollment-form` · `EnrollmentController`
   - ✅ **Done when** the recipe checks pass and the page loads no Font Awesome.
-- [ ] **B11 · Convert Attendance** · `#6` · ⏱ 30 min
+- [x] **B11 · Convert Attendance** · `#6` · ⏱ 30 min
   - 📂 `attendance-list` · `attendance-form` · `AttendanceController`
   - ✅ **Done when** the recipe checks pass.
-- [ ] **B12 · Convert Fee** · `#6` · ⏱ 30 min
+- [x] **B12 · Convert Fee** · `#6` · ⏱ 30 min
   - 📂 `fee-list` · `fee-form` · `FeeController`
   - ✅ **Done when** the recipe checks pass.
-- [ ] **B13 · Convert Exam** · `#6` · ⏱ 30 min
+- [x] **B13 · Convert Exam** · `#6` · ⏱ 30 min
   - 📂 `exam-list` · `exam-form` · `ExamController`
   - ✅ **Done when** the recipe checks pass, including the A10 validation errors.
-- [ ] **B14 · Convert Result** · `#6` · ⏱ 30 min
+- [x] **B14 · Convert Result** · `#6` · ⏱ 30 min
   - 📂 `result-list` · `result-form` · `ResultController`
   - ✅ **Done when** the recipe checks pass, including the A11 validation errors.
 
-- [ ] **B15 · Use one Bootstrap version everywhere** · `#17` · ⏱ 10 min
+- [x] **B15 · Use one Bootstrap version everywhere** · `#17` · ⏱ 10 min
   - After B6–B14, only `auth/login.html` and `auth/register.html` still load Bootstrap themselves, and both use 5.3.3. Move them to 5.3.8.
   - ✅ **Done when** `git grep "bootstrap@5.3.3"` returns nothing.
 
-- [ ] **B16 · Use a local default avatar** · `#31` · ⏱ 15 min
+- [x] **B16 · Use a local default avatar** · `#31` · ⏱ 15 min
   - Add `static/images/default-avatar.svg` and use `@{/images/default-avatar.svg}` in place of `via.placeholder.com`.
   - 📂 `teacher/teacher-list.html:79` · `teacher/teacher-view.html:48`
   - ✅ **Done when** a teacher without a photo shows your avatar and the DevTools Network tab shows no request to `via.placeholder.com`.
 
-- [ ] **B17 · Remove dead code** · `#30` · ⏱ 30 min
+- [x] **B17 · Remove dead code** · `#30` · ⏱ 30 min
   - Remove Lombok from `pom.xml` (the dependency and its annotation-processor and exclude entries), and remove `"/uploads/**"` from the permit list in `SecurityConfig`.
   - Delete the unused `AttendanceRepository.findTop5ByOrderByAttendanceDateDesc`, `StudentRepository.countByCourse`, `ExamRepository.findTop5ByOrderByExamDateAsc` and `UserRepository.findByEmail`.
   - Change `StudentService.getRecentStudents()` to return `List<Student>` instead of `Object`.
   - ✅ **Done when** `./mvnw clean test` passes and the app starts.
 
-- [ ] **B18 · Rename `webConfig` to `WebConfig`** · `#20` · ⏱ 5 min
+- [x] **B18 · Rename `webConfig` to `WebConfig`** · `#20` · ⏱ 5 min
   - Windows ignores letter case in file names, so rename in two steps: `git mv webConfig.java Tmp.java`, then `git mv Tmp.java WebConfig.java`. Rename the class to match.
   - ✅ **Done when** the build passes and photos still load.
 
@@ -308,7 +322,7 @@ flowchart LR
 - [ ] **C5 · POST deletes: Subject, Enrollment, Attendance** · `#4` · ⏱ 45 min
   - ✅ **Done when** the C4 checks pass for these three modules.
 - [ ] **C6 · POST deletes: Fee, Exam, Result** · `#4` · ⏱ 45 min
-  - Exam and Result have no confirmation dialog yet. The recipe adds one.
+  - All 9 list pages already ask for confirmation in the link's `onclick`. Move each page's existing message into the form's `onsubmit`.
   - ✅ **Done when** the C4 checks pass for these three modules.
 
 - [ ] **C7 · Decide who can do what** · `#3` · ⏱ 20 min *(planning only, no code)*
