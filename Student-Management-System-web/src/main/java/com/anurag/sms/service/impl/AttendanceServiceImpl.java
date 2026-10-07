@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Attendance;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.AttendanceRepository;
 import com.anurag.sms.service.AttendanceService;
 
@@ -27,7 +28,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance getAttendanceById(Long id) {
-        return attendanceRepository.findById(id).orElseThrow();
+        return attendanceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Attendance", id));
     }
 
     @Override

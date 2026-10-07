@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Exam;
 import com.anurag.sms.entity.Result;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.ResultRepository;
 import com.anurag.sms.service.ResultService;
 
@@ -28,8 +29,7 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public Result getResultById(Long id) {
         return resultRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Result not found with id : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Result", id));
     }
 
     @Override

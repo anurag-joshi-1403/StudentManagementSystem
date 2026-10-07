@@ -30,5 +30,5 @@ public interface StudentService {
 
     long getFemaleStudents();
 
-    public Object getRecentStudents();
+    List<Student> getRecentStudents();
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Student;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.StudentRepository;
 import com.anurag.sms.service.StudentService;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getStudentById(Long id) {
-        return studentRepository.findById(id).orElseThrow();
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student", id));
     }
 
     @Override

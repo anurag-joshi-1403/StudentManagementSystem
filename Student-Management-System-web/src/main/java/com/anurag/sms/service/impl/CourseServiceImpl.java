@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.anurag.sms.entity.Course;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.CourseRepository;
 import com.anurag.sms.repository.EnrollmentRepository;
 import com.anurag.sms.service.CourseService;
@@ -31,7 +32,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course getCourseById(Long id) {
-        return courseRepository.findById(id).orElseThrow();
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", id));
     }
 
     @Override

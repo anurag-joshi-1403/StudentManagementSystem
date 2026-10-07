@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Enrollment;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.EnrollmentRepository;
 import com.anurag.sms.service.EnrollmentService;
 
@@ -26,7 +27,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public Enrollment getEnrollmentById(Long id) {
-        return enrollmentRepository.findById(id).orElseThrow();
+        return enrollmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment", id));
     }
 
     @Override

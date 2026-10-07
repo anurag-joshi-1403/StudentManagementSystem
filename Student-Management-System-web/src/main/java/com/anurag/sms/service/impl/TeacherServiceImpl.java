@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Teacher;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.TeacherRepository;
 import com.anurag.sms.service.TeacherService;
 
@@ -27,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Teacher getTeacherById(Long id) {
         return teacherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher", id));
     }
 
     @Override

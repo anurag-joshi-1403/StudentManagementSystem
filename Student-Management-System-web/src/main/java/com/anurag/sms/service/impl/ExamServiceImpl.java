@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.anurag.sms.entity.Exam;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.ExamRepository;
 import com.anurag.sms.repository.ResultRepository;
 import com.anurag.sms.service.ExamService;
@@ -43,7 +44,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Exam getExamById(Long id) {
         return examRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Exam not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Exam", id));
     }
 
     @Override

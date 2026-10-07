@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Fee;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.FeeRepository;
 import com.anurag.sms.service.FeeService;
 
@@ -35,7 +36,7 @@ public class FeeServiceImpl implements FeeService {
     @Override
     public Fee getFeeById(Long id) {
         return feeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Fee not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Fee", id));
     }
 
     @Override

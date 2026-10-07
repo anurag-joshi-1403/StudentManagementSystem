@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Subject;
+import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.AttendanceRepository;
 import com.anurag.sms.repository.EnrollmentRepository;
 import com.anurag.sms.repository.ExamRepository;
@@ -49,7 +50,8 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject getSubjectById(Long id) {
-        return subjectRepository.findById(id).orElseThrow();
+        return subjectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Subject", id));
     }
 
     @Override
