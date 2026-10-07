@@ -1,0 +1,9 @@
+<!doctype html>
+<!--/* Rendered by GlobalExceptionHandler when a database constraint rejects
+     a change, not by Spring Boot's error controller. */-->
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{common/error-page :: page('409', 'Conflicting data',
+    'This change clashes with existing records: the record is still linked to others, or a value must be unique. Nothing was changed.',
+    'bi-link-45deg')}"
+></html>

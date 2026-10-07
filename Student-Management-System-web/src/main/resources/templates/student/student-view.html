@@ -6,14 +6,10 @@
 
     <title>Student Profile</title>
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
   </head>
 
   <body>
-    <div class="container mt-5">
+    <div class="container mt-5" th:fragment="content">
       <div class="card shadow">
         <div class="card-header bg-primary text-white">
           <h3 class="text-center">Student Profile</h3>
@@ -32,11 +28,12 @@
 
             <img
               th:unless="${student.photo != null}"
-              th:src="@{/images/default-user.png}"
+              th:src="@{/images/default-avatar.svg}"
               class="rounded-circle border shadow"
               width="180"
               height="180"
               style="object-fit: cover"
+              alt="No photo"
             />
 
             <table class="table table-bordered">

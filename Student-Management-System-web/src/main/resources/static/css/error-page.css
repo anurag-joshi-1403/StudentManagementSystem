@@ -1,0 +1,90 @@
+/* ===========================================================
+   Error pages — 404 · 403 · 500 · generic
+
+   These render outside the app shell (no sidebar or navbar), so
+   everything here is built from theme.css tokens alone.
+   =========================================================== */
+
+.error-shell {
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.error-card {
+  inline-size: min(100%, 480px);
+  padding: var(--space-8) var(--space-7);
+  text-align: center;
+}
+
+.error-icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 64px;
+  block-size: 64px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 28px;
+}
+
+.error-code {
+  margin-block-start: var(--space-4);
+  color: var(--accent);
+  font-size: var(--fs-3xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.error-heading {
+  margin-block-start: var(--space-2);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.error-message {
+  margin-block-start: var(--space-3);
+  color: var(--text-secondary);
+}
+
+/* --- Actions ---------------------------------------------- */
+
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-6);
+}
+
+.error-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.error-btn:hover {
+  background: var(--bg-subtle);
+}
+
+.error-btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.error-btn-primary:hover {
+  border-color: var(--accent-hover);
+  background: var(--accent-hover);
+}

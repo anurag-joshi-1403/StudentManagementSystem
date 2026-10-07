@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="No photo">
+  <!-- Fallback for students and teachers without a photo. Served locally,
+       replacing via.placeholder.com and a default-user.png that never existed.
+       Colours: the theme's accent-soft background and indigo-300. -->
+  <rect width="128" height="128" fill="#eef2ff"/>
+  <circle cx="64" cy="50" r="22" fill="#a5b4fc"/>
+  <path d="M20 128c3-27 22-44 44-44s41 17 44 44z" fill="#a5b4fc"/>
+</svg>

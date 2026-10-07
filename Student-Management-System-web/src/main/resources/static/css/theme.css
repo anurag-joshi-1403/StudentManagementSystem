@@ -108,6 +108,13 @@ p, figure, ul, ol {
   margin: 0;
 }
 
+/* Bootstrap's reboot, loaded before this file, sets headings to
+   line-height 1.2. They inherit the body's rhythm instead, which is
+   what every component here was spaced against. */
+h1, h2, h3, h4, h5, h6 {
+  line-height: inherit;
+}
+
 ul, ol {
   padding: 0;
   list-style: none;

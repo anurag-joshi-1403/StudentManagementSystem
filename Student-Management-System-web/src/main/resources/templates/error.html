@@ -1,0 +1,10 @@
+<!doctype html>
+<!--/* Fallback for any status without its own page under error/ (for
+     example 405). Spring Boot puts status and error (the reason phrase)
+     on the model. */-->
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{common/error-page :: page(${status}, ${error},
+    'The request couldn’t be completed.',
+    'bi-exclamation-circle')}"
+></html>
