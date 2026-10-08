@@ -23,14 +23,13 @@ public interface SubjectService {
     // Delete Subject
     void deleteSubject(Long id);
 
-    // Search Subject
-    List<Subject> searchSubjects(String keyword);
+    // Search and pagination in one: a blank keyword lists every subject.
+    // pageNo starts at 1.
+    Page<Subject> searchSubjects(String keyword, int pageNo);
 
-    // Pagination
-    Page<Subject> getSubjectsByPage(int page);
-
-    // Duplicate Subject Code Check
-    boolean existsBySubjectCode(String subjectCode);
+    // Duplicate check: true when ANOTHER subject already uses this code.
+    // ownId is the subject being edited, or null for a new one.
+    boolean isSubjectCodeTaken(String subjectCode, Long ownId);
 
     // Dashboard Count
     long getTotalSubjects();

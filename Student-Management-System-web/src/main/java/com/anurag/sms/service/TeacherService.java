@@ -18,11 +18,13 @@ public interface TeacherService {
 
     void deleteTeacher(Long id);
 
-    List<Teacher> searchTeachers(String keyword);
+    // One paged query for the list and for search: a blank keyword lists
+    // every teacher. pageNo starts at 1.
+    Page<Teacher> searchTeachers(String keyword, int pageNo);
 
-    Page<Teacher> getTeachersByPage(int pageNo);
-
-    boolean existsByEmail(String email);
+    // True when ANOTHER teacher already uses this email. ownId is the teacher
+    // being edited, or null for a new one, so an edit may keep its own email.
+    boolean isEmailTaken(String email, Long ownId);
 
     long getTotalTeachers();
 

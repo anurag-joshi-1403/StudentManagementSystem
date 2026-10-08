@@ -3,7 +3,6 @@ package com.anurag.sms.service.impl;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +11,7 @@ import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.CourseRepository;
 import com.anurag.sms.repository.EnrollmentRepository;
 import com.anurag.sms.service.CourseService;
+import com.anurag.sms.utility.Pages;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -58,24 +58,24 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> searchCourses(String keyword) {
+    public Page<Course> searchCourses(String keyword, int pageNo) {
+
+        // Search used to return every match on one page (#11).
+        if (keyword == null || keyword.isBlank()) {
+            return courseRepository.findAll(Pages.of(pageNo));
+        }
+
+        String k = keyword.trim();
         return courseRepository
                 .findByCourseNameContainingIgnoreCaseOrCourseCodeContainingIgnoreCase(
-                        keyword,
-                        keyword);
+                        k, k, Pages.of(pageNo));
     }
 
     @Override
-    public Page<Course> getCoursesByPage(int pageNo) {
-
-        PageRequest pageable = PageRequest.of(pageNo - 1, 5);
-
-        return courseRepository.findAll(pageable);
-    }
-
-    @Override
-    public boolean existsByCourseCode(String courseCode) {
-        return courseRepository.existsByCourseCode(courseCode);
+    public boolean isCourseCodeTaken(String courseCode, Long ownId) {
+        return ownId == null
+                ? courseRepository.existsByCourseCode(courseCode)
+                : courseRepository.existsByCourseCodeAndIdNot(courseCode, ownId);
     }
 
     @Override

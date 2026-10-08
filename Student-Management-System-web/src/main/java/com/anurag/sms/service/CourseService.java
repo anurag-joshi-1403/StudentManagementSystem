@@ -18,11 +18,13 @@ public interface CourseService {
 
     void deleteCourse(Long id);
 
-    List<Course> searchCourses(String keyword);
+    // One paged query for the list and for search: a blank keyword lists
+    // every course. pageNo starts at 1.
+    Page<Course> searchCourses(String keyword, int pageNo);
 
-    Page<Course> getCoursesByPage(int pageNo);
-
-    boolean existsByCourseCode(String courseCode);
+    // True when ANOTHER course already uses this code. ownId is the course
+    // being edited, or null for a new one, so an edit may keep its own code.
+    boolean isCourseCodeTaken(String courseCode, Long ownId);
 
     long getTotalCourses();
 }

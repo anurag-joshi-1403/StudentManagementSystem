@@ -3,7 +3,6 @@ package com.anurag.sms.service.impl;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Subject;
@@ -14,6 +13,7 @@ import com.anurag.sms.repository.ExamRepository;
 import com.anurag.sms.repository.ResultRepository;
 import com.anurag.sms.repository.SubjectRepository;
 import com.anurag.sms.service.SubjectService;
+import com.anurag.sms.utility.Pages;
 import org.springframework.transaction.annotation.Transactional;
 
 // import com.anurag.sms.repository.AttendanceRepository;
@@ -82,24 +82,24 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public List<Subject> searchSubjects(String keyword) {
+    public Page<Subject> searchSubjects(String keyword, int pageNo) {
 
+        // Search used to return every match on one page (#11).
+        if (keyword == null || keyword.isBlank()) {
+            return subjectRepository.findAll(Pages.of(pageNo));
+        }
+
+        String k = keyword.trim();
         return subjectRepository
                 .findBySubjectNameContainingIgnoreCaseOrSubjectCodeContainingIgnoreCase(
-                        keyword,
-                        keyword);
+                        k, k, Pages.of(pageNo));
     }
 
     @Override
-    public Page<Subject> getSubjectsByPage(int page) {
-
-        return subjectRepository.findAll(
-                PageRequest.of(page - 1, 5));
-    }
-
-    @Override
-    public boolean existsBySubjectCode(String subjectCode) {
-        return subjectRepository.existsBySubjectCode(subjectCode);
+    public boolean isSubjectCodeTaken(String subjectCode, Long ownId) {
+        return ownId == null
+                ? subjectRepository.existsBySubjectCode(subjectCode)
+                : subjectRepository.existsBySubjectCodeAndIdNot(subjectCode, ownId);
     }
 
     @Override

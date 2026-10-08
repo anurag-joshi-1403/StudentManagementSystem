@@ -3,14 +3,16 @@ package com.anurag.sms.service.impl;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.anurag.sms.dto.Marksheet;
 import com.anurag.sms.entity.Exam;
 import com.anurag.sms.entity.Result;
 import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.ResultRepository;
 import com.anurag.sms.service.ResultService;
+import com.anurag.sms.utility.GradeCalculator;
+import com.anurag.sms.utility.Pages;
 
 @Service
 public class ResultServiceImpl implements ResultService {
@@ -54,30 +56,32 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public List<Result> searchResult(String keyword) {
+    public Page<Result> searchResult(String keyword, int pageNo) {
 
-        if (keyword == null) {
-            keyword = "";
+        // Search used to return every match on one page (#11).
+        if (keyword == null || keyword.isBlank()) {
+            return resultRepository.findAll(Pages.of(pageNo));
         }
 
+        String k = keyword.trim();
         return resultRepository
                 .findByStudentFirstNameContainingIgnoreCaseOrExamExamNameContainingIgnoreCaseOrGradeContainingIgnoreCaseOrResultStatusContainingIgnoreCase(
-                        keyword,
-                        keyword,
-                        keyword,
-                        keyword);
-    }
-
-    @Override
-    public Page<Result> getResultByPage(int page) {
-
-        return resultRepository.findAll(PageRequest.of(page - 1, 5));
-
+                        k, k, k, k, Pages.of(pageNo));
     }
 
     @Override
     public long getTotalResults() {
         return resultRepository.count();
+    }
+
+    @Override
+    public List<Result> getResultsByExam(Long examId) {
+        return resultRepository.findByExamIdOrderByObtainedMarksDesc(examId);
+    }
+
+    @Override
+    public Marksheet getMarksheet(Long studentId) {
+        return Marksheet.of(resultRepository.findByStudentIdOrderByExamExamDateAsc(studentId));
     }
 
     // ===============================
@@ -89,36 +93,13 @@ public class ResultServiceImpl implements ResultService {
         Exam exam = result.getExam();
 
         int obtainedMarks = result.getObtainedMarks();
-        int totalMarks = exam.getTotalMarks();
-        int passingMarks = exam.getPassingMarks();
 
-        double percentage =
-                ((double) obtainedMarks / totalMarks) * 100;
+        // The rules live in GradeCalculator, shared with the marksheet
+        boolean pass = GradeCalculator.isPass(obtainedMarks, exam.getPassingMarks());
+        double percentage = GradeCalculator.percentage(obtainedMarks, exam.getTotalMarks());
 
-        // Result Status
-
-        if (obtainedMarks >= passingMarks) {
-            result.setResultStatus("Pass");
-        } else {
-            result.setResultStatus("Fail");
-        }
-
-        // Grade
-
-        if (percentage >= 90) {
-            result.setGrade("A+");
-        } else if (percentage >= 80) {
-            result.setGrade("A");
-        } else if (percentage >= 70) {
-            result.setGrade("B");
-        } else if (percentage >= 60) {
-            result.setGrade("C");
-        } else if (percentage >= 50) {
-            result.setGrade("D");
-        } else {
-            result.setGrade("F");
-        }
-
+        result.setResultStatus(GradeCalculator.status(pass));
+        result.setGrade(GradeCalculator.grade(percentage, pass));
     }
 
 }

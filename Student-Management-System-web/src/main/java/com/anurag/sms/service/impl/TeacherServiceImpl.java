@@ -3,13 +3,13 @@ package com.anurag.sms.service.impl;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.entity.Teacher;
 import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.TeacherRepository;
 import com.anurag.sms.service.TeacherService;
+import com.anurag.sms.utility.Pages;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -47,24 +47,24 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<Teacher> searchTeachers(String keyword) {
+    public Page<Teacher> searchTeachers(String keyword, int pageNo) {
+
+        // Search used to return every match on one page (#11).
+        if (keyword == null || keyword.isBlank()) {
+            return teacherRepository.findAll(Pages.of(pageNo));
+        }
+
+        String k = keyword.trim();
         return teacherRepository
-                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
-                        keyword,
-                        keyword);
+                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrDepartmentContainingIgnoreCase(
+                        k, k, k, k, Pages.of(pageNo));
     }
 
     @Override
-    public Page<Teacher> getTeachersByPage(int pageNo) {
-
-        PageRequest pageable = PageRequest.of(pageNo - 1, 5);
-
-        return teacherRepository.findAll(pageable);
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return teacherRepository.existsByEmail(email);
+    public boolean isEmailTaken(String email, Long ownId) {
+        return ownId == null
+                ? teacherRepository.existsByEmail(email)
+                : teacherRepository.existsByEmailAndIdNot(email, ownId);
     }
 
     @Override

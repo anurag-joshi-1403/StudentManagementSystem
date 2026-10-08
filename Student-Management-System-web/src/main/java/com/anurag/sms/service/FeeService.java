@@ -24,11 +24,9 @@ public interface FeeService {
     // Delete Fee
     void deleteFee(Long id);
 
-    // Search Fee
-    List<Fee> searchFee(String keyword);
-
-    // Pagination
-    Page<Fee> getFeeByPage(int page);
+    // Search and pagination in one: a blank keyword lists every fee record.
+    // pageNo starts at 1.
+    Page<Fee> searchFee(String keyword, int pageNo);
 
     // Dashboard Count (number of fee records)
     long getTotalFees();
@@ -40,5 +38,10 @@ public interface FeeService {
     long countByPaymentStatus(String paymentStatus);
 
     List<Fee> getRecentFees();
+
+    // Unpaid fees whose due date has passed (E10)
+    List<Fee> getOverdueFees();
+
+    long getOverdueFeeCount();
 
 }

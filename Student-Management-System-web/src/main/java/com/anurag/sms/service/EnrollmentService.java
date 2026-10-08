@@ -23,11 +23,13 @@ public interface EnrollmentService {
     // Delete Enrollment
     void deleteEnrollment(Long id);
 
-    // Search Enrollment
-    List<Enrollment> searchEnrollments(String keyword);
+    // True when the student is already enrolled in this course and subject.
+    // ownId is the enrollment being edited, or null for a new one.
+    boolean isAlreadyEnrolled(Long studentId, Long courseId, Long subjectId, Long ownId);
 
-    // Pagination
-    Page<Enrollment> getEnrollmentsByPage(int page);
+    // Search and pagination in one: a blank keyword lists every enrollment.
+    // pageNo starts at 1.
+    Page<Enrollment> searchEnrollments(String keyword, int pageNo);
 
     // Dashboard Count
     long getTotalEnrollments();

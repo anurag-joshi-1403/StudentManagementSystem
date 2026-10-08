@@ -1,7 +1,9 @@
 package com.anurag.sms.service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 
@@ -24,11 +26,9 @@ public interface ExamService {
     // Delete Exam
     void deleteExam(Long id);
 
-    // Search Exam
-    List<Exam> searchExam(String keyword, LocalDate examDate);
-
-    // Pagination
-    Page<Exam> getExamByPage(int page);
+    // Search and pagination in one: keyword and date are each optional
+    // (null or blank = no filter). pageNo starts at 1.
+    Page<Exam> searchExam(String keyword, LocalDate examDate, int pageNo);
 
     // Dashboard Count
     long getTotalExams();
@@ -37,4 +37,11 @@ public interface ExamService {
     long getUpcomingExamCount();
 
     List<Exam> getUpcomingExams();
+
+    // Subject detail page: the subject's exams in date order
+    List<Exam> getExamsBySubject(Long subjectId);
+
+    // Exam schedule: upcoming exams grouped by month, months in order and
+    // exams in date order within each month
+    Map<YearMonth, List<Exam>> getUpcomingSchedule();
 }

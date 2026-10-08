@@ -1,9 +1,12 @@
 package com.anurag.sms.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.anurag.sms.dto.ImportReport;
 import com.anurag.sms.entity.Student;
 
 public interface StudentService {
@@ -18,9 +21,9 @@ public interface StudentService {
 
     void deleteStudent(Long id);
 
-    List<Student> searchStudents(String keyword);
-
-    Page<Student> getStudentsByPage(int pageNo);
+    // One paged query for the list and for search: a blank keyword lists
+    // every student. pageNo starts at 1.
+    Page<Student> searchStudents(String keyword, int pageNo);
 
     boolean existsByEmail(String email);
 
@@ -31,4 +34,10 @@ public interface StudentService {
     long getFemaleStudents();
 
     List<Student> getRecentStudents();
+
+    // CSV import (E18): saves every valid row and reports the rest. A row
+    // is valid if it passes the form's Bean Validation, its email is not
+    // already used (in the database or earlier in the file) and its course
+    // matches an existing course name.
+    ImportReport importStudents(InputStream csv) throws IOException;
 }

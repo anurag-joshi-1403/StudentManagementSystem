@@ -1,10 +1,13 @@
 package com.anurag.sms.service.impl;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +16,7 @@ import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.ExamRepository;
 import com.anurag.sms.repository.ResultRepository;
 import com.anurag.sms.service.ExamService;
+import com.anurag.sms.utility.Pages;
 
 @Service
 public class ExamServiceImpl implements ExamService {
@@ -69,7 +73,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<Exam> searchExam(String keyword, LocalDate examDate) {
+    public Page<Exam> searchExam(String keyword, LocalDate examDate, int pageNo) {
 
         // A blank keyword means "no keyword filter", which the query
         // expresses as null. Passing "" would match every row (#26).
@@ -77,12 +81,8 @@ public class ExamServiceImpl implements ExamService {
                 ? null
                 : keyword.trim();
 
-        return examRepository.search(trimmed, examDate);
-    }
-
-    @Override
-    public Page<Exam> getExamByPage(int page) {
-        return examRepository.findAll(PageRequest.of(page - 1, 5));
+        // Search used to return every match on one page (#11).
+        return examRepository.search(trimmed, examDate, Pages.of(pageNo));
     }
 
     @Override
@@ -93,6 +93,28 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public long getUpcomingExamCount() {
         return examRepository.countByExamDateGreaterThanEqual(LocalDate.now());
+    }
+
+    @Override
+    public List<Exam> getExamsBySubject(Long subjectId) {
+        return examRepository.findBySubjectIdOrderByExamDateAsc(subjectId);
+    }
+
+    @Override
+    public Map<YearMonth, List<Exam>> getUpcomingSchedule() {
+
+        // TreeMap keeps the months in calendar order. The query already
+        // sorts by date, so each month's list comes out in date order.
+        Map<YearMonth, List<Exam>> schedule = new TreeMap<>();
+
+        for (Exam exam : examRepository
+                .findByExamDateGreaterThanEqualOrderByExamDateAscExamNameAsc(LocalDate.now())) {
+
+            schedule.computeIfAbsent(YearMonth.from(exam.getExamDate()), month -> new ArrayList<>())
+                    .add(exam);
+        }
+
+        return schedule;
     }
 
 }
