@@ -24,27 +24,23 @@ public class CourseController {
         this.courseService = courseService;
     }
 
+    // The list and the search are one paged query: a blank keyword lists
+    // every course. The pager links back here with the keyword (#11).
     @GetMapping("/course")
     public String listCourses(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(defaultValue = "") String keyword,
             Model model) {
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
+        Page<Course> coursePage = courseService.searchCourses(keyword, page);
 
-            model.addAttribute("courses",
-                    courseService.searchCourses(keyword));
+        model.addAttribute("courses", coursePage.getContent());
 
-        } else {
-            Page<Course> coursePage = courseService.getCoursesByPage(page);
+        model.addAttribute("currentPage", coursePage.getNumber() + 1);
 
-            model.addAttribute("courses", coursePage.getContent());
+        model.addAttribute("totalPages", coursePage.getTotalPages());
 
-            model.addAttribute("currentPage", page);
-
-            model.addAttribute("totalPages", coursePage.getTotalPages());
-
-        }
+        model.addAttribute("totalItems", coursePage.getTotalElements());
 
         model.addAttribute("keyword", keyword);
 
@@ -71,9 +67,9 @@ public class CourseController {
                     course.getId() == null ? "Add Course" : "Edit Course");
         }
 
-        // Duplicate check only for NEW course
-        if (course.getId() == null &&
-                courseService.existsByCourseCode(course.getCourseCode())) {
+        // Checked on edit as well as create, so an edit cannot take another
+        // course's code (#27). The database's unique index backs this up.
+        if (courseService.isCourseCodeTaken(course.getCourseCode(), course.getId())) {
 
             model.addAttribute("duplicateError",
                     "Course Code already exists.");

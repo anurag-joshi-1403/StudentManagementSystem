@@ -1,6 +1,13 @@
 package com.anurag.sms.controller;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.anurag.sms.entity.Fee;
 import com.anurag.sms.service.FeeService;
 import com.anurag.sms.service.StudentService;
+import com.anurag.sms.utility.CsvHelper;
 
 import jakarta.validation.Valid;
 
@@ -24,10 +32,15 @@ public class FeeController {
     private final FeeService feeService;
     private final StudentService studentService;
 
+    // Printed on the receipt; see application.properties
+    private final String institutionName;
+
     public FeeController(FeeService feeService,
-            StudentService studentService) {
+            StudentService studentService,
+            @Value("${sms.institution-name}") String institutionName) {
         this.feeService = feeService;
         this.studentService = studentService;
+        this.institutionName = institutionName;
     }
 
     // Display Fee List
@@ -37,24 +50,15 @@ public class FeeController {
             @RequestParam(defaultValue = "1") int page,
             Model model) {
 
-        if (keyword != null && !keyword.isBlank()) {
-            java.util.List<Fee> searchResults = feeService.searchFee(keyword);
-            model.addAttribute("fees", searchResults);
-            model.addAttribute("keyword", keyword);
-            model.addAttribute("currentPage", 1);
-            model.addAttribute("totalPages", 1);
-            model.addAttribute("totalItems", searchResults.size());
-            model.addAttribute("totalFees", feeService.getTotalFees());
-            return LayoutView.render(model, "fee/fee-list :: content", "fee", "Fees");
-        }
-
-        Page<Fee> feePage = feeService.getFeeByPage(page);
+        // The list and the search are one paged query: a blank keyword lists
+        // every fee. Search used to report a fixed totalPages = 1 (#11).
+        Page<Fee> feePage = feeService.searchFee(keyword, page);
         model.addAttribute("fees", feePage.getContent());
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", feePage.getNumber() + 1);
         model.addAttribute("totalPages", feePage.getTotalPages());
         model.addAttribute("totalItems", feePage.getTotalElements());
         model.addAttribute("totalFees", feeService.getTotalFees());
-        model.addAttribute("keyword", "");
+        model.addAttribute("keyword", keyword);
 
         return LayoutView.render(model, "fee/fee-list :: content", "fee", "Fees");
     }
@@ -126,6 +130,28 @@ public class FeeController {
         feeService.updateFee(fee);
 
         return "redirect:/fee";
+    }
+
+    // View Fee as a printable receipt (admins only, like every /fee page)
+    @GetMapping("/view/{id}")
+    public String viewFee(@PathVariable Long id,
+            Model model) {
+
+        model.addAttribute("fee", feeService.getFeeById(id));
+        model.addAttribute("institutionName", institutionName);
+        model.addAttribute("issuedOn", LocalDate.now());
+
+        return LayoutView.render(model, "fee/fee-view :: content", "fee", "Fee Receipt");
+    }
+
+    // CSV export for a spreadsheet (E20), admins only like every /fee page
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportFees() {
+
+        List<Fee> fees = new ArrayList<>(feeService.getAllFees());
+        fees.sort(Comparator.comparing(Fee::getId));
+
+        return CsvDownload.of("fees.csv", CsvHelper.feesToCsv(fees));
     }
 
     // Delete Fee

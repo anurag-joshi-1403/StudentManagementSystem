@@ -39,24 +39,20 @@ public class TeacherController {
     @GetMapping("/teacher")
     public String listTeachers(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(defaultValue = "") String keyword,
             Model model) {
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
+        // The list and the search are one paged query: a blank keyword lists
+        // every teacher. The pager links back here with the keyword (#11).
+        Page<Teacher> teacherPage = teacherService.searchTeachers(keyword, page);
 
-            model.addAttribute(
-                    "teachers",
-                    teacherService.searchTeachers(keyword));
+        model.addAttribute("teachers", teacherPage.getContent());
 
-        } else {
-            Page<Teacher> teacherPage = teacherService.getTeachersByPage(page);
+        model.addAttribute("currentPage", teacherPage.getNumber() + 1);
 
-            model.addAttribute("teachers", teacherPage.getContent());
+        model.addAttribute("totalPages", teacherPage.getTotalPages());
 
-            model.addAttribute("currentPage", page);
-
-            model.addAttribute("totalPages", teacherPage.getTotalPages());
-        }
+        model.addAttribute("totalItems", teacherPage.getTotalElements());
 
         model.addAttribute("keyword", keyword);
 
@@ -85,14 +81,16 @@ public class TeacherController {
                     teacher.getId() == null ? "Add Teacher" : "Edit Teacher");
         }
 
-        if (teacher.getId() == null &&
-                teacherService.existsByEmail(teacher.getEmail())) {
+        // Checked on edit as well as create, so an edit cannot take another
+        // teacher's email (#27). The database's unique index backs this up.
+        if (teacherService.isEmailTaken(teacher.getEmail(), teacher.getId())) {
 
             model.addAttribute(
                     "duplicateError",
                     "Teacher email already exists.");
 
-            return LayoutView.render(model, "teacher/teacher-form :: content", "teacher", "Add Teacher");
+            return LayoutView.render(model, "teacher/teacher-form :: content", "teacher",
+                    teacher.getId() == null ? "Add Teacher" : "Edit Teacher");
         }
 
         // Read the current photo name BEFORE saving: the save merges the form

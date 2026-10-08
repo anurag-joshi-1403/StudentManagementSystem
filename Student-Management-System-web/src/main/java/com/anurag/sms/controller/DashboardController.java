@@ -79,6 +79,7 @@ public class DashboardController {
                 model.addAttribute("totalFeeAmount", feeService.getTotalFeeAmount());
                 model.addAttribute("paidFees", feeService.countByPaymentStatus("Paid"));
                 model.addAttribute("pendingFees", feeService.countByPaymentStatus("Pending"));
+                model.addAttribute("overdueFees", feeService.getOverdueFeeCount());
                 model.addAttribute("enrolledStudents", enrollmentService.getEnrolledStudentCount());
                 model.addAttribute("presentCount", attendanceService.countByStatus("Present"));
                 model.addAttribute("upcomingExamCount", examService.getUpcomingExamCount());

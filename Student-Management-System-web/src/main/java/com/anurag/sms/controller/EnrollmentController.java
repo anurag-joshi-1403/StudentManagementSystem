@@ -44,30 +44,24 @@ public class EnrollmentController {
         // Display Enrollment List
         // ==========================
 
+        // The list and the search are one paged query: a blank keyword lists
+        // every enrollment. The pager links back here with the keyword (#11).
         @GetMapping
         public String listEnrollments(
 
                         @RequestParam(defaultValue = "1") int page,
-                        @RequestParam(required = false) String keyword,
+                        @RequestParam(defaultValue = "") String keyword,
                         Model model) {
 
-                if (keyword != null && !keyword.trim().isEmpty()) {
+                Page<Enrollment> enrollmentPage = enrollmentService.searchEnrollments(keyword, page);
 
-                        model.addAttribute("enrollments",
-                                        enrollmentService.searchEnrollments(keyword));
+                model.addAttribute("enrollments", enrollmentPage.getContent());
 
-                } else {
+                model.addAttribute("currentPage", enrollmentPage.getNumber() + 1);
 
-                        Page<Enrollment> enrollmentPage = enrollmentService.getEnrollmentsByPage(page);
+                model.addAttribute("totalPages", enrollmentPage.getTotalPages());
 
-                        model.addAttribute("enrollments",
-                                        enrollmentPage.getContent());
-
-                        model.addAttribute("currentPage", page);
-
-                        model.addAttribute("totalPages",
-                                        enrollmentPage.getTotalPages());
-                }
+                model.addAttribute("totalItems", enrollmentPage.getTotalElements());
 
                 model.addAttribute("keyword", keyword);
 
@@ -107,6 +101,21 @@ public class EnrollmentController {
                         BindingResult result,
 
                         Model model) {
+
+                // A student may be enrolled in a course and subject only once;
+                // an edit may keep its own combination (#27).
+                if (enrollment.getStudent() != null
+                                && enrollment.getCourse() != null
+                                && enrollment.getSubject() != null
+                                && enrollmentService.isAlreadyEnrolled(
+                                                enrollment.getStudent().getId(),
+                                                enrollment.getCourse().getId(),
+                                                enrollment.getSubject().getId(),
+                                                enrollment.getId())) {
+
+                        result.rejectValue("subject", "enrollment.duplicate",
+                                        "This student is already enrolled in this course and subject.");
+                }
 
                 if (result.hasErrors()) {
 
@@ -152,6 +161,22 @@ public class EnrollmentController {
                 model.addAttribute("subjects",
                         subjectService.getAllSubjects());
                 return LayoutView.render(model, "enrollment/enrollment-form :: content", "enrollment", "Edit Enrollment");
+        }
+
+        // ==========================
+        // View Enrollment
+        // ==========================
+
+        @GetMapping("/view/{id}")
+        public String viewEnrollment(
+                        @PathVariable Long id,
+                        Model model) {
+
+                model.addAttribute(
+                                "enrollment",
+                                enrollmentService.getEnrollmentById(id));
+
+                return LayoutView.render(model, "enrollment/enrollment-view :: content", "enrollment", "Enrollment Details");
         }
 
         // ==========================
