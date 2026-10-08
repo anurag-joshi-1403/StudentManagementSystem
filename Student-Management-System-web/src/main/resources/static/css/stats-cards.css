@@ -98,3 +98,9 @@
 .stat-meta .dot {
   color: var(--border-strong);
 }
+
+/* A fact that needs attention, e.g. overdue fees (E10) */
+.stat-meta-alert {
+  color: var(--danger);
+  font-weight: 600;
+}
