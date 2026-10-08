@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "subjects")
+// Subject codes are unique in the database too (#27). Declared on the table
+// so ddl-auto=update adds it to the existing table (see Course).
+@Table(name = "subjects", uniqueConstraints = @UniqueConstraint(columnNames = "subject_code"))
 public class Subject {
 
     @Id

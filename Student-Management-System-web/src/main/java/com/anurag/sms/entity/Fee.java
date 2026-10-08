@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 @Table(name = "fees")
@@ -24,6 +25,8 @@ public class Fee {
     private String feeType;
 
     @NotNull(message = "Amount is required")
+    // Zero is allowed for a waived fee; negatives were accepted before (#28)
+    @PositiveOrZero(message = "Amount cannot be negative")
     private BigDecimal amount;
 
     @NotNull(message = "Due date is required")
@@ -115,5 +118,14 @@ public class Fee {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    // Not paid and past its due date (E10). Not a column: the entity uses
+    // field access, so JPA ignores this method. FeeRepository's overdue
+    // queries apply the same rule in the database.
+    public boolean isOverdue() {
+        return !"Paid".equals(paymentStatus)
+                && dueDate != null
+                && dueDate.isBefore(LocalDate.now());
     }
 }

@@ -5,12 +5,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
-@Table(name = "teachers")
+// Teacher emails are unique in the database too (#27). Declared on the table
+// so ddl-auto=update adds it to the existing table (see Course).
+@Table(name = "teachers", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class Teacher {
 
     @Id

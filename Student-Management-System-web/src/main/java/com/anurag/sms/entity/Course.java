@@ -5,12 +5,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Courses")
+// Course codes are unique in the database too, not only in the controller's
+// check (#27). Declared on the table, not as @Column(unique = true): Hibernate's
+// ddl-auto=update adds table constraints to an existing table, column ones only
+// when it creates the table.
+@Table(name = "Courses", uniqueConstraints = @UniqueConstraint(columnNames = "course_code"))
 public class Course {
 
     @Id
