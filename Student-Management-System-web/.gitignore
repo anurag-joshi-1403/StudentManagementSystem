@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Uploaded photos ###
+# Written at runtime by the photo upload; personal data, never committed (#19).
+uploads/
