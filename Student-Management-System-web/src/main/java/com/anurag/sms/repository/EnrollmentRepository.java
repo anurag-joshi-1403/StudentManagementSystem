@@ -1,7 +1,7 @@
 package com.anurag.sms.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,11 +12,18 @@ import com.anurag.sms.entity.Enrollment;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
-    // Existing search method
-    List<Enrollment> findByStudentFirstNameContainingIgnoreCaseOrCourseCourseNameContainingIgnoreCaseOrSubjectSubjectNameContainingIgnoreCase(
+    // Search by student first name, course name or subject name
+    Page<Enrollment> findByStudentFirstNameContainingIgnoreCaseOrCourseCourseNameContainingIgnoreCaseOrSubjectSubjectNameContainingIgnoreCase(
             String studentName,
             String courseName,
-            String subjectName);
+            String subjectName,
+            Pageable pageable);
+
+    // Duplicate check for a new enrollment, and for an edit (any OTHER row)
+    boolean existsByStudentIdAndCourseIdAndSubjectId(Long studentId, Long courseId, Long subjectId);
+
+    boolean existsByStudentIdAndCourseIdAndSubjectIdAndIdNot(
+            Long studentId, Long courseId, Long subjectId, Long id);
 
     // Dashboard: how many individual students appear in the enrollment
     // table, as opposed to the total number of enrollment rows.

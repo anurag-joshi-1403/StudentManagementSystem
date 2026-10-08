@@ -3,6 +3,8 @@ package com.anurag.sms.repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,8 +25,9 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
                    OR LOWER(e.subject.subjectName) LIKE LOWER(CONCAT('%', :keyword, '%')))
               AND (:examDate IS NULL OR e.examDate = :examDate)
             """)
-    List<Exam> search(@Param("keyword") String keyword,
-                      @Param("examDate") LocalDate examDate);
+    Page<Exam> search(@Param("keyword") String keyword,
+                      @Param("examDate") LocalDate examDate,
+                      Pageable pageable);
 
     // Dashboard: exams still ahead of us, rather than the whole table
     long countByExamDateGreaterThanEqual(LocalDate date);
@@ -33,6 +36,12 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     // findTop5ByOrderByExamDateAsc (since removed) returned the OLDEST
     // five rows, which made the "Upcoming Exams" panel list past exams.
     List<Exam> findTop5ByExamDateGreaterThanEqualOrderByExamDateAsc(LocalDate date);
+
+    // Subject detail page: every exam for one subject, earliest first
+    List<Exam> findBySubjectIdOrderByExamDateAsc(Long subjectId);
+
+    // Exam schedule: every exam from this date on, earliest first
+    List<Exam> findByExamDateGreaterThanEqualOrderByExamDateAscExamNameAsc(LocalDate date);
 
     @Transactional
     @Modifying
