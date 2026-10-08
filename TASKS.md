@@ -48,11 +48,11 @@ Suggested commit style: `fix(student): search no longer crashes (#23)`.</sub>
 | 🧰 [0 · Get Ready](#-stage-0--get-ready) | App running with linked test data | 2 | ~35 min | ✅ 2 / 2 |
 | ⚡ [A · Quick Wins](#-stage-a--quick-wins) | Every crash and broken button a reviewer would hit is fixed | 12 | ~4.5 h | 11 / 12 · A4 deferred |
 | 🟠 [B · One Application](#-stage-b--one-application) | Sidebar on every page, designed error pages | 18 | ~10 h | ✅ 18 / 18 |
-| 🟡 [C · Security](#-stage-c--security--data-integrity) | Roles, POST deletes, safe uploads, no secrets in git | 15 | ~8 h | 0 / 15 |
-| 🟢 [D · Correctness](#-stage-d--correctness) | Paged search, unique codes, valid marks | 14 | ~7 h | 0 / 14 |
-| 🟢 [E · New Features](#-stage-e--new-features) | Detail pages, marksheet, receipts, reports, CSV | 20 | ~16 h | 0 / 20 |
+| 🟡 [C · Security](#-stage-c--security--data-integrity) | Roles, POST deletes, safe uploads, no secrets in git | 15 | ~8 h | ✅ 15 / 15 |
+| 🟢 [D · Correctness](#-stage-d--correctness) | Paged search, unique codes, valid marks | 14 | ~7 h | ✅ 14 / 14 |
+| 🟢 [E · New Features](#-stage-e--new-features) | Detail pages, marksheet, receipts, reports, CSV | 20 | ~16 h | ✅ 20 / 20 |
 | 🔵 [F · Showcase](#-stage-f--showcase-polish) | Notifications, PDF, profile, tests, CI, screenshots | 20 | ~17 h | 0 / 20 |
-| | **Total** | **101** | **~63 h** | **31 / 101** |
+| | **Total** | **101** | **~63 h** | **80 / 101** |
 
 ```mermaid
 flowchart LR
@@ -103,8 +103,10 @@ flowchart LR
 > | A7 subject delete | subject `MATH01`, whose exam has a result |
 > | A8 date search | attendance on `2026-10-01` (3 rows) and `2026-10-02` (1 row) |
 > | A9 date search | exams on `2026-07-29`, `2026-07-31` and `2026-12-10` (the future one) |
-> | D12 "Pass · F" | Kabir's 400/1000 on *Mid sem* `CHEM01` (pass mark 250) is graded **F** but marked **Pass** |
+> | D12 grade rule | Kabir's 400/1000 on *Mid sem* `CHEM01` (pass mark 250) was **F · Pass**; since D12 it is **D · Pass** |
 > | E10 overdue fee | Diya's *Pending* tuition fee was due `2026-09-30` |
+>
+> **Test accounts** (passwords were given in chat, not stored here): `qa_admin` (ADMIN), `qa_teacher` (TEACHER), `qa_tester` (STUDENT). Disable or delete them before sharing the app (F12).
 
 ---
 
@@ -291,19 +293,27 @@ flowchart LR
 
 **Goal:** a STUDENT account gets `403` on admin actions, deletes can't be triggered by a link, uploads accept only real images, and no secrets are in git.
 
+> 📝 **Done 8 Oct 2026, with these decisions and extras:**
+> - **C1:** a failed teacher-photo save now returns to the form with an error instead of silently saving without the photo.
+> - **C3:** `git rm --cached` staged the removal of the 5 photos; they stay on disk and in old commits (history rewrite is Parked).
+> - **C4–C6:** icon-only delete buttons gained `aria-label="Delete"`. A typed GET delete URL now gets 405, a POST without the CSRF token gets 403.
+> - **C7/C8:** matrix confirmed; `anurag_00` promoted to ADMIN. `AdminSeeder` creates an admin on a fresh database only when `ADMIN_USERNAME` and `ADMIN_PASSWORD` are set (optional `ADMIN_EMAIL`), never creates a second one, and refuses to take over an existing username.
+> - **C10/C11:** non-admins also lose the dashboard's fee card and recent-payments panel; lists whose Actions column would be empty hide the column. The Fee list needs no gating because the page itself is admin-only. Still open: the hard-coded notification menu mentions a fee payment (replaced in F1–F2).
+> - **C12–C15:** photos are decoded as JPEG/PNG and stored under a random name; the "WEBP" hint was wrong and is gone. Old photos are deleted only after the record is saved. Deleting a student or teacher that does not exist now gives 404 instead of a silent redirect.
+
 > ⚠️ Do Stage B first. C4–C6 and C10 edit the same templates that B6–B14 convert.
 
-- [ ] **C1 · Replace debug prints with a logger** · `#29` · ⏱ 20 min
+- [x] **C1 · Replace debug prints with a logger** · `#29` · ⏱ 20 min
   - Remove the `System.out.println` calls in `DashboardController:47` and `TeacherController.viewTeacher`.
   - In the teacher photo upload, replace `e.printStackTrace()` with an SLF4J `log.error(...)` and show an error on the form. At the moment a failed upload quietly saves the teacher without a photo.
   - ✅ **Done when** `git grep -n -e "System.out" -e "printStackTrace" -- "*.java"` returns nothing.
 
-- [ ] **C2 · Move noisy logging into a `dev` profile** · `#29` · ⏱ 20 min
+- [x] **C2 · Move noisy logging into a `dev` profile** · `#29` · ⏱ 20 min
   - Create `application-dev.properties` and move `show-sql`, `format_sql` and the two DEBUG/TRACE `logging.level` lines into it.
   - Run with `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev` when you want the detail.
   - ✅ **Done when** a normal run prints no SQL and a dev run does.
 
-- [ ] **C3 · Stop tracking uploaded photos** · `#19` · ⏱ 10 min
+- [x] **C3 · Stop tracking uploaded photos** · `#19` · ⏱ 10 min
   - Add `uploads/` to `Student-Management-System-web/.gitignore`, then run `git rm -r --cached Student-Management-System-web/uploads`. The files stay on disk.
   - The 5 photos are still in earlier commits. If they're personal, removing them from history with `git filter-repo` is a separate decision, because it rewrites published history.
   - ✅ **Done when** adding a photo in the app doesn't show up in `git status`.
@@ -317,15 +327,15 @@ flowchart LR
 > ```
 > Thymeleaf adds the CSRF token automatically because the form uses `th:action`.
 
-- [ ] **C4 · POST deletes: Student, Teacher, Course** · `#4` · ⏱ 45 min
+- [x] **C4 · POST deletes: Student, Teacher, Course** · `#4` · ⏱ 45 min
   - ✅ **Done when** Delete still works from the list, and typing `/student/delete/1` in the address bar shows an error page and doesn't delete anything.
-- [ ] **C5 · POST deletes: Subject, Enrollment, Attendance** · `#4` · ⏱ 45 min
+- [x] **C5 · POST deletes: Subject, Enrollment, Attendance** · `#4` · ⏱ 45 min
   - ✅ **Done when** the C4 checks pass for these three modules.
-- [ ] **C6 · POST deletes: Fee, Exam, Result** · `#4` · ⏱ 45 min
+- [x] **C6 · POST deletes: Fee, Exam, Result** · `#4` · ⏱ 45 min
   - All 9 list pages already ask for confirmation in the link's `onclick`. Move each page's existing message into the form's `onsubmit`.
   - ✅ **Done when** the C4 checks pass for these three modules.
 
-- [ ] **C7 · Decide who can do what** · `#3` · ⏱ 20 min *(planning only, no code)*
+- [x] **C7 · Decide who can do what** · `#3` · ⏱ 20 min *(planning only, no code)*
   - Confirm or edit this starting matrix, then write the final version here:
 
     | Area | ADMIN | TEACHER | STUDENT |
@@ -333,17 +343,18 @@ flowchart LR
     | Dashboard, list and view pages | ✅ | ✅ | ✅ |
     | Students, Teachers, Courses, Subjects, Enrollments: add, edit, delete | ✅ | ❌ | ❌ |
     | Attendance, Exams, Results: add, edit, delete | ✅ | ✅ | ❌ |
-    | Fees (including viewing) | ✅ | ❌ | ❌ |
+    | Fees (including viewing, and the dashboard's fee card and recent-payments panel) | ✅ | ❌ | ❌ |
 
   - Showing a student only their own records needs a User → Student link, which is in [Parked](#-parked).
   - ✅ **Done when** the matrix above is final.
+  - ✔️ **Confirmed on 8 Oct 2026:** the matrix above, with `anurag_00` as the first admin.
 
-- [ ] **C8 · Create the first admin** · `#3` · ⏱ 30 min
+- [x] **C8 · Create the first admin** · `#3` · ⏱ 30 min
   - Quickest option: `UPDATE users SET role = 'ROLE_ADMIN' WHERE username = '<you>';`
   - Better for a fresh clone: an `ApplicationRunner` (e.g. `config/AdminSeeder`) that creates an admin from `ADMIN_USERNAME` and `ADMIN_PASSWORD` when no admin exists yet (add `existsByRole(String role)` to `UserRepository`). Keep the `ROLE_` prefix: `UserServiceImpl` already stores `ROLE_STUDENT`, and that prefix is what `hasRole("ADMIN")` checks for.
   - ✅ **Done when** the admin can log in and restarting the app doesn't create a second admin.
 
-- [ ] **C9 · Restrict routes in `SecurityConfig`** · `#3` · ⏱ 45 min · 🔗 **Needs** B1, C4–C6
+- [x] **C9 · Restrict routes in `SecurityConfig`** · `#3` · ⏱ 45 min · 🔗 **Needs** B1, C4–C6
   - Spring Security uses the first rule that matches, so put the specific rules first:
     ```java
     .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
@@ -368,16 +379,16 @@ flowchart LR
   - 📂 `config/SecurityConfig.java:33-48`
   - ✅ **Done when** a newly registered account opening `/student/new` sees your 403 page, and the admin can still open it.
 
-- [ ] **C10 · Hide the sidebar and dashboard items a role can't use** · `#3` · ⏱ 30 min
+- [x] **C10 · Hide the sidebar and dashboard items a role can't use** · `#3` · ⏱ 30 min
   - Add `xmlns:sec="http://www.thymeleaf.org/extras/spring-security"`. Wrap the Fees sidebar link and the dashboard quick-action buttons in `sec:authorize="hasRole('ADMIN')"` (or `hasAnyRole('ADMIN','TEACHER')` where C7 allows teachers).
   - 📂 `common/sidebar.html` · `dashboard/quick-actions.html`
   - ✅ **Done when** a STUDENT account sees no Fees link and no "Add" quick actions.
 
-- [ ] **C11 · Hide Add, Edit and Delete buttons on list pages** · `#3` · ⏱ 45 min
+- [x] **C11 · Hide Add, Edit and Delete buttons on list pages** · `#3` · ⏱ 45 min
   - Apply the same `sec:authorize` wrapping to the buttons on all 9 `*-list.html` pages and the 3 `*-view.html` pages.
   - ✅ **Done when** a STUDENT account sees read-only lists everywhere. This completes **#3**.
 
-- [ ] **C12 · Write `FileUploadUtil`** · `#7` `#18` · ⏱ 45 min
+- [x] **C12 · Write `FileUploadUtil`** · `#7` `#18` · ⏱ 45 min
   - One method, for example `String saveImage(MultipartFile file, String folder)`, that:
     - accepts only JPEG and PNG files, and confirms the content really is an image with `ImageIO.read(file.getInputStream()) != null`
     - generates the file name itself (`UUID.randomUUID() + ".jpg"`) and never uses the name the browser sent
@@ -385,18 +396,18 @@ flowchart LR
   - 📂 `utility/FileUploadUtil.java` (currently empty)
   - ✅ **Done when** it compiles. C13 puts it to use.
 
-- [ ] **C13 · Use `FileUploadUtil` for Student and Teacher photos** · `#7` · ⏱ 30 min · 🔗 **Needs** C12
+- [x] **C13 · Use `FileUploadUtil` for Student and Teacher photos** · `#7` · ⏱ 30 min · 🔗 **Needs** C12
   - Replace the two copy-pasted upload blocks. On `IllegalArgumentException`, call `result.rejectValue("photo", "invalid", e.getMessage())` and return the form.
   - 📂 `StudentController.java:105-121` · `TeacherController.java:93-120`
   - ✅ **Done when** a `.html` file, or a text file renamed to `.jpg`, is rejected with a message, and a real photo still uploads.
 
-- [ ] **C14 · Lower the upload size limit** · `#7` · ⏱ 20 min
+- [x] **C14 · Lower the upload size limit** · `#7` · ⏱ 20 min
   - Set `max-file-size=2MB` and `max-request-size=3MB`. Handle `MaxUploadSizeExceededException` in `GlobalExceptionHandler` (B3) with a friendly message.
   - If the browser shows "connection reset" for very large files instead of your message, set `server.tomcat.max-swallow-size=-1`.
   - 📂 `application.properties:22-23`
   - ✅ **Done when** a 5 MB photo shows your message.
 
-- [ ] **C15 · Delete old photos when they're replaced** · `#7` · ⏱ 30 min
+- [x] **C15 · Delete old photos when they're replaced** · `#7` · ⏱ 30 min
   - Add `FileUploadUtil.delete(folder, fileName)`. Call it when an edit uploads a new photo and when a student or teacher is deleted.
   - ✅ **Done when** replacing a photo removes the old file from `uploads/student-images/`.
 
@@ -406,56 +417,63 @@ flowchart LR
 
 **Goal:** search results are paged, codes are unique, and marks and amounts make sense.
 
-- [ ] **D1 · Page the `/exam` and `/result` lists** · `#11` · ⏱ 10 min
+> 📝 **Done 8 Oct 2026, with these decisions and extras:**
+> - **D1–D5:** the list and the search are now one paged query per module (`searchX(keyword, page)`; a blank keyword lists everything), sorted by id so rows cannot shift between pages. Pager links carry the keyword and dates. A typed `page=0` or negative page shows page 1 instead of a 500, and the student list no longer shows a "1, 0" pager when nothing matches. Old `/x/page/{n}` URLs still work. Page size and sort live in `utility/Pages`.
+> - **D6:** the constraints are declared with `@Table(uniqueConstraints = …)`. `@Column(unique = true)` was tried first, but Hibernate's `ddl-auto=update` only applies that when it creates a table. MySQL's case-insensitive collation means `math01` and `MATH01` count as the same code.
+> - **D7/D8:** duplicate checks ask the database directly (`existsBy…AndIdNot`), so an edit can keep its own value. Enrollments also got a unique constraint on (student, course, subject).
+> - **D12:** decided that a fail is always **F** and a pass is never below **D**. The rules are in `utility/GradeCalculator`; the two existing test results were re-saved so their stored grades follow the rule. The README's Grade Engine section was updated to match.
+> - **D13:** `git rm` / `git mv` staged the four deletions and the `CsvHelper` rename.
+
+- [x] **D1 · Page the `/exam` and `/result` lists** · `#11` · ⏱ 10 min
   - Make `listExams()` and `listResults()` call `findPaginated(1, model)`, as Student and Attendance already do.
   - ✅ **Done when** with 6 or more exams, `/exam` shows 5 of them and a pager.
 
-- [ ] **D2 · Paged search for Student (the pattern for D3–D5)** · `#11` · ⏱ 1 h
+- [x] **D2 · Paged search for Student (the pattern for D3–D5)** · `#11` · ⏱ 1 h
   - Repository: add a `Pageable` parameter and return `Page<Student>`. Controller: add `keyword`, `currentPage`, `totalPages` and `totalItems` to the model.
   - Give the search endpoint a `page` parameter (default 1), and make the pager links keep the keyword: `@{/student/search(keyword=${keyword}, page=${i})}`.
   - ✅ **Done when** a broad search shows 5 results per page and page 2 is still filtered.
-- [ ] **D3 · Paged search for Teacher, Course and Subject** · `#11` · ⏱ 1 h
+- [x] **D3 · Paged search for Teacher, Course and Subject** · `#11` · ⏱ 1 h
   - ✅ **Done when** the D2 check passes on all three.
-- [ ] **D4 · Paged search for Enrollment and Fee** · `#11` · ⏱ 45 min
+- [x] **D4 · Paged search for Enrollment and Fee** · `#11` · ⏱ 45 min
   - This also removes Fee's hardcoded `totalPages = 1`.
   - ✅ **Done when** the D2 check passes on both.
-- [ ] **D5 · Paged search for Attendance, Exam and Result** · `#11` · ⏱ 1 h · 🔗 **Needs** A8, A9
+- [x] **D5 · Paged search for Attendance, Exam and Result** · `#11` · ⏱ 1 h · 🔗 **Needs** A8, A9
   - The `@Query` methods from A8 and A9 only need an extra `Pageable` parameter.
   - ✅ **Done when** the D2 check passes on all three, with a date filter applied.
 
-- [ ] **D6 · Add unique constraints in the database** · `#27` · ⏱ 20 min
+- [x] **D6 · Add unique constraints in the database** · `#27` · ⏱ 20 min
   - First look for existing duplicates and fix them: `SELECT course_code, COUNT(*) FROM courses GROUP BY course_code HAVING COUNT(*) > 1;` (and the same for `subjects.subject_code` and `teachers.email`).
   - Then add `@Column(unique = true)` to `Course.courseCode`, `Subject.subjectCode` and `Teacher.email`.
   - ✅ **Done when** `SHOW INDEX FROM courses;` lists a unique index on `course_code`.
 
-- [ ] **D7 · Check for duplicates on edit too** · `#27` · ⏱ 45 min
+- [x] **D7 · Check for duplicates on edit too** · `#27` · ⏱ 45 min
   - Course, Subject and Teacher only check for duplicates when a record is created. Copy the pattern in `StudentController.java:85-103`, which flags a clash only when the value changed and belongs to another record.
   - ✅ **Done when** changing course B's code to course A's code shows an error on the form.
 
-- [ ] **D8 · Block duplicate enrollments** · `#27` · ⏱ 30 min
+- [x] **D8 · Block duplicate enrollments** · `#27` · ⏱ 30 min
   - Add `existsByStudentIdAndCourseIdAndSubjectId(...)` to `EnrollmentRepository` and check it when saving.
   - ✅ **Done when** enrolling the same student in the same course and subject twice shows an error.
 
-- [ ] **D9 · Passing marks can't exceed total marks** · `#28` · ⏱ 20 min · 🔗 **Needs** A10
+- [x] **D9 · Passing marks can't exceed total marks** · `#28` · ⏱ 20 min · 🔗 **Needs** A10
   - In `ExamController`, after the `@Valid` check: `if (passing > total) result.rejectValue("passingMarks", …)`.
   - ✅ **Done when** passing 60 out of 50 shows an error.
-- [ ] **D10 · Obtained marks can't exceed the exam's total** · `#28` · ⏱ 20 min · 🔗 **Needs** A11
+- [x] **D10 · Obtained marks can't exceed the exam's total** · `#28` · ⏱ 20 min · 🔗 **Needs** A11
   - Compare against `result.getExam().getTotalMarks()` in `ResultController`.
   - ✅ **Done when** 120 out of 100 shows an error.
-- [ ] **D11 · Reject negative fee amounts** · `#28` · ⏱ 5 min
+- [x] **D11 · Reject negative fee amounts** · `#28` · ⏱ 5 min
   - Add `@PositiveOrZero` to `Fee.amount`.
   - 📂 `entity/Fee.java:27`
   - ✅ **Done when** an amount of `-100` shows an error.
-- [ ] **D12 · Decide whether a pass can be graded F, and move the grade logic out** · `#28` · ⏱ 45 min
+- [x] **D12 · Decide whether a pass can be graded F, and move the grade logic out** · `#28` · ⏱ 45 min
   - Today 40/100 with a pass mark of 33 gives "Pass · F". Choose one rule: either anyone who passes gets at least a D, or the grade bands start at the pass mark.
   - Move the grade bands from `ResultServiceImpl.calculateResult` into a small `GradeCalculator` class. The marksheet (E8) and the tests (F14) use it too.
   - ✅ **Done when** 40/100 with a pass mark of 33 no longer gives grade F.
 
-- [ ] **D13 · Delete the empty stub classes** · `#18` · ⏱ 10 min
+- [x] **D13 · Delete the empty stub classes** · `#18` · ⏱ 10 min
   - Delete `CourseDTO`, `StudentDTO`, `TeacherDTO` and `DateUtil`, since nothing uses them. Rename `CscHelper` to `CsvHelper` for E17.
   - ✅ **Done when** the build passes.
 
-- [ ] **D14 · Search teachers by email and department too** · ⏱ 15 min
+- [x] **D14 · Search teachers by email and department too** · ⏱ 15 min
   - 📂 `repository/TeacherRepository.java:12`
   - ✅ **Done when** searching a department name finds its teachers.
 
@@ -467,78 +485,94 @@ flowchart LR
 
 > 🔁 **Detail-page recipe** for E1–E6: add `GET /x/view/{id}`, create `x-view.html` by copying `course/course-view.html`, render it through the layout helper (B5), and add a **View** button to each list row. Wrap the page's Edit button in the same `sec:authorize` check as C11.
 
-- [ ] **E1 · Subject detail page** · ⏱ 45 min. Also list the exams for this subject.
+- [x] **E1 · Subject detail page** · ⏱ 45 min. Also list the exams for this subject.
   - ✅ **Done when** View on a subject opens its page and shows its exams.
-- [ ] **E2 · Exam detail page** · ⏱ 45 min. Also list the results, with a pass count.
+- [x] **E2 · Exam detail page** · ⏱ 45 min. Also list the results, with a pass count.
   - ✅ **Done when** View on an exam shows its results and how many passed.
-- [ ] **E3 · Result detail page** · ⏱ 30 min
+- [x] **E3 · Result detail page** · ⏱ 30 min
   - ✅ **Done when** View on a result opens its page.
-- [ ] **E4 · Fee detail page** · ⏱ 30 min. E9 turns this into the receipt.
+- [x] **E4 · Fee detail page** · ⏱ 30 min. E9 turns this into the receipt.
   - ✅ **Done when** View on a fee opens its page.
-- [ ] **E5 · Enrollment detail page** · ⏱ 30 min
+- [x] **E5 · Enrollment detail page** · ⏱ 30 min
   - ✅ **Done when** View on an enrollment opens its page.
-- [ ] **E6 · Attendance detail page** · ⏱ 30 min
+- [x] **E6 · Attendance detail page** · ⏱ 30 min
   - ✅ **Done when** View on an attendance row opens its page.
 
 **🎓 Student marksheet**
 
-- [ ] **E7 · Gather the marksheet data** · ⏱ 30 min
+- [x] **E7 · Gather the marksheet data** · ⏱ 30 min
   - Add `ResultRepository.findByStudentId(Long id)`. Add a service method that returns a `Marksheet` record holding the rows, total obtained, total possible, overall percentage and overall grade (from `GradeCalculator`).
   - ✅ **Done when** the method returns correct totals for a student with 2 results.
-- [ ] **E8 · Marksheet page** · ⏱ 1 h · 🔗 **Needs** D12, E7
+- [x] **E8 · Marksheet page** · ⏱ 1 h · 🔗 **Needs** D12, E7
   - Add `GET /student/{id}/marksheet` with a table of exams and a totals row, and link to it from `student-view.html`.
   - ✅ **Done when** the totals and grade match a hand calculation.
 
 **💰 Fees**
 
-- [ ] **E9 · Printable fee receipt** · ⏱ 45 min · 🔗 **Needs** E4
+- [x] **E9 · Printable fee receipt** · ⏱ 45 min · 🔗 **Needs** E4
   - Add the institution name, a receipt number (the fee id), the student, fee type, amount, date and payment method. Add a **Print** button (`window.print()`) and `@media print` CSS that hides the sidebar and navbar.
   - ✅ **Done when** the print preview shows only the receipt.
-- [ ] **E10 · Flag overdue fees** · ⏱ 45 min
+- [x] **E10 · Flag overdue fees** · ⏱ 45 min
   - Add `FeeRepository.findByPaymentStatusNotAndDueDateBefore("Paid", LocalDate.now())` plus a matching count. Show a red **Overdue** badge in the fee list and an overdue count on the dashboard's Fees card.
   - ✅ **Done when** an unpaid fee with a past due date shows the badge.
 
 **🗓️ Attendance**
 
-- [ ] **E11 · Attendance percentage per student** · ⏱ 30 min
+- [x] **E11 · Attendance percentage per student** · ⏱ 30 min
   - Add `countByStudentId` and `countByStudentIdAndStatus(id, "Present")`, and show "Attendance: 87% (26/30)" on `student-view.html`.
   - ✅ **Done when** the percentage matches the student's attendance rows.
-- [ ] **E12 · Attendance report** · ⏱ 1.5 h
+- [x] **E12 · Attendance report** · ⏱ 1.5 h
   - Add `GET /attendance/report` with one row per student showing present, total and percentage, and highlight anyone under 75%. Use a `record AttendanceSummary(...)` filled by a JPQL `SELECT new …` query with `GROUP BY`. A subject filter is optional.
   - ✅ **Done when** the report agrees with E11 for each student.
 
 **🧾 Exams**
 
-- [ ] **E13 · Exam schedule** · ⏱ 45 min
+- [x] **E13 · Exam schedule** · ⏱ 45 min
   - Add `GET /exam/schedule` showing upcoming exams grouped by month. Build a `TreeMap<YearMonth, List<Exam>>` in the service.
   - ✅ **Done when** exams appear under the correct month, in date order.
 
 **👥 Bulk attendance**
 
-- [ ] **E14 · Bulk attendance form** · ⏱ 1.5 h
+- [x] **E14 · Bulk attendance form** · ⏱ 1.5 h
   - Pick a subject and a date to get a table of every student, each with Present, Absent and Late options. Back it with a `BulkAttendanceForm { subjectId, date, List<Entry> entries }` class and bind the rows with `th:field="*{entries[__${stat.index}__].status}"`.
   - ✅ **Done when** the form shows one row per student.
-- [ ] **E15 · Save bulk attendance** · ⏱ 1 h · 🔗 **Needs** E14
+- [x] **E15 · Save bulk attendance** · ⏱ 1 h · 🔗 **Needs** E14
   - Save one `Attendance` per entry, and skip students who already have a row for that subject and date (`existsByStudentIdAndSubjectIdAndAttendanceDate`). Redirect with a message like "Saved 28 · skipped 2".
   - ✅ **Done when** submitting the same class twice saves nothing the second time.
 
+> 📝 **E1–E15 done 8 Oct 2026, with these decisions and extras:**
+> - **E1–E6:** every list now has a View button for all roles; Edit and Delete stay gated as in C9. Detail pages link to each other (result → student, exam, subject). Exam pages list results highest first with passed, failed and pass rate.
+> - **E7/E8:** `Marksheet` is a record in `dto/` that totals the rows. The overall result follows D12: it is a pass only if every exam is passed, a fail is F, and a pass is graded on the overall percentage, never below D. Checked by hand: 780/1000 + 85/100 = 865/1100 = 78.6% → B · Pass; 400/1000 + 20/100 = 38.2% with one fail → F · Fail. The query is `findByStudentIdOrderByExamExamDateAsc`, so rows come out in date order.
+> - **E9:** the fee page is the receipt. An unpaid fee prints as a "Fee Statement" with "Amount Due". The institution name comes from `sms.institution-name` (env `INSTITUTION_NAME`, default "Student Management System"). The `@media print` rules live in `theme.css`, so any page prints without the sidebar, navbar and footer. They also reset header and badge colours, because browsers drop backgrounds when printing.
+> - **E10:** the rule lives in `Fee.isOverdue()`, with matching repository queries; the dashboard shows "N overdue" in red only when N > 0.
+> - **E11/E12:** both read the same `AttendanceSummary` record. Late and Absent count as not present. The report starts from Student with a LEFT JOIN, so a student with no records shows "No records" rather than disappearing.
+> - **E14/E15:** a student who already has a record for that subject and date shows as "Already recorded", with no options, and is skipped. The save re-checks the database, ignores the same student twice in one post, and ignores unknown ids. After saving you land on that day's list with "Saved N · skipped M". `/attendance/bulk` was added to the ADMIN/TEACHER rule. The bound list limit was raised from Spring's 256 rows to 2000.
+> - **Found, not fixed:** the dashboard's "Fees Collected" adds up **every** fee, pending ones included (₹120,000 shown, ₹60,000 actually paid), because `FeeRepository.sumAllAmounts()` has no `WHERE paymentStatus = 'Paid'`. Separately, the single attendance form still allows two records for the same student, subject and date; only the bulk form checks for that.
+
 **📥 CSV import and export**
 
-- [ ] **E16 · Decide the CSV format** · ⏱ 20 min *(planning only)*
+- [x] **E16 · Decide the CSV format** · ⏱ 20 min *(planning only)*
   - `student.CSV` has `ID, Name, Email, Course, Marks`, but a Student needs first and last name, phone, gender, date of birth and address. Recommended: use a header that matches the form (`firstName,lastName,email,phone,gender,course,dateOfBirth,address`) and replace the sample file with **made-up** people. The current sample contains real-looking names and email addresses in a public repository.
   - ✅ **Done when** `student.CSV` uses the new header with sample data.
-- [ ] **E17 · Write the CSV parser** · ⏱ 1 h · 🔗 **Needs** D13, E16
+- [x] **E17 · Write the CSV parser** · ⏱ 1 h · 🔗 **Needs** D13, E16
   - Add `org.apache.commons:commons-csv`. Write `CsvHelper.parseStudents(InputStream)` that returns the parsed students plus a list of row errors.
   - ✅ **Done when** parsing the sample file returns every row.
-- [ ] **E18 · Student import page** · ⏱ 1.5 h · 🔗 **Needs** E17
+- [x] **E18 · Student import page** · ⏱ 1.5 h · 🔗 **Needs** E17
   - Add `GET` and `POST /student/import` with a file input. Validate each row (Bean Validation plus the duplicate-email check), save the valid rows, and report "12 imported · 2 skipped (row 4: email exists)". Add `/student/import` to the ADMIN rules from C9.
   - ✅ **Done when** importing the sample file twice imports everything the first time and skips everything the second time.
-- [ ] **E19 · Export students to CSV** · ⏱ 45 min
+- [x] **E19 · Export students to CSV** · ⏱ 45 min
   - Add `GET /student/export` returning `text/csv` with `Content-Disposition: attachment; filename=students.csv`, using the E16 header so an exported file can be imported again.
   - ✅ **Done when** the exported file imports cleanly into an empty database.
-- [ ] **E20 · Export fees to CSV** · ⏱ 30 min
+- [x] **E20 · Export fees to CSV** · ⏱ 30 min
   - Add `GET /fee/export`.
   - ✅ **Done when** the file opens correctly in Excel.
+
+> 📝 **E16–E20 done 8 Oct 2026.** ✔️ Confirmed by you: the form-field header, made-up people in `student.CSV`, and rows with an unknown course skipped.
+> - **E16:** `student.CSV` now has 10 invented students on `@example.com`, using the two existing course names. The old rows (real-looking names and Gmail addresses) are still in git history; rewriting it is Parked.
+> - **E17:** `commons-csv` 1.14.1 is pinned in `pom.xml`, since Spring Boot doesn't manage its version. Columns may come in any order and header names ignore case. Excel's byte order mark is stripped. Gender is normalised to Male/Female/Other. Row numbers match the spreadsheet (header = row 1). A broken file (no header, unclosed quote, empty) gets one clear message instead of an error page.
+> - **E18:** each row runs the Student form's own Bean Validation, then the email checks (database and earlier rows, ignoring case), then the course check. Matching is case-insensitive, and the stored course name's spelling is used. The page redirects after import, so a refresh cannot import twice. Only `.csv` names are accepted. Checked: the sample imports 10 · 0 the first time and 0 · 10 the second.
+> - **E19/E20:** both exports start with a UTF-8 BOM so Excel reads them as UTF-8, and use CRLF line ends. Cells starting with `=`, `+`, `-` or `@` get a leading `'`, so Excel shows them as text rather than running a formula; import strips it, so a round trip keeps the value. Checked: an export imported into a fresh, empty schema (courses added first, since rows need an existing course) gave 16 · 0 with every field identical. Excel opened both files with numbers as numbers and dates as dates, and the formula-looking name stayed text.
+> - **Routes:** `/student/import` and `/student/export` were added to the ADMIN rule; `/fee/export` is covered by `/fee/**`. Role matrix: 46/46, including the 14 Stage E routes.
 
 ---
 
