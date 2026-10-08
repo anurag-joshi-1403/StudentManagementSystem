@@ -1,10 +1,11 @@
-ID,Name,Email,Course,Marks
-4, Anu Joshi, anujoshi@gmail.com, BSc-Nursing, 99.9
-5, Musu Joshi, musujoshi@gmail.com, BSc, 99.0
-6, Anurag Joshi, anuragjosi0314@gmail.com, B.tech(CSE), 73.0
-7, Anu Joshi, anujoshi2025@gmail.com, BSc(Nursing), 90.0
-8, Anupama Joshi, anupamajoshi@gmail.com, MA, 90.0
-10, Hariom Joshi, hariomjoshi0000@gmail.com, B.tech, 77.0
-11, Arpit Verma, arpitverma@gmail.com, BBA, 99.0
-12, Dwarika Prasad Joshi, dwarikaprasadjoshi@gmail.com, Farmer, 99.0
-13, Anshila Kumari, anshilakumari@gmail.com, BSc-Nurshing, 90.0
+firstName,lastName,email,phone,gender,course,dateOfBirth,address
+Rohan,Verma,rohan.verma@example.com,9876500011,Male,B.Tech Computer Science,2005-04-12,"12 Lake Road, Pune"
+Ananya,Iyer,ananya.iyer@example.com,9876500012,Female,B.Sc Physics,2004-11-03,"45 Temple Street, Chennai"
+Vikram,Singh,vikram.singh@example.com,9876500013,Male,B.Tech Computer Science,2005-01-25,"8 Civil Lines, Jaipur"
+Meera,Nair,meera.nair@example.com,9876500014,Female,B.Sc Physics,2005-07-19,"221 Shore Road, Kochi"
+Arjun,Rao,arjun.rao@example.com,9876500015,Male,B.Tech Computer Science,2004-09-30,"17 Hill View Colony, Hyderabad"
+Ishita,Bose,ishita.bose@example.com,9876500016,Female,B.Tech Computer Science,2005-02-14,"3 Garden Lane, Kolkata"
+Kunal,Desai,kunal.desai@example.com,9876500017,Male,B.Sc Physics,2004-12-08,"56 Ring Road, Surat"
+Priya,Menon,priya.menon@example.com,9876500018,Female,B.Sc Physics,2005-05-22,"9 Sea Face Road, Mumbai"
+Aditya,Kulkarni,aditya.kulkarni@example.com,9876500019,Male,B.Tech Computer Science,2005-08-05,"30 College Road, Pune"
+Sam,Thomas,sam.thomas@example.com,9876500020,Other,B.Sc Physics,2004-10-17,"14 Church Street, Bengaluru"
