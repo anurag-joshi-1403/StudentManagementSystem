@@ -158,7 +158,7 @@ public class EnrollmentController {
         // Delete Enrollment
         // ==========================
 
-        @GetMapping("/delete/{id}")
+        @PostMapping("/delete/{id}")
         public String deleteEnrollment(
                         @PathVariable Long id) {
 

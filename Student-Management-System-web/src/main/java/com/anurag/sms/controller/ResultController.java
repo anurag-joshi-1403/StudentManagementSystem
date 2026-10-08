@@ -110,7 +110,7 @@ public class ResultController {
     }
 
     // Delete Result
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteResult(@PathVariable Long id) {
 
         resultService.deleteResult(id);

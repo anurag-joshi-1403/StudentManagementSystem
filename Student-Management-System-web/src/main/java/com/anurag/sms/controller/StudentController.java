@@ -1,12 +1,10 @@
 package com.anurag.sms.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.service.StudentService;
+import com.anurag.sms.utility.FileUploadUtil;
 
 import jakarta.validation.Valid;
 
 @Controller
 public class StudentController {
+
+    private static final Logger log = LoggerFactory.getLogger(StudentController.class);
+
+    // Served back at /student-images/** by WebConfig
+    private static final String PHOTO_DIR = "uploads/student-images";
+
     private final StudentService studentService;
     private final com.anurag.sms.service.CourseService courseService;
 
@@ -83,7 +88,7 @@ public class StudentController {
             BindingResult result,
             @RequestParam("photoFile") MultipartFile photoFile,
             Model model
-    ) throws IOException {
+    ) {
 
         if (result.hasErrors()) {
             model.addAttribute("courses", courseService.getAllCourses());
@@ -112,34 +117,40 @@ public class StudentController {
                     student.getId() == null ? "Add Student" : "Edit Student");
         }
 
-        // Photo Upload Handling
-        if (!photoFile.isEmpty()) {
-            String uploadDir = "uploads/student-images/";
-            Path uploadPath = Paths.get(uploadDir);
+        // Read the current photo name BEFORE saving: the save merges the form
+        // into the same managed entity, so afterwards it shows the new name.
+        String oldPhoto = student.getId() == null
+                ? null
+                : studentService.getStudentById(student.getId()).getPhoto();
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            String fileName = System.currentTimeMillis() + "_" + photoFile.getOriginalFilename();
-
-            Files.copy(
-                    photoFile.getInputStream(),
-                    uploadPath.resolve(fileName),
-                    StandardCopyOption.REPLACE_EXISTING);
-
-            student.setPhoto(fileName);
+        if (photoFile.isEmpty()) {
+            // No new file chosen: an edit keeps the existing photo
+            student.setPhoto(oldPhoto);
         } else {
-            // Keep existing photo on edit if no new file was uploaded
-            if (student.getId() != null) {
-                Student existing = studentService.getStudentById(student.getId());
-                if (existing != null) {
-                    student.setPhoto(existing.getPhoto());
-                }
+            try {
+                student.setPhoto(FileUploadUtil.saveImage(photoFile, PHOTO_DIR));
+            } catch (IllegalArgumentException e) {
+                result.rejectValue("photo", "photo.invalid", e.getMessage());
+                model.addAttribute("courses", courseService.getAllCourses());
+                return LayoutView.render(model, "student/student-form :: content", "student",
+                        student.getId() == null ? "Add Student" : "Edit Student");
+            } catch (IOException e) {
+                log.error("Could not save photo for student {}", student.getEmail(), e);
+                result.rejectValue("photo", "photo.failed",
+                        "The photo could not be saved, so nothing was changed. Please try again.");
+                model.addAttribute("courses", courseService.getAllCourses());
+                return LayoutView.render(model, "student/student-form :: content", "student",
+                        student.getId() == null ? "Add Student" : "Edit Student");
             }
         }
 
         studentService.saveStudent(student);
+
+        // Only once the record points at the new photo is the old file removed,
+        // so a failed save never leaves the student without a photo (#7).
+        if (oldPhoto != null && !oldPhoto.equals(student.getPhoto())) {
+            deletePhoto(oldPhoto);
+        }
 
         return "redirect:/student";
     }
@@ -152,10 +163,21 @@ public class StudentController {
         return LayoutView.render(model, "student/student-form :: content", "student", "Edit Student");
     }
 
-    @GetMapping("/student/delete/{id}")
+    @PostMapping("/student/delete/{id}")
     public String deleteStudent(@PathVariable Long id) {
+        String photo = studentService.getStudentById(id).getPhoto();
         studentService.deleteStudent(id);
+        deletePhoto(photo);
         return "redirect:/student";
+    }
+
+    // A leftover file is harmless, so a failed delete is logged, not shown.
+    private void deletePhoto(String fileName) {
+        try {
+            FileUploadUtil.delete(PHOTO_DIR, fileName);
+        } catch (IOException e) {
+            log.warn("Could not delete old student photo {}", fileName, e);
+        }
     }
 
     @GetMapping("/student/page/{pageNo}")

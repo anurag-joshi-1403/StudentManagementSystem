@@ -43,8 +43,6 @@ public class DashboardController {
                 this.enrollmentService = enrollmentService;
                 this.attendanceService = attendanceService;
                 this.examService = examService;
-
-                System.out.println("===== DashboardController Loaded =====");
         }
 
         @GetMapping("/dashboard")

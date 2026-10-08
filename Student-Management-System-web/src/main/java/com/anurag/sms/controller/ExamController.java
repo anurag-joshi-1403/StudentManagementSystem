@@ -101,7 +101,7 @@ public class ExamController {
     }
 
     // Delete Exam
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteExam(@PathVariable Long id) {
 
         examService.deleteExam(id);

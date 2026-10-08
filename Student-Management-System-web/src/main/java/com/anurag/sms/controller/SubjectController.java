@@ -108,7 +108,7 @@ public class SubjectController {
     }
 
     // Delete Subject
-    @GetMapping("/subject/delete/{id}")
+    @PostMapping("/subject/delete/{id}")
     public String deleteSubject(
             @PathVariable Long id) {
 

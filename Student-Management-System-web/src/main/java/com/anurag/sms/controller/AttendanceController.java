@@ -107,7 +107,7 @@ public class AttendanceController {
     }
 
     // Delete Attendance
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteAttendance(@PathVariable Long id) {
 
         attendanceService.deleteAttendance(id);

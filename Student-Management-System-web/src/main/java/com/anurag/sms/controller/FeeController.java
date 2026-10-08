@@ -129,7 +129,7 @@ public class FeeController {
     }
 
     // Delete Fee
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteFee(@PathVariable Long id) {
 
         feeService.deleteFee(id);

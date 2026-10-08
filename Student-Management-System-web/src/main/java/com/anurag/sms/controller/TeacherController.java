@@ -1,11 +1,9 @@
 package com.anurag.sms.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,11 +17,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.anurag.sms.entity.Teacher;
 import com.anurag.sms.service.TeacherService;
+import com.anurag.sms.utility.FileUploadUtil;
 
 import jakarta.validation.Valid;
 
 @Controller
 public class TeacherController {
+
+    private static final Logger log = LoggerFactory.getLogger(TeacherController.class);
+
+    // Served back at /teacher-images/** by WebConfig
+    private static final String PHOTO_DIR = "uploads/teacher-images";
 
     private final TeacherService teacherService;
 
@@ -88,46 +92,44 @@ public class TeacherController {
                     "duplicateError",
                     "Teacher email already exists.");
 
-            return LayoutView.render(model, "teacher/teacher-form :: content", "teacher",
-                    teacher.getId() == null ? "Add Teacher" : "Edit Teacher");
+            return LayoutView.render(model, "teacher/teacher-form :: content", "teacher", "Add Teacher");
         }
 
-        if (!photoFile.isEmpty()) {
+        // Read the current photo name BEFORE saving: the save merges the form
+        // into the same managed entity, so afterwards it shows the new name.
+        String oldPhoto = teacher.getId() == null
+                ? null
+                : teacherService.getTeacherById(teacher.getId()).getPhoto();
 
+        if (photoFile.isEmpty()) {
+            // No new file chosen: an edit keeps the existing photo
+            teacher.setPhoto(oldPhoto);
+        } else {
             try {
-
-                String uploadDir = "uploads/teacher-images/";
-
-                Files.createDirectories(Paths.get(uploadDir));
-
-                String fileName = System.currentTimeMillis()
-                        + "_"
-                        + photoFile.getOriginalFilename();
-
-                Path filePath = Paths.get(uploadDir, fileName);
-
-                Files.copy(
-                        photoFile.getInputStream(),
-                        filePath,
-                        StandardCopyOption.REPLACE_EXISTING);
-
-                teacher.setPhoto(fileName);
-
+                teacher.setPhoto(FileUploadUtil.saveImage(photoFile, PHOTO_DIR));
+            } catch (IllegalArgumentException e) {
+                result.rejectValue("photo", "photo.invalid", e.getMessage());
+                return LayoutView.render(model, "teacher/teacher-form :: content", "teacher",
+                        teacher.getId() == null ? "Add Teacher" : "Edit Teacher");
             } catch (IOException e) {
-
-                e.printStackTrace();
-
-            }
-
-        }
-        else {
-            if(teacher.getId() != null){
-                Teacher existingTeacher = teacherService.getTeacherById(teacher.getId());
-                teacher.setPhoto(existingTeacher.getPhoto());
+                // This failure used to be swallowed (stack trace to the console
+                // only), so the teacher was saved without the photo and the
+                // user was never told (#29).
+                log.error("Could not save photo for teacher {}", teacher.getEmail(), e);
+                result.rejectValue("photo", "photo.failed",
+                        "The photo could not be saved, so nothing was changed. Please try again.");
+                return LayoutView.render(model, "teacher/teacher-form :: content", "teacher",
+                        teacher.getId() == null ? "Add Teacher" : "Edit Teacher");
             }
         }
 
         teacherService.saveTeacher(teacher);
+
+        // Only once the record points at the new photo is the old file removed,
+        // so a failed save never leaves the teacher without a photo (#7).
+        if (oldPhoto != null && !oldPhoto.equals(teacher.getPhoto())) {
+            deletePhoto(oldPhoto);
+        }
 
         return "redirect:/teacher";
     }
@@ -142,20 +144,31 @@ public class TeacherController {
         return LayoutView.render(model, "teacher/teacher-form :: content", "teacher", "Edit Teacher");
     }
 
-    @GetMapping("/teacher/delete/{id}")
+    @PostMapping("/teacher/delete/{id}")
     public String deleteTeacher(@PathVariable Long id) {
+
+        String photo = teacherService.getTeacherById(id).getPhoto();
 
         teacherService.deleteTeacher(id);
 
+        deletePhoto(photo);
+
         return "redirect:/teacher";
+    }
+
+    // A leftover file is harmless, so a failed delete is logged, not shown.
+    private void deletePhoto(String fileName) {
+        try {
+            FileUploadUtil.delete(PHOTO_DIR, fileName);
+        } catch (IOException e) {
+            log.warn("Could not delete old teacher photo {}", fileName, e);
+        }
     }
 
     @GetMapping("/teacher/view/{id}")
     public String viewTeacher(@PathVariable Long id, Model model) {
 
         Teacher teacher = teacherService.getTeacherById(id);
-
-        System.out.println("Teacher Photo = " + teacher.getPhoto());
 
         model.addAttribute("teacher", teacher);
 

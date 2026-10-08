@@ -104,7 +104,7 @@ public class CourseController {
         return LayoutView.render(model, "course/course-view :: content", "course", "Course Details");
     }
 
-    @GetMapping("/course/delete/{id}")
+    @PostMapping("/course/delete/{id}")
     public String deleteCourse(@PathVariable Long id) {
 
         courseService.deleteCourse(id);
