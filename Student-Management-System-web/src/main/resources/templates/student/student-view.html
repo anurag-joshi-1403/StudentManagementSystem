@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -81,12 +81,35 @@
                 <th>Address</th>
                 <td th:text="${student.address}"></td>
               </tr>
+
+              <tr>
+                <th>Attendance</th>
+                <td>
+                  <th:block th:if="${attendance.hasRecords()}">
+                    <span
+                      th:class="${attendance.belowMinimum} ? 'fw-semibold text-danger' : 'fw-semibold'"
+                      th:text="${#numbers.formatDecimal(attendance.percentage, 1, 0)} + '%'"
+                    >0%</span>
+                    <span class="text-muted" th:text="'(' + ${attendance.present} + '/' + ${attendance.total} + ' present)'"></span>
+                    <span th:if="${attendance.belowMinimum}" class="badge bg-danger ms-1">Below 75%</span>
+                  </th:block>
+                  <span th:unless="${attendance.hasRecords()}" class="text-muted">No attendance recorded yet</span>
+                </td>
+              </tr>
             </table>
             <div class="text-center mt-4">
               <a th:href="@{/student}" class="btn btn-secondary me-2"> Back </a>
 
               <a
+                th:href="@{/student/{id}/marksheet(id=${student.id})}"
+                class="btn btn-primary me-2"
+              >
+                <i class="bi bi-file-earmark-text me-1"></i>Marksheet
+              </a>
+
+              <a
                 th:href="@{/student/edit/{id}(id=${student.id})}"
+                sec:authorize="hasRole('ADMIN')"
                 class="btn btn-warning"
               >
                 Edit Student

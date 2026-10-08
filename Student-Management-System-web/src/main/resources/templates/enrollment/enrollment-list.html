@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="UTF-8" />
     <title>Enrollment Management</title>
@@ -17,7 +17,7 @@
           Enrollment Management
         </h2>
 
-        <a th:href="@{/enrollment/new}" class="btn btn-primary">
+        <a th:href="@{/enrollment/new}" sec:authorize="hasRole('ADMIN')" class="btn btn-primary">
           <i class="bi bi-plus-lg"></i>
           Add Enrollment
         </a>
@@ -87,23 +87,37 @@
 
               <td>
                 <a
+                  th:href="@{/enrollment/view/{id}(id=${enrollment.id})}"
+                  class="btn btn-info btn-sm text-white"
+                  aria-label="View"
+                >
+                  <i class="bi bi-eye"></i>
+                </a>
+
+                <!--/* Everyone may view; only admins may change (C9) */-->
+                <th:block sec:authorize="hasRole('ADMIN')">
+                <a
                   th:href="@{/enrollment/edit/{id}(id=${enrollment.id})}"
                   class="btn btn-warning btn-sm"
+                  aria-label="Edit"
                 >
                   <i class="bi bi-pencil"></i>
                 </a>
 
-                <a
-                  th:href="@{/enrollment/delete/{id}(id=${enrollment.id})}"
-                  class="btn btn-danger btn-sm"
-                  onclick="
-                    return confirm(
-                      'Are you sure you want to delete this enrollment?',
-                    );
-                  "
+                <!--/* POST, not a link: a GET delete could be triggered by link
+                     prefetch or a crawler, and CSRF protection does not cover GET.
+                     th:action adds the CSRF token. */-->
+                <form
+                  th:action="@{/enrollment/delete/{id}(id=${enrollment.id})}"
+                  method="post"
+                  class="d-inline"
+                  onsubmit="return confirm('Are you sure you want to delete this enrollment?');"
                 >
-                  <i class="bi bi-trash"></i>
-                </a>
+                  <button type="submit" class="btn btn-danger btn-sm" aria-label="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+                </th:block>
               </td>
             </tr>
           </tbody>
@@ -120,7 +134,7 @@
           >
             <a
               class="page-link"
-              th:href="@{/enrollment(page=${currentPage-1})}"
+              th:href="@{/enrollment(keyword=${keyword}, page=${currentPage-1})}"
             >
               Previous
             </a>
@@ -134,7 +148,7 @@
             <a
               class="page-link"
               th:text="${i}"
-              th:href="@{/enrollment(page=${i})}"
+              th:href="@{/enrollment(keyword=${keyword}, page=${i})}"
             >
             </a>
           </li>
@@ -145,7 +159,7 @@
           >
             <a
               class="page-link"
-              th:href="@{/enrollment(page=${currentPage+1})}"
+              th:href="@{/enrollment(keyword=${keyword}, page=${currentPage+1})}"
             >
               Next
             </a>

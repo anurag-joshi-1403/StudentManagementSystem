@@ -118,7 +118,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/course(page=${currentPage-1})}"
+                  th:href="@{/course(keyword=${keyword}, page=${currentPage-1})}"
                 >
                   Previous
                 </a>
@@ -132,7 +132,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/course(page=${i})}"
+                  th:href="@{/course(keyword=${keyword}, page=${i})}"
                   th:text="${i}"
                 >
                 </a>
@@ -145,7 +145,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/course(page=${currentPage+1})}"
+                  th:href="@{/course(keyword=${keyword}, page=${currentPage+1})}"
                 >
                   Next
                 </a>

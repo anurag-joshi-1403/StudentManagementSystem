@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Marksheet</title>
+  </head>
+
+  <body>
+    <div class="container mt-5" th:fragment="content">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h3 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Marksheet</h3>
+          <span
+            th:unless="${marksheet.empty}"
+            th:class="${marksheet.pass} ? 'badge bg-success fs-6' : 'badge bg-danger fs-6'"
+            th:text="${marksheet.status()}"
+          >Status</span>
+        </div>
+
+        <div class="card-body">
+          <!-- Student -->
+          <table class="table table-bordered mt-3">
+            <tbody>
+              <tr>
+                <th width="30%"><i class="bi bi-person me-2 text-muted"></i>Student</th>
+                <td>
+                  <a
+                    th:href="@{/student/view/{id}(id=${student.id})}"
+                    th:text="${student.firstName + ' ' + student.lastName}"
+                  >Student</a>
+                </td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-envelope me-2 text-muted"></i>Email</th>
+                <td th:text="${student.email}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-book-half me-2 text-muted"></i>Course</th>
+                <td th:text="${student.course}"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Results -->
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th>Exam</th>
+                  <th>Subject</th>
+                  <th>Date</th>
+                  <th class="text-end">Marks</th>
+                  <th class="text-end">Out of</th>
+                  <th class="text-end">Percentage</th>
+                  <th>Grade</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="result : ${marksheet.rows}">
+                  <td>
+                    <a th:href="@{/result/view/{id}(id=${result.id})}" th:text="${result.exam.examName}">Exam</a>
+                  </td>
+                  <td th:text="${result.exam.subject.subjectName}"></td>
+                  <td th:text="${result.exam.examDate}"></td>
+                  <td class="text-end" th:text="${result.obtainedMarks}"></td>
+                  <td class="text-end" th:text="${result.exam.totalMarks}"></td>
+                  <td class="text-end" th:text="${#numbers.formatDecimal(result.obtainedMarks * 100.0 / result.exam.totalMarks, 1, 1)} + '%'"></td>
+                  <td><span class="badge bg-primary" th:text="${result.grade}"></span></td>
+                  <td>
+                    <span
+                      th:class="${result.resultStatus == 'Pass'} ? 'badge bg-success' : 'badge bg-danger'"
+                      th:text="${result.resultStatus}"
+                    ></span>
+                  </td>
+                </tr>
+                <tr th:if="${marksheet.empty}">
+                  <td colspan="8" class="text-center text-muted">No results recorded for this student yet.</td>
+                </tr>
+              </tbody>
+              <tfoot th:unless="${marksheet.empty}" class="table-light fw-bold">
+                <tr>
+                  <td colspan="3" class="text-end">Total</td>
+                  <td class="text-end" th:text="${marksheet.totalObtained}"></td>
+                  <td class="text-end" th:text="${marksheet.totalPossible}"></td>
+                  <td class="text-end" th:text="${#numbers.formatDecimal(marksheet.percentage, 1, 1)} + '%'"></td>
+                  <td><span class="badge bg-primary fs-6" th:text="${marksheet.grade}"></span></td>
+                  <td>
+                    <span
+                      th:class="${marksheet.pass} ? 'badge bg-success fs-6' : 'badge bg-danger fs-6'"
+                      th:text="${marksheet.status()}"
+                    ></span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <p class="text-muted small mb-0" th:unless="${marksheet.empty}">
+            <i class="bi bi-info-circle me-1"></i>The overall result is a pass only if every exam is passed. A fail is graded F,
+            and a pass is graded on the overall percentage, never below D.
+          </p>
+
+          <div class="text-center mt-4">
+            <a th:href="@{/student/view/{id}(id=${student.id})}" class="btn btn-secondary">
+              <i class="bi bi-arrow-left me-1"></i>Back to Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

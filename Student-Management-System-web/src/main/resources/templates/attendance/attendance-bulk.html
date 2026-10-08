@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bulk Attendance</title>
+  </head>
+
+  <body>
+    <div class="container my-5" th:fragment="content">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+          <h3 class="mb-0"><i class="bi bi-people-fill me-2"></i>Bulk Attendance</h3>
+          <a th:href="@{/attendance}" class="btn btn-light text-primary fw-semibold">
+            <i class="bi bi-list-ul me-1"></i>All Records
+          </a>
+        </div>
+
+        <div class="card-body p-4">
+          <!-- Step 1: choose the class (a GET, so the choice is bookmarkable) -->
+          <form th:action="@{/attendance/bulk}" method="get" class="row g-2 mb-4">
+            <div class="col-md-5">
+              <label class="form-label fw-semibold" for="bulkSubject">Subject</label>
+              <select id="bulkSubject" name="subjectId" class="form-select" required>
+                <option value="">-- Select Subject --</option>
+                <option
+                  th:each="s : ${subjects}"
+                  th:value="${s.id}"
+                  th:text="${s.subjectName + ' (' + s.subjectCode + ')'}"
+                  th:selected="${s.id == bulk.subjectId}"
+                ></option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold" for="bulkDate">Date</label>
+              <input id="bulkDate" type="date" name="date" class="form-control" th:value="${bulk.date}" required />
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button class="btn btn-outline-primary w-100" type="submit">
+                <i class="bi bi-arrow-repeat me-1"></i>Load Students
+              </button>
+            </div>
+          </form>
+
+          <!-- Step 2: one row per student -->
+          <form
+            th:if="${bulk.subjectId != null}"
+            th:action="@{/attendance/bulk}"
+            th:object="${bulk}"
+            method="post"
+          >
+            <input type="hidden" th:field="*{subjectId}" />
+            <input type="hidden" th:field="*{date}" />
+
+            <div th:if="${#fields.hasGlobalErrors() or #fields.hasErrors('subjectId') or #fields.hasErrors('date')}" class="alert alert-danger">
+              <div th:each="err : ${#fields.allErrors()}" th:text="${err}"></div>
+            </div>
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <h5 class="mb-0">
+                <span th:text="${subject != null ? subject.subjectName : ''}">Subject</span>
+                <span class="text-muted">·</span>
+                <span th:text="*{date}">Date</span>
+              </h5>
+              <div class="btn-group btn-group-sm" role="group" aria-label="Mark everyone">
+                <button type="button" class="btn btn-outline-success" onclick="document.querySelectorAll('.bulk-status[value=Present]').forEach(r => r.checked = true)">All Present</button>
+                <button type="button" class="btn btn-outline-danger" onclick="document.querySelectorAll('.bulk-status[value=Absent]').forEach(r => r.checked = true)">All Absent</button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark">
+                  <tr>
+                    <th width="50">#</th>
+                    <th>Student</th>
+                    <th width="300" class="text-center">Status</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="entry, stat : *{entries}" th:classappend="${entry.alreadyRecorded} ? 'table-secondary'">
+                    <td class="text-muted" th:text="${stat.count}"></td>
+                    <td>
+                      <input type="hidden" th:field="*{entries[__${stat.index}__].studentId}" />
+                      <input type="hidden" th:field="*{entries[__${stat.index}__].studentName}" />
+                      <input type="hidden" th:field="*{entries[__${stat.index}__].recordedStatus}" />
+                      <span class="fw-semibold" th:text="${entry.studentName}">Student</span>
+                    </td>
+
+                    <!-- Already recorded: shown, not editable, skipped on save -->
+                    <td th:if="${entry.alreadyRecorded}" class="text-center" colspan="2">
+                      <span class="badge bg-secondary">Already recorded</span>
+                      <span class="ms-1" th:text="${entry.recordedStatus}"></span>
+                    </td>
+
+                    <th:block th:unless="${entry.alreadyRecorded}">
+                      <td class="text-center">
+                        <div class="btn-group" role="group" th:aria-label="'Status for ' + ${entry.studentName}">
+                          <th:block th:each="option : ${ {'Present', 'Absent', 'Late'} }">
+                            <input
+                              type="radio"
+                              class="btn-check bulk-status"
+                              th:field="*{entries[__${stat.index}__].status}"
+                              th:value="${option}"
+                            />
+                            <!--/* th:field ids drop the brackets: entries0.status1, ... */-->
+                            <label
+                              th:for="${#ids.prev('entries__${stat.index}__.status')}"
+                              th:class="'btn btn-sm ' + (${option} == 'Present' ? 'btn-outline-success' : (${option} == 'Absent' ? 'btn-outline-danger' : 'btn-outline-warning'))"
+                              th:text="${option}"
+                            >Option</label>
+                          </th:block>
+                        </div>
+                        <div
+                          class="text-danger small"
+                          th:if="${#fields.hasErrors('entries[__${stat.index}__].status')}"
+                          th:errors="*{entries[__${stat.index}__].status}"
+                        ></div>
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          th:field="*{entries[__${stat.index}__].remarks}"
+                          placeholder="Optional"
+                        />
+                      </td>
+                    </th:block>
+                  </tr>
+                  <tr th:if="*{#lists.isEmpty(entries)}">
+                    <td colspan="4" class="text-center text-muted py-4">No students yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+              <a th:href="@{/attendance}" class="btn btn-outline-secondary px-4">
+                <i class="bi bi-x-circle me-1"></i>Cancel
+              </a>
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-check-circle me-1"></i>Save Attendance
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

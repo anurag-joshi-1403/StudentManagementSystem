@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <body>
     <!--/* Every sub-fact below is derived from a real query. The previous
          version showed invented figures ("12% this month") that were not
@@ -65,8 +65,9 @@
         </div>
       </article>
 
-      <!-- Fees: the headline is now money collected, not a record count -->
-      <article class="stat-card">
+      <!-- Fees: the headline is now money collected, not a record count.
+           Admin-only, like the Fees pages themselves (C7). -->
+      <article class="stat-card" sec:authorize="hasRole('ADMIN')">
         <span class="icon-box tint-cyan" aria-hidden="true">
           <i class="bi bi-cash-stack"></i>
         </span>
@@ -82,6 +83,10 @@
             <span th:text="${paidFees} + ' paid'">0 paid</span>
             <span class="dot" aria-hidden="true">·</span>
             <span th:text="${pendingFees} + ' pending'">0 pending</span>
+            <th:block th:if="${overdueFees > 0}">
+              <span class="dot" aria-hidden="true">·</span>
+              <span class="stat-meta-alert" th:text="${overdueFees} + ' overdue'">0 overdue</span>
+            </th:block>
           </p>
         </div>
       </article>

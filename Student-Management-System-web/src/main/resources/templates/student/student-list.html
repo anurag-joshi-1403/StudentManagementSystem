@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="https://thymeleaf.org">
+<html lang="en" xmlns:th="https://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,8 +11,14 @@
       <div class="card shadow">
         <div class="card-body">
           <h3 class="mb-4">Student List</h3>
-          <div class="mb-3">
+          <div class="mb-3 d-flex flex-wrap gap-2" sec:authorize="hasRole('ADMIN')">
             <a th:href="@{/student/new}" class="btn btn-primary">Add Student</a>
+            <a th:href="@{/student/import}" class="btn btn-outline-primary">
+              <i class="bi bi-upload me-1"></i>Import CSV
+            </a>
+            <a th:href="@{/student/export}" class="btn btn-outline-secondary">
+              <i class="bi bi-download me-1"></i>Export CSV
+            </a>
           </div>
           <form th:action="@{/student/search}" method="get" class="mb-3">
             <div class="input-group">
@@ -21,6 +27,7 @@
                 name="keyword"
                 class="form-control"
                 placeholder="Search by Name, Email or Course"
+                th:value="${keyword}"
               />
 
               <button class="btn btn-success" type="submit">Search</button>
@@ -83,18 +90,26 @@
                   </a>
                   <a
                     th:href="@{/student/edit/{id}(id=${student.id})}"
+                    sec:authorize="hasRole('ADMIN')"
                     class="btn btn-warning btn-sm"
                   >
                     Edit
                   </a>
 
-                  <a
-                    th:href="@{/student/delete/{id}(id=${student.id})}"
-                    class="btn btn-danger btn-sm"
-                    onclick="return confirm('Delete this student?');"
+                  <!--/* POST, not a link: a GET delete could be triggered by link
+                       prefetch or a crawler, and CSRF protection does not cover GET.
+                       th:action adds the CSRF token. */-->
+                  <form
+                    th:action="@{/student/delete/{id}(id=${student.id})}"
+                    sec:authorize="hasRole('ADMIN')"
+                    method="post"
+                    class="d-inline"
+                    onsubmit="return confirm('Delete this student?');"
                   >
-                    Delete
-                  </a>
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      Delete
+                    </button>
+                  </form>
                 </td>
               </tr>
             </tbody>
@@ -105,14 +120,17 @@
             <strong th:text="${totalItems}"></strong>
           </p>
 
-          <p class="text-center">
+          <!--/* Guarded: with no results totalPages is 0, and
+               #numbers.sequence(1, 0) counts DOWN, giving pages "1, 0". */-->
+          <p class="text-center" th:if="${totalPages > 1}">
             Page
             <span th:text="${currentPage}"></span>
             of
             <span th:text="${totalPages}"></span>
           </p>
 
-          <nav aria-label="Page navigation">
+          <!--/* Links carry the keyword, so page 2 of a search stays a search (#11). */-->
+          <nav aria-label="Page navigation" th:if="${totalPages > 1}">
             <ul class="pagination justify-content-center">
               <!-- Previous Button -->
 
@@ -122,7 +140,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/student/page/{pageNo}(pageNo=${currentPage-1})}"
+                  th:href="@{/student/search(keyword=${keyword}, page=${currentPage-1})}"
                 >
                   Previous
                 </a>
@@ -137,7 +155,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/student/page/{pageNo}(pageNo=${i})}"
+                  th:href="@{/student/search(keyword=${keyword}, page=${i})}"
                   th:text="${i}"
                 >
                 </a>
@@ -151,7 +169,7 @@
               >
                 <a
                   class="page-link"
-                  th:href="@{/student/page/{pageNo}(pageNo=${currentPage+1})}"
+                  th:href="@{/student/search(keyword=${keyword}, page=${currentPage+1})}"
                 >
                   Next
                 </a>

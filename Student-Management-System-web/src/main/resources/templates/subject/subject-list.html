@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <title>Subject Management</title>
 
@@ -32,7 +32,7 @@
         </div>
 
         <div class="col-md-4 text-end">
-          <a th:href="@{/subject/new}" class="btn btn-success">
+          <a th:href="@{/subject/new}" sec:authorize="hasRole('ADMIN')" class="btn btn-success">
             <i class="bi bi-plus-lg"></i>
 
             Add Subject
@@ -69,23 +69,37 @@
 
             <td>
               <a
+                th:href="@{/subject/view/{id}(id=${subject.id})}"
+                class="btn btn-info btn-sm text-white"
+                aria-label="View"
+              >
+                <i class="bi bi-eye"></i>
+              </a>
+
+              <!--/* Everyone may view; only admins may change (C9) */-->
+              <th:block sec:authorize="hasRole('ADMIN')">
+              <a
                 th:href="@{/subject/edit/{id}(id=${subject.id})}"
                 class="btn btn-warning btn-sm"
+                aria-label="Edit"
               >
                 <i class="bi bi-pencil-square"></i>
               </a>
 
-              <a
-                th:href="@{/subject/delete/{id}(id=${subject.id})}"
-                class="btn btn-danger btn-sm"
-                onclick="
-                  return confirm(
-                    'Are you sure you want to delete this subject?',
-                  );
-                "
+              <!--/* POST, not a link: a GET delete could be triggered by link
+                   prefetch or a crawler, and CSRF protection does not cover GET.
+                   th:action adds the CSRF token. */-->
+              <form
+                th:action="@{/subject/delete/{id}(id=${subject.id})}"
+                method="post"
+                class="d-inline"
+                onsubmit="return confirm('Are you sure you want to delete this subject?');"
               >
-                <i class="bi bi-trash"></i>
-              </a>
+                <button type="submit" class="btn btn-danger btn-sm" aria-label="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              </th:block>
             </td>
           </tr>
         </tbody>
@@ -99,7 +113,7 @@
             class="page-item"
             th:classappend="${currentPage == 1} ? 'disabled'"
           >
-            <a class="page-link" th:href="@{/subject(page=${currentPage-1})}">
+            <a class="page-link" th:href="@{/subject(keyword=${keyword}, page=${currentPage-1})}">
               Previous
             </a>
           </li>
@@ -114,7 +128,7 @@
             class="page-item"
             th:classappend="${currentPage == totalPages} ? 'disabled'"
           >
-            <a class="page-link" th:href="@{/subject(page=${currentPage+1})}">
+            <a class="page-link" th:href="@{/subject(keyword=${keyword}, page=${currentPage+1})}">
               Next
             </a>
           </li>

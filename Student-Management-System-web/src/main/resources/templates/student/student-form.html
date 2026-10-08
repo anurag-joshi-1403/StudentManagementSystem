@@ -178,9 +178,15 @@
                       type="file"
                       class="form-control"
                       name="photoFile"
-                      accept="image/*"
+                      accept="image/jpeg,image/png"
+                      th:classappend="${#fields.hasErrors('photo')} ? 'is-invalid'"
                     />
-                    <small class="text-muted d-block mt-1">Accepts JPG, PNG, WEBP</small>
+                    <small class="text-muted d-block mt-1">JPG or PNG, up to 2 MB</small>
+                    <div
+                      class="invalid-feedback"
+                      th:if="${#fields.hasErrors('photo')}"
+                      th:errors="*{photo}"
+                    ></div>
 
                     <!-- Preview existing photo if editing -->
                     <div th:if="${student.photo != null}" class="mt-2 d-flex align-items-center gap-2">

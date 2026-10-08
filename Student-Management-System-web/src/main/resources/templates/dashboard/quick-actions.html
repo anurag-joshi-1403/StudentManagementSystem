@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
 
+<!--/* Every action here changes data, so students see none of it (C7). */-->
 <section class="quick-section"
-         th:fragment="quickActions">
+         th:fragment="quickActions"
+         sec:authorize="hasAnyRole('ADMIN', 'TEACHER')">
 
     <h3 class="section-title">
 
@@ -14,7 +16,7 @@
 
     <div class="quick-grid">
 
-        <a th:href="@{/student/new}" class="quick-btn blue">
+        <a th:href="@{/student/new}" sec:authorize="hasRole('ADMIN')" class="quick-btn blue">
 
             <i class="bi bi-person-plus-fill"></i>
 
@@ -22,7 +24,7 @@
 
         </a>
 
-        <a th:href="@{/teacher/new}" class="quick-btn green">
+        <a th:href="@{/teacher/new}" sec:authorize="hasRole('ADMIN')" class="quick-btn green">
 
             <i class="bi bi-person-video3"></i>
 
@@ -30,7 +32,7 @@
 
         </a>
 
-        <a th:href="@{/course/new}" class="quick-btn orange">
+        <a th:href="@{/course/new}" sec:authorize="hasRole('ADMIN')" class="quick-btn orange">
 
             <i class="bi bi-book-fill"></i>
 
@@ -38,7 +40,7 @@
 
         </a>
 
-        <a th:href="@{/subject/new}" class="quick-btn purple">
+        <a th:href="@{/subject/new}" sec:authorize="hasRole('ADMIN')" class="quick-btn purple">
 
             <i class="bi bi-bookmark-fill"></i>
 
@@ -46,7 +48,7 @@
 
         </a>
 
-        <a th:href="@{/attendance/new}" class="quick-btn cyan">
+        <a th:href="@{/attendance/new}" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')" class="quick-btn cyan">
 
             <i class="bi bi-calendar-check-fill"></i>
 
@@ -54,7 +56,7 @@
 
         </a>
 
-        <a th:href="@{/fee/new}" class="quick-btn pink">
+        <a th:href="@{/fee/new}" sec:authorize="hasRole('ADMIN')" class="quick-btn pink">
 
             <i class="bi bi-cash-stack"></i>
 
@@ -62,7 +64,7 @@
 
         </a>
 
-        <a th:href="@{/exam/new}" class="quick-btn indigo">
+        <a th:href="@{/exam/new}" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')" class="quick-btn indigo">
 
             <i class="bi bi-pencil-square"></i>
 

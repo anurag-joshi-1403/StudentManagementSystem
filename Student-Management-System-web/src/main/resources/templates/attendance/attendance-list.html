@@ -11,12 +11,26 @@
       <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
           <h3 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i>Attendance Management</h3>
-          <a th:href="@{/attendance/new}" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')" class="btn btn-light text-primary fw-semibold">
-            <i class="bi bi-plus-circle me-1"></i>Record Attendance
-          </a>
+          <div class="d-flex gap-2">
+            <a th:href="@{/attendance/report}" class="btn btn-outline-light fw-semibold">
+              <i class="bi bi-bar-chart-line me-1"></i>Report
+            </a>
+            <a th:href="@{/attendance/bulk}" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')" class="btn btn-outline-light fw-semibold">
+              <i class="bi bi-people-fill me-1"></i>Bulk
+            </a>
+            <a th:href="@{/attendance/new}" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')" class="btn btn-light text-primary fw-semibold">
+              <i class="bi bi-plus-circle me-1"></i>Record Attendance
+            </a>
+          </div>
         </div>
 
         <div class="card-body p-4">
+          <!--/* Outcome of a bulk save, e.g. "Saved 28 · skipped 2" (E15) */-->
+          <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="status">
+            <i class="bi bi-check-circle me-1"></i><span th:text="${message}">Saved</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+
           <!-- Search Form -->
           <form th:action="@{/attendance/search}" method="get" class="row g-2 mb-4">
             <div class="col-md-5">
@@ -65,7 +79,7 @@
                   <th>Date</th>
                   <th width="120" class="text-center">Status</th>
                   <th>Remarks</th>
-                  <th width="140" class="text-center" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')">Actions</th>
+                  <th width="150" class="text-center">Actions</th>
                 </tr>
               </thead>
 
@@ -92,7 +106,16 @@
                     ></span>
                   </td>
                   <td th:text="${attendance.remarks != null and !attendance.remarks.isEmpty() ? attendance.remarks : '-'}"></td>
-                  <td class="text-center" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')">
+                  <td class="text-center">
+                    <a
+                      th:href="@{/attendance/view/{id}(id=${attendance.id})}"
+                      class="btn btn-info btn-sm text-white me-1"
+                      title="View Attendance"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <!--/* Everyone may view; admins and teachers may change (C9) */-->
+                    <th:block sec:authorize="hasAnyRole('ADMIN', 'TEACHER')">
                     <a
                       th:href="@{/attendance/edit/{id}(id=${attendance.id})}"
                       class="btn btn-warning btn-sm me-1"
@@ -113,6 +136,7 @@
                         <i class="bi bi-trash"></i>
                       </button>
                     </form>
+                    </th:block>
                   </td>
                 </tr>
 
@@ -135,7 +159,7 @@
             <nav th:if="${totalPages != null and totalPages > 1}">
               <ul class="pagination pagination-sm mb-0">
                 <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                  <a class="page-link" th:href="@{/attendance/page/{page}(page=${currentPage - 1})}">
+                  <a class="page-link" th:href="@{/attendance/search(keyword=${keyword}, attendanceDate=${attendanceDate}, page=${currentPage - 1})}">
                     <i class="bi bi-chevron-left"></i> Previous
                   </a>
                 </li>
@@ -146,12 +170,12 @@
                 >
                   <a
                     class="page-link"
-                    th:href="@{/attendance/page/{page}(page=${i})}"
+                    th:href="@{/attendance/search(keyword=${keyword}, attendanceDate=${attendanceDate}, page=${i})}"
                     th:text="${i}"
                   ></a>
                 </li>
                 <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                  <a class="page-link" th:href="@{/attendance/page/{page}(page=${currentPage + 1})}">
+                  <a class="page-link" th:href="@{/attendance/search(keyword=${keyword}, attendanceDate=${attendanceDate}, page=${currentPage + 1})}">
                     Next <i class="bi bi-chevron-right"></i>
                   </a>
                 </li>

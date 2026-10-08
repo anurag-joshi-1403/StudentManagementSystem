@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="UTF-8" />
     <title>Teacher Details</title>
@@ -100,6 +100,7 @@
 
             <a
               th:href="@{/teacher/edit/{id}(id=${teacher.id})}"
+              sec:authorize="hasRole('ADMIN')"
               class="btn btn-warning"
             >
               Edit Teacher

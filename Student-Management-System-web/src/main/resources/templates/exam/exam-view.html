@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exam Details</title>
+  </head>
+
+  <body>
+    <div class="container mt-5" th:fragment="content">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h3 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Exam Details</h3>
+          <span class="badge bg-light text-primary fs-6" th:text="${exam.examDate}">Date</span>
+        </div>
+
+        <div class="card-body">
+          <table class="table table-bordered table-striped mt-3">
+            <tbody>
+              <tr>
+                <th width="30%"><i class="bi bi-hash me-2 text-muted"></i>Exam ID</th>
+                <td th:text="${exam.id}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-card-heading me-2 text-muted"></i>Exam Name</th>
+                <td th:text="${exam.examName}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-journal-bookmark me-2 text-muted"></i>Subject</th>
+                <td>
+                  <a th:href="@{/subject/view/{id}(id=${exam.subject.id})}" th:text="${exam.subject.subjectName}">Subject</a>
+                </td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-calendar-event me-2 text-muted"></i>Exam Date</th>
+                <td th:text="${exam.examDate}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-123 me-2 text-muted"></i>Total Marks</th>
+                <td th:text="${exam.totalMarks}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-check2-circle me-2 text-muted"></i>Passing Marks</th>
+                <td th:text="${exam.passingMarks}"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Results for this exam -->
+          <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-3 gap-2">
+            <h5 class="mb-0">
+              <i class="bi bi-clipboard-data me-2"></i>Results
+              <span class="badge bg-secondary" th:text="${#lists.size(results)}">0</span>
+            </h5>
+            <div th:unless="${#lists.isEmpty(results)}">
+              <span class="badge bg-success fs-6 me-1">
+                <i class="bi bi-check-circle me-1"></i>Passed: <span th:text="${passCount}">0</span>
+              </span>
+              <span class="badge bg-danger fs-6 me-1">
+                <i class="bi bi-x-circle me-1"></i>Failed: <span th:text="${#lists.size(results) - passCount}">0</span>
+              </span>
+              <span class="badge bg-info text-dark fs-6">
+                Pass rate:
+                <span th:text="${#numbers.formatDecimal(passCount * 100.0 / #lists.size(results), 1, 0)} + '%'">0%</span>
+              </span>
+            </div>
+          </div>
+
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Student</th>
+                <th>Marks</th>
+                <th>Percentage</th>
+                <th>Grade</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="result : ${results}">
+                <td>
+                  <a
+                    th:href="@{/result/view/{id}(id=${result.id})}"
+                    th:text="${result.student.firstName + ' ' + result.student.lastName}"
+                  >Student</a>
+                </td>
+                <td th:text="${result.obtainedMarks} + ' / ' + ${exam.totalMarks}"></td>
+                <td th:text="${#numbers.formatDecimal(result.obtainedMarks * 100.0 / exam.totalMarks, 1, 1)} + '%'"></td>
+                <td><span class="badge bg-primary" th:text="${result.grade}"></span></td>
+                <td>
+                  <span
+                    th:class="${result.resultStatus == 'Pass'} ? 'badge bg-success' : 'badge bg-danger'"
+                    th:text="${result.resultStatus}"
+                  ></span>
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(results)}">
+                <td colspan="5" class="text-center text-muted">No results recorded for this exam yet.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="text-center mt-4">
+            <a th:href="@{/exam}" class="btn btn-secondary me-2">
+              <i class="bi bi-arrow-left me-1"></i>Back to Exams
+            </a>
+            <a th:href="@{/exam/edit/{id}(id=${exam.id})}" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')" class="btn btn-warning">
+              <i class="bi bi-pencil-square me-1"></i>Edit Exam
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

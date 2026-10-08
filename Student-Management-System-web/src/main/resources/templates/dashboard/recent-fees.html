@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <body>
-    <div class="dashboard-panel" th:fragment="recentFees">
+    <div class="dashboard-panel" th:fragment="recentFees" sec:authorize="hasRole('ADMIN')">
       <div class="panel-header">
         <h4>Recent Fee Payments</h4>
         <a th:href="@{/fee}">

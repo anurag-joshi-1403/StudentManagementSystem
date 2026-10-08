@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Enrollment Details</title>
+  </head>
+
+  <body>
+    <div class="container mt-5" th:fragment="content">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h3 class="mb-0"><i class="bi bi-mortarboard me-2"></i>Enrollment Details</h3>
+          <span class="badge bg-light text-primary fs-6" th:text="${enrollment.course.courseCode}">Code</span>
+        </div>
+
+        <div class="card-body">
+          <table class="table table-bordered table-striped mt-3">
+            <tbody>
+              <tr>
+                <th width="30%"><i class="bi bi-hash me-2 text-muted"></i>Enrollment ID</th>
+                <td th:text="${enrollment.id}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-person me-2 text-muted"></i>Student</th>
+                <td>
+                  <a
+                    th:href="@{/student/view/{id}(id=${enrollment.student.id})}"
+                    th:text="${enrollment.student.firstName + ' ' + enrollment.student.lastName}"
+                  >Student</a>
+                  <span class="text-muted ms-2" th:text="${enrollment.student.email}"></span>
+                </td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-book-half me-2 text-muted"></i>Course</th>
+                <td>
+                  <a
+                    th:href="@{/course/view/{id}(id=${enrollment.course.id})}"
+                    th:text="${enrollment.course.courseName}"
+                  >Course</a>
+                  <span class="text-muted ms-2" th:text="'(' + ${enrollment.course.courseCode} + ')'"></span>
+                </td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-journal-bookmark me-2 text-muted"></i>Subject</th>
+                <td>
+                  <a
+                    th:href="@{/subject/view/{id}(id=${enrollment.subject.id})}"
+                    th:text="${enrollment.subject.subjectName}"
+                  >Subject</a>
+                  <span class="text-muted ms-2" th:text="'(' + ${enrollment.subject.subjectCode} + ')'"></span>
+                </td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-calendar-check me-2 text-muted"></i>Enrollment Date</th>
+                <td th:text="${enrollment.enrollmentDate}"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="text-center mt-4">
+            <a th:href="@{/enrollment}" class="btn btn-secondary me-2">
+              <i class="bi bi-arrow-left me-1"></i>Back to Enrollments
+            </a>
+            <a th:href="@{/enrollment/edit/{id}(id=${enrollment.id})}" sec:authorize="hasRole('ADMIN')" class="btn btn-warning">
+              <i class="bi bi-pencil-square me-1"></i>Edit Enrollment
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

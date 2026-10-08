@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="UTF-8" />
     <title>Result Management</title>
@@ -11,7 +11,7 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Result Management</h2>
 
-        <a th:href="@{/result/new}" class="btn btn-primary"> + Add Result </a>
+        <a th:href="@{/result/new}" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')" class="btn btn-primary"> + Add Result </a>
       </div>
 
       <!-- Search -->
@@ -23,6 +23,7 @@
             name="keyword"
             class="form-control"
             placeholder="Search by Student, Exam, Grade or Status"
+            th:value="${keyword}"
           />
         </div>
 
@@ -47,7 +48,7 @@
             <th>Obtained Marks</th>
             <th>Grade</th>
             <th>Status</th>
-            <th width="170">Action</th>
+            <th width="210">Action</th>
           </tr>
         </thead>
 
@@ -81,19 +82,35 @@
 
             <td>
               <a
+                th:href="@{/result/view/{id}(id=${result.id})}"
+                class="btn btn-info btn-sm text-white"
+              >
+                View
+              </a>
+
+              <!--/* Everyone may view; admins and teachers may change (C9) */-->
+              <th:block sec:authorize="hasAnyRole('ADMIN', 'TEACHER')">
+              <a
                 th:href="@{/result/edit/{id}(id=${result.id})}"
                 class="btn btn-warning btn-sm"
               >
                 Edit
               </a>
 
-              <a
-                th:href="@{/result/delete/{id}(id=${result.id})}"
-                class="btn btn-danger btn-sm"
-                onclick="return confirm('Delete this result?');"
+              <!--/* POST, not a link: a GET delete could be triggered by link
+                   prefetch or a crawler, and CSRF protection does not cover GET.
+                   th:action adds the CSRF token. */-->
+              <form
+                th:action="@{/result/delete/{id}(id=${result.id})}"
+                method="post"
+                class="d-inline"
+                onsubmit="return confirm('Delete this result?');"
               >
-                Delete
-              </a>
+                <button type="submit" class="btn btn-danger btn-sm">
+                  Delete
+                </button>
+              </form>
+              </th:block>
             </td>
           </tr>
         </tbody>
@@ -109,7 +126,7 @@
           >
             <a
               class="page-link"
-              th:href="@{/result/page/{page}(page=${i})}"
+              th:href="@{/result/search(keyword=${keyword}, page=${i})}"
               th:text="${i}"
             >
             </a>

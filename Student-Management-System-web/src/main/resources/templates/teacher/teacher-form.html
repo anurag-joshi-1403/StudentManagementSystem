@@ -139,8 +139,14 @@
                 type="file"
                 class="form-control"
                 name="photoFile"
-                accept="image/*"
+                accept="image/jpeg,image/png"
               />
+              <small class="text-muted">JPG or PNG, up to 2 MB</small>
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('photo')}"
+                th:errors="*{photo}"
+              ></div>
             </div>
 
             <button type="submit" class="btn btn-success">Save Teacher</button>

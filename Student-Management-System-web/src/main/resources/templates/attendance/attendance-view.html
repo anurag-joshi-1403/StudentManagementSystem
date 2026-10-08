@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Attendance Details</title>
+  </head>
+
+  <body>
+    <div class="container mt-5" th:fragment="content">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h3 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i>Attendance Details</h3>
+          <span th:if="${attendance.status == 'Present'}" class="badge bg-success fs-6">
+            <i class="bi bi-check-circle me-1"></i>Present
+          </span>
+          <span th:if="${attendance.status == 'Absent'}" class="badge bg-danger fs-6">
+            <i class="bi bi-x-circle me-1"></i>Absent
+          </span>
+          <span th:if="${attendance.status == 'Late'}" class="badge bg-warning text-dark fs-6">
+            <i class="bi bi-clock-history me-1"></i>Late
+          </span>
+          <span
+            th:if="${attendance.status != 'Present' and attendance.status != 'Absent' and attendance.status != 'Late'}"
+            class="badge bg-light text-dark fs-6"
+            th:text="${attendance.status}"
+          ></span>
+        </div>
+
+        <div class="card-body">
+          <table class="table table-bordered table-striped mt-3">
+            <tbody>
+              <tr>
+                <th width="30%"><i class="bi bi-hash me-2 text-muted"></i>Attendance ID</th>
+                <td th:text="${attendance.id}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-person me-2 text-muted"></i>Student</th>
+                <td>
+                  <a
+                    th:href="@{/student/view/{id}(id=${attendance.student.id})}"
+                    th:text="${attendance.student.firstName + ' ' + attendance.student.lastName}"
+                  >Student</a>
+                </td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-journal-bookmark me-2 text-muted"></i>Subject</th>
+                <td>
+                  <a
+                    th:href="@{/subject/view/{id}(id=${attendance.subject.id})}"
+                    th:text="${attendance.subject.subjectName}"
+                  >Subject</a>
+                </td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-calendar-event me-2 text-muted"></i>Date</th>
+                <td th:text="${attendance.attendanceDate}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-flag me-2 text-muted"></i>Status</th>
+                <td th:text="${attendance.status}"></td>
+              </tr>
+              <tr>
+                <th><i class="bi bi-chat-left-text me-2 text-muted"></i>Remarks</th>
+                <td th:text="${attendance.remarks != null and !attendance.remarks.isEmpty() ? attendance.remarks : 'No remarks.'}"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="text-center mt-4">
+            <a th:href="@{/attendance}" class="btn btn-secondary me-2">
+              <i class="bi bi-arrow-left me-1"></i>Back to Attendance
+            </a>
+            <a
+              th:href="@{/attendance/edit/{id}(id=${attendance.id})}"
+              sec:authorize="hasAnyRole('ADMIN', 'TEACHER')"
+              class="btn btn-warning"
+            >
+              <i class="bi bi-pencil-square me-1"></i>Edit Attendance
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

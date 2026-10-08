@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Import Students</title>
+  </head>
+
+  <body>
+    <!--/* Admin-only (SecurityConfig), so nothing here needs sec:authorize */-->
+    <div class="container mt-5" th:fragment="content">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h3 class="mb-0"><i class="bi bi-upload me-2"></i>Import Students</h3>
+          <a th:href="@{/student/export}" class="btn btn-light text-primary fw-semibold">
+            <i class="bi bi-download me-1"></i>Export current students
+          </a>
+        </div>
+
+        <div class="card-body p-4">
+          <!-- Result of the last import -->
+          <div th:if="${importError}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i><span th:text="${importError}"></span>
+          </div>
+
+          <div
+            th:if="${report}"
+            th:class="${report.fileRejected()} ? 'alert alert-danger' : (${report.skipped.isEmpty()} ? 'alert alert-success' : 'alert alert-warning')"
+            role="status"
+          >
+            <strong th:text="${report.summary()}">0 imported · 0 skipped</strong>
+            <ul class="mb-0 mt-2" th:unless="${report.skipped.isEmpty()}">
+              <li th:each="error : ${report.skipped}" th:text="${error}">row 4: email exists</li>
+            </ul>
+          </div>
+
+          <!-- Upload -->
+          <form th:action="@{/student/import}" method="post" enctype="multipart/form-data" class="mb-4">
+            <label for="csvFile" class="form-label fw-semibold">CSV file</label>
+            <div class="input-group">
+              <input id="csvFile" type="file" name="file" class="form-control" accept=".csv,text/csv" required />
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-upload me-1"></i>Import
+              </button>
+            </div>
+            <div class="form-text">Up to 2 MB. Valid rows are saved; every other row is listed with the reason.</div>
+          </form>
+
+          <!-- Format -->
+          <h5 class="mb-2">File format</h5>
+          <p class="mb-2">The first line must name these columns, in any order:</p>
+          <pre class="bg-light border rounded p-3 mb-3"><code th:text="${header}">firstName,lastName,...</code></pre>
+          <ul class="mb-0">
+            <li>Every column is required, as on the Add Student form.</li>
+            <li><code>dateOfBirth</code> is <code>yyyy-MM-dd</code>, e.g. <code>2005-04-12</code>.</li>
+            <li><code>gender</code> is Male, Female or Other; <code>phone</code> is 10 digits.</li>
+            <li><code>course</code> must match an existing course name exactly (case does not matter).</li>
+            <li>A row whose email is already used is skipped, so importing the same file twice adds nothing the second time.</li>
+            <li>Put quotes around a value that contains a comma, e.g. <code>"12 Lake Road, Pune"</code>.</li>
+          </ul>
+
+          <div class="text-center mt-4">
+            <a th:href="@{/student}" class="btn btn-secondary">
+              <i class="bi bi-arrow-left me-1"></i>Back to Students
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

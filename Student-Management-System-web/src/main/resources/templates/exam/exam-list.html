@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="UTF-8" />
     <title>Exam Management</title>
@@ -11,7 +11,12 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Exam Management</h2>
 
-        <a th:href="@{/exam/new}" class="btn btn-primary"> + Add Exam </a>
+        <div class="d-flex gap-2">
+          <a th:href="@{/exam/schedule}" class="btn btn-outline-primary">
+            <i class="bi bi-calendar3 me-1"></i>Schedule
+          </a>
+          <a th:href="@{/exam/new}" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')" class="btn btn-primary"> + Add Exam </a>
+        </div>
       </div>
 
       <!-- Search -->
@@ -56,7 +61,7 @@
             <th>Exam Date</th>
             <th>Total Marks</th>
             <th>Passing Marks</th>
-            <th width="170">Action</th>
+            <th width="210">Action</th>
           </tr>
         </thead>
 
@@ -76,19 +81,35 @@
 
             <td>
               <a
+                th:href="@{/exam/view/{id}(id=${exam.id})}"
+                class="btn btn-info btn-sm text-white"
+              >
+                View
+              </a>
+
+              <!--/* Everyone may view; admins and teachers may change (C9) */-->
+              <th:block sec:authorize="hasAnyRole('ADMIN', 'TEACHER')">
+              <a
                 th:href="@{/exam/edit/{id}(id=${exam.id})}"
                 class="btn btn-warning btn-sm"
               >
                 Edit
               </a>
 
-              <a
-                th:href="@{/exam/delete/{id}(id=${exam.id})}"
-                class="btn btn-danger btn-sm"
-                onclick="return confirm('Delete this exam?');"
+              <!--/* POST, not a link: a GET delete could be triggered by link
+                   prefetch or a crawler, and CSRF protection does not cover GET.
+                   th:action adds the CSRF token. */-->
+              <form
+                th:action="@{/exam/delete/{id}(id=${exam.id})}"
+                method="post"
+                class="d-inline"
+                onsubmit="return confirm('Delete this exam?');"
               >
-                Delete
-              </a>
+                <button type="submit" class="btn btn-danger btn-sm">
+                  Delete
+                </button>
+              </form>
+              </th:block>
             </td>
           </tr>
 
@@ -108,7 +129,7 @@
           >
             <a
               class="page-link"
-              th:href="@{/exam/page/{page}(page=${i})}"
+              th:href="@{/exam/search(keyword=${keyword}, examDate=${examDate}, page=${i})}"
               th:text="${i}"
             >
             </a>
