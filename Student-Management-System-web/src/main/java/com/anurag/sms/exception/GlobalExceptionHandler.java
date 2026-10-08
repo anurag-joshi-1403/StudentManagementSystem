@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * App-wide handlers for exceptions that would otherwise reach the user as
@@ -32,5 +33,19 @@ public class GlobalExceptionHandler {
         log.warn("Constraint violation: {}", ex.getMostSpecificCause().getMessage());
 
         return "error/409";
+    }
+
+    /**
+     * A photo over spring.servlet.multipart.max-file-size. This is raised while
+     * the request is parsed, before any controller runs, so the form cannot be
+     * re-rendered; the page sends the user back to it instead (#7).
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    public String handleUploadTooLarge(MaxUploadSizeExceededException ex) {
+
+        log.info("Rejected an upload over the size limit: {}", ex.getMessage());
+
+        return "error/413";
     }
 }
