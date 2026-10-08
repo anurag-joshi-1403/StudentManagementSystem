@@ -19,13 +19,13 @@
 ![Modules](https://img.shields.io/badge/Modules-10-blue?style=flat-square)
 ![Endpoints](https://img.shields.io/badge/Endpoints-66-blueviolet?style=flat-square)
 ![Entities](https://img.shields.io/badge/JPA_Entities-10-orange?style=flat-square)
-![Templates](https://img.shields.io/badge/Thymeleaf_Views-35-green?style=flat-square)
-![LOC](https://img.shields.io/badge/Java_LOC-4.2k-yellow?style=flat-square)
+![Templates](https://img.shields.io/badge/Thymeleaf_Views-36-green?style=flat-square)
+![LOC](https://img.shields.io/badge/Java_LOC-4.5k-yellow?style=flat-square)
 ![Progress](https://img.shields.io/badge/Progress-75%25-success?style=flat-square)
 
 ### 🎓 A full-stack academic ERP for managing students, faculty, academics and finance.
 
-**Project Roadmap & Engineering Plan** · *Last verified against source: 21 Sep 2026*
+**Project Roadmap & Engineering Plan** · *Last verified against source: 7 Oct 2026*
 
 </div>
 
@@ -78,8 +78,8 @@
 | JPA entities | `10` |
 | Repositories | `10` |
 | Service classes | `21` |
-| Thymeleaf views | `35` |
-| Lines of Java | `4,278` |
+| Thymeleaf views | `36` |
+| Lines of Java | `4,512` |
 
 </td>
 </tr>
@@ -123,7 +123,7 @@ flowchart TD
 
     subgraph WEB["🎯 PRESENTATION LAYER"]
         CT["12 Controllers<br/><i>66 request mappings</i>"]
-        TH["Thymeleaf Engine<br/><i>35 templates · fragment composition</i>"]
+        TH["Thymeleaf Engine<br/><i>36 templates · fragment composition</i>"]
     end
 
     subgraph BIZ["⚙️ BUSINESS LAYER"]
@@ -164,7 +164,7 @@ flowchart TD
 
 ## 🗃️ Database Design
 
-Ten entities with **eight foreign-key relationships**, modelling the full academic lifecycle from
+Ten entities with **nine foreign-key relationships**, modelling the full academic lifecycle from
 admission through to results.
 
 ```mermaid
@@ -204,7 +204,7 @@ erDiagram
         Long id PK
         String firstName
         String lastName
-        String email UK
+        String email
         String phone
         String department
         String qualification
@@ -213,7 +213,7 @@ erDiagram
     }
     COURSE {
         Long id PK
-        String courseCode UK
+        String courseCode
         String courseName
         String duration
         Double fees
@@ -221,7 +221,7 @@ erDiagram
     }
     SUBJECT {
         Long id PK
-        String subjectCode UK
+        String subjectCode
         String subjectName
         String semester
         Integer credits
@@ -272,6 +272,7 @@ erDiagram
 
 > 💡 **Referential integrity is handled in the service layer.** Deleting a Student transactionally clears
 > its Attendance, Enrollment, Fee and Result rows before removing the parent — no orphaned foreign keys.
+> Subject, Course and Exam deletes clear their own dependent rows the same way.
 
 ---
 
@@ -484,7 +485,8 @@ HTML document — so clicking **Students** from the dashboard makes the whole si
       which browser prefetch or a crawler can trigger and which CSRF protection does not cover.
 - [ ] 📎 **Harden file upload** — add content-type allowlisting, size caps and filename sanitisation;
       centralise the duplicated logic into the `FileUploadUtil` stub and delete replaced photos.
-- [ ] 🔒 **Externalise database credentials** to `${DB_PASSWORD}` and rotate the existing value.
+- [x] 🔒 **Externalise database credentials** to `${DB_PASSWORD}` *(6 Oct 2026)*
+- [ ] 🔑 **Rotate the old password**, which is still in git history *(deferred: other local projects share the MySQL `root` account)*
 - [ ] 🔇 **Move `show-sql` and `DEBUG` logging** into an `application-dev.properties` profile.
 - [ ] 🧹 **Untrack `uploads/`** — add to `.gitignore` and `git rm --cached`.
 
@@ -503,9 +505,9 @@ rejected on upload · no credentials in source control.
 
 - [x] ~~`getTotalFees()` returns a record count, not a money sum~~ — `getTotalFeeAmount()` now sums `amount`
 - [x] ~~`getUpcomingExams()` has no date filter~~ — now filters on `examDate >= today`
-- [ ] Search bypasses pagination in 5 modules — return `Page<T>` instead of `List<T>`
-- [ ] Add `@Valid` to Exam and Result controllers — constraints are declared but never enforced
-- [ ] Replace the `LocalDate.of(1900,1,1)` null-date sentinel with a proper nullable `@Query`
+- [ ] Search bypasses pagination in all 9 modules — return `Page<T>` instead of `List<T>`
+- [x] ~~Add `@Valid` to Exam and Result controllers~~ — both forms now re-render with field errors instead of a 500 page
+- [x] ~~Replace the `LocalDate.of(1900,1,1)` null-date sentinel~~ — attendance and exam search use a nullable `@Query` that ANDs keyword and date
 
 </td>
 <td width="50%" valign="top">
@@ -544,9 +546,10 @@ rejected on upload · no credentials in source control.
 
 > Every non-trivial codebase carries debt. What matters professionally is whether it's **tracked and
 > triaged** — this register is maintained deliberately, with file references and an owning phase for each item.
+> Issues found after 21 Sep (#23 onward) are tracked in [project_analysis.md](project_analysis.md#-engineering-backlog).
 
 <details>
-<summary><b>✅ Resolved (8 items)</b></summary>
+<summary><b>✅ Resolved (10 items)</b></summary>
 
 <br/>
 
@@ -556,6 +559,8 @@ rejected on upload · no credentials in source control.
 | 2 | `deleteBySubjectId` targeted the wrong entity → FK violation | `EnrollmentRepository.java:29-32` | `21 Sep 2026` |
 | 9 | "Total Fees" displayed a record count, not a currency sum | `FeeServiceImpl.java` | `21 Sep 2026` |
 | 10 | "Upcoming Exams" listed the 5 oldest exams — no date filter | `ExamServiceImpl.java` | `21 Sep 2026` |
+| 12 | Exam and Result forms lacked `@Valid`, so invalid input reached Hibernate and showed a 500 page | `ExamController.java` · `ResultController.java` | `6 Oct 2026` |
+| 13 | Magic-date sentinel `1900-01-01` stood in for "no date" in search | `AttendanceServiceImpl.java` · `ExamServiceImpl.java` | `6 Oct 2026` |
 | 14 | Navbar hardcoded "Admin User" regardless of session | `common/navbar.html` | `21 Sep 2026` |
 | 16 | Gender statistics computed but never rendered | `stats-cards.html` · `charts.html` | `21 Sep 2026` |
 | 21 | `footer.css` contained a copy of `footer.html` — footer rendered unstyled | `static/css/footer.css` | `21 Sep 2026` |
@@ -572,7 +577,7 @@ rejected on upload · no credentials in source control.
 |:---:|---|---|:---:|
 | 3 | No role enforcement — every user has full destructive access | `SecurityConfig.java:48` · `UserServiceImpl.java:55` | `2` |
 | 4 | Deletes exposed as GET links — prefetch/CSRF exposure | 9 `*-list.html` templates | `2` |
-| 5 | Database password committed in plaintext | `application.properties:6` | `2` |
+| 5 | Database password committed in plaintext. Read from `${DB_PASSWORD}` since 6 Oct 2026, but the old value is still in git history and not yet rotated | `application.properties` history | `2` |
 
 </details>
 
@@ -590,15 +595,13 @@ rejected on upload · no credentials in source control.
 </details>
 
 <details>
-<summary><b>🟡 Medium (3 items)</b></summary>
+<summary><b>🟡 Medium (1 item)</b></summary>
 
 <br/>
 
 | # | Issue | Location | Phase |
 |:---:|---|---|:---:|
-| 11 | Search results break pagination (missing/fake `totalPages`) | 5 controllers | `3` |
-| 12 | `@Valid` missing — Exam and Result validation never executes | `ExamController.java:48,72` · `ResultController.java:51,78` | `3` |
-| 13 | Magic-date sentinel used for "no date" in search | `AttendanceServiceImpl.java:63` · `ExamServiceImpl.java:64` | `3` |
+| 11 | Search results aren't paginated: all 9 search paths return a full `List` | 9 controllers | `3` |
 
 </details>
 
@@ -622,10 +625,10 @@ rejected on upload · no credentials in source control.
 ```mermaid
 pie showData
     title Backlog by Severity
-    "✅ Resolved" : 8
+    "✅ Resolved" : 10
     "🔴 Critical" : 3
     "🟠 High" : 3
-    "🟡 Medium" : 3
+    "🟡 Medium" : 1
     "🟢 Low" : 5
 ```
 
@@ -702,14 +705,14 @@ scheduled.
 | Competency | Evidence in this codebase |
 |---|---|
 | 🏛️ **Layered architecture** | Strict controller → service → repository separation across 10 modules |
-| 🔗 **Relational modelling** | 10 entities, 8 foreign-key relationships, transactional cascade deletes |
+| 🔗 **Relational modelling** | 10 entities, 9 foreign-key relationships, transactional cascade deletes |
 | 🔐 **Application security** | Spring Security filter chain, BCrypt hashing, custom `UserDetailsService` |
 | 🗄️ **Data access** | Derived query methods, `@Modifying` JPQL, `Pageable` pagination |
 | ✔️ **Validation** | Declarative Jakarta constraints wired to `BindingResult` error rendering |
 | 🎨 **Frontend composition** | Thymeleaf fragments, reusable layout, hand-authored responsive CSS |
 | 🧮 **Business logic** | Percentage computation, six-band grading, exam-specific pass thresholds |
 | 📤 **File handling** | Multipart upload with collision-safe naming and custom resource mapping |
-| 🔍 **Code review skill** | A maintained 20-item backlog with severity triage and owning phases |
+| 🔍 **Code review skill** | A maintained 33-item backlog with severity triage and owning phases |
 
 </div>
 
