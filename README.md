@@ -378,36 +378,36 @@ Course code, subject code and teacher email are checked for duplicates in code w
 
 ## 🧮 Grade Engine
 
-When a result is saved, `ResultServiceImpl` computes the **grade** and **pass/fail** status
-automatically — the form only asks for the marks obtained.
+When a result is saved, the **grade** and **pass/fail** status are computed automatically. The form
+only asks for the marks obtained. The rules live in one class, `GradeCalculator`, so every screen
+that shows a grade agrees.
 
 ```mermaid
 flowchart TD
     IN[/"📥 obtainedMarks · exam.totalMarks · exam.passingMarks"/]
-    IN --> PCT["percentage = obtained ÷ total × 100"]
-    PCT --> PASS{obtained ≥ passingMarks?}
-    PASS -- Yes --> P["✅ status = Pass"]
-    PASS -- No --> F["❌ status = Fail"]
-    P --> G{percentage}
-    F --> G
+    IN --> PASS{obtained ≥ passingMarks?}
+    PASS -- No --> F["❌ Fail · grade F"]
+    PASS -- Yes --> PCT["✅ Pass<br/>percentage = obtained ÷ total × 100"]
+    PCT --> G{percentage}
     G -- "≥ 90" --> A1["🥇 A+"]
     G -- "≥ 80" --> A2["🥈 A"]
     G -- "≥ 70" --> B["🥉 B"]
     G -- "≥ 60" --> C["C"]
-    G -- "≥ 50" --> D["D"]
-    G -- "< 50" --> FF["F"]
+    G -- "< 60" --> D["D"]
 
     style IN fill:#1e3a8a,stroke:#3b82f6,color:#fff
-    style P fill:#065f46,stroke:#10b981,color:#fff
+    style PCT fill:#065f46,stroke:#10b981,color:#fff
     style F fill:#7f1d1d,stroke:#ef4444,color:#fff
 ```
 
-| Percentage | 90–100 | 80–89 | 70–79 | 60–69 | 50–59 | < 50 |
+| Status | Pass, 90–100% | Pass, 80–89% | Pass, 70–79% | Pass, 60–69% | Pass, below 60% | Fail |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Grade** | 🥇 A+ | 🥈 A | 🥉 B | C | D | F |
 
 > Pass/fail uses **each exam's own** `passingMarks`, so a 40-mark quiz and a 100-mark final can
-> have different thresholds.
+> have different thresholds. A fail is always **F** and a pass is never below **D**, so the grade
+> and the status can't contradict each other: 40/100 with a pass mark of 33 is **D · Pass**.
+> Obtained marks can't exceed the exam's total, and passing marks can't exceed the total either.
 
 ---
 
