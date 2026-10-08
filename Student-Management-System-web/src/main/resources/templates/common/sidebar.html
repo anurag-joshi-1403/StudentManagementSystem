@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <body>
     <!--/* The fragment is the <aside> itself (matching how navbar.html
          works) so it sits as a direct child of the .app-shell grid. */-->
@@ -95,7 +95,8 @@
             </a>
           </li>
 
-          <li>
+          <!--/* Fees are admin-only, viewing included (C7). */-->
+          <li sec:authorize="hasRole('ADMIN')">
             <a
               th:href="@{/fee}"
               th:classappend="${activeNav == 'fee'} ? 'active'"
