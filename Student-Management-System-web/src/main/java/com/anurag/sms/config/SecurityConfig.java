@@ -2,6 +2,7 @@ package com.anurag.sms.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -42,6 +43,38 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**")
                         .permitAll()
+
+                        // ---- Role rules (#3) -------------------------------------
+                        // The FIRST matching rule wins, so specific rules come before
+                        // general ones. Every change is a POST, and every add/edit
+                        // form is GET /<module>/new or /<module>/edit/{id}.
+
+                        // Fees: admins only, viewing included
+                        .requestMatchers("/fee", "/fee/**")
+                        .hasRole("ADMIN")
+
+                        // Attendance, exams and results: teachers may change them too
+                        .requestMatchers(
+                                "/attendance/new", "/attendance/edit/**", "/attendance/bulk",
+                                "/exam/new", "/exam/edit/**",
+                                "/result/new", "/result/edit/**")
+                        .hasAnyRole("ADMIN", "TEACHER")
+                        .requestMatchers(HttpMethod.POST,
+                                "/attendance/**", "/exam/**", "/result/**")
+                        .hasAnyRole("ADMIN", "TEACHER")
+
+                        // Students, teachers, courses, subjects and enrollments:
+                        // anyone signed in may view, only admins may change
+                        .requestMatchers("/*/new", "/*/edit/**",
+                                "/student/import", "/student/export")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,
+                                "/student", "/student/**",
+                                "/teacher", "/teacher/**",
+                                "/course", "/course/**",
+                                "/subject", "/subject/**",
+                                "/enrollment", "/enrollment/**")
+                        .hasRole("ADMIN")
 
                         // Every other request requires login
                         .anyRequest()
