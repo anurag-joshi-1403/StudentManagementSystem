@@ -78,6 +78,29 @@
             <artifactId>commons-csv</artifactId>
             <version>1.14.1</version>
         </dependency>
+
+        <!-- PDF marksheets and fee receipts (F6-F8). Not managed by the
+             Spring Boot parent, so the version is pinned here. -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>3.0.5</version>
+        </dependency>
+
+        <!-- In-memory database for the tests (F13), so ./mvnw test and CI
+             need no MySQL. Version managed by the Spring Boot parent. -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- @WithMockUser and csrf() for the controller security tests (F17) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.anurag.sms.dto.ImportReport;
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.service.AttendanceService;
+import com.anurag.sms.service.PdfService;
 import com.anurag.sms.service.ResultService;
 import com.anurag.sms.service.StudentService;
 import com.anurag.sms.utility.CsvHelper;
@@ -44,15 +45,18 @@ public class StudentController {
     private final com.anurag.sms.service.CourseService courseService;
     private final ResultService resultService;
     private final AttendanceService attendanceService;
+    private final PdfService pdfService;
 
     public StudentController(StudentService studentService,
                              com.anurag.sms.service.CourseService courseService,
                              ResultService resultService,
-                             AttendanceService attendanceService) {
+                             AttendanceService attendanceService,
+                             PdfService pdfService) {
         this.studentService = studentService;
         this.courseService = courseService;
         this.resultService = resultService;
         this.attendanceService = attendanceService;
+        this.pdfService = pdfService;
     }
 
     @GetMapping("/student")
@@ -79,6 +83,21 @@ public class StudentController {
         model.addAttribute("marksheet", resultService.getMarksheet(id));
 
         return LayoutView.render(model, "student/marksheet :: content", "student", "Marksheet");
+    }
+
+    // The marksheet as a PDF (F7), with the same rows and totals as the page
+    @GetMapping("/student/{id}/marksheet.pdf")
+    public ResponseEntity<byte[]> marksheetPdf(@PathVariable Long id) {
+
+        Student student = studentService.getStudentById(id);
+        byte[] pdf = pdfService.marksheet(student, resultService.getMarksheet(id));
+
+        return FileDownload.pdf("marksheet-" + slug(student.getFirstName() + " " + student.getLastName()) + ".pdf", pdf);
+    }
+
+    // "Kabir Mehta" -> "kabir-mehta", for a file name
+    private static String slug(String text) {
+        return text.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", "-").replaceAll("(^-|-$)", "");
     }
 
     // CSV import (E18): the upload form, and the report of the last import
@@ -123,7 +142,7 @@ public class StudentController {
         List<Student> students = new ArrayList<>(studentService.getAllStudents());
         students.sort(Comparator.comparing(Student::getId));
 
-        return CsvDownload.of("students.csv", CsvHelper.studentsToCsv(students));
+        return FileDownload.csv("students.csv", CsvHelper.studentsToCsv(students));
     }
 
     // The list and the search are one paged query: a blank keyword lists

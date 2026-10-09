@@ -18,16 +18,19 @@
 
       <div class="navbar-right">
         <div class="notification-wrapper">
+          <!--/* The badge counts the live notifications and is left out at 0 (F2) */-->
           <button
             class="nav-icon"
             id="notificationBtn"
             type="button"
-            aria-label="Notifications"
             aria-haspopup="true"
             aria-expanded="false"
+            aria-controls="notificationPanel"
+            th:with="count=${notifications == null ? 0 : #lists.size(notifications)}"
+            th:attr="aria-label=${count == 0 ? 'Notifications' : 'Notifications (' + count + ' new)'}"
           >
             <i class="bi bi-bell" aria-hidden="true"></i>
-            <span class="notify" aria-hidden="true">3</span>
+            <span class="notify" aria-hidden="true" th:if="${count > 0}" th:text="${count}">0</span>
           </button>
 
           <div id="notificationDropdown">
@@ -38,8 +41,11 @@
         <!--/* Bound to the authenticated principal rather than a hardcoded
              name. th:with resolves it once, with a fallback so the
              fragment still renders outside a security context. */-->
-        <div
+        <!--/* A link to the user's own profile (F9) */-->
+        <a
           class="profile"
+          th:href="@{/profile}"
+          title="My profile"
           th:with="userName=${#authentication != null ? #authentication.name : 'Guest'}"
         >
           <span
@@ -59,7 +65,7 @@
               >Signed in</small
             >
           </span>
-        </div>
+        </a>
       </div>
     </header>
   </body>

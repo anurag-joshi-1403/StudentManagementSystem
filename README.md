@@ -14,12 +14,13 @@
 
 <br/>
 
-![Build](https://img.shields.io/badge/Build-passing-brightgreen?style=flat-square&logo=apachemaven&logoColor=white)
-![Modules](https://img.shields.io/badge/Modules-10-blue?style=flat-square)
-![Endpoints](https://img.shields.io/badge/Endpoints-66-blueviolet?style=flat-square)
-![Entities](https://img.shields.io/badge/JPA_Entities-10-orange?style=flat-square)
-![Views](https://img.shields.io/badge/Thymeleaf_Views-36-green?style=flat-square)
-![LOC](https://img.shields.io/badge/Java_LOC-4.5k-yellow?style=flat-square)
+[![CI](https://github.com/anurag-joshi-1403/StudentManagementSystem/actions/workflows/ci.yml/badge.svg)](https://github.com/anurag-joshi-1403/StudentManagementSystem/actions/workflows/ci.yml)
+![Tests](https://img.shields.io/badge/Tests-55_passing-brightgreen?style=flat-square&logo=junit5&logoColor=white)
+![Roles](https://img.shields.io/badge/Roles-Admin_·_Teacher_·_Student-red?style=flat-square)
+![Endpoints](https://img.shields.io/badge/Endpoints-88-blueviolet?style=flat-square)
+![Entities](https://img.shields.io/badge/JPA_Entities-11-orange?style=flat-square)
+![Templates](https://img.shields.io/badge/Thymeleaf_Templates-57-green?style=flat-square)
+![LOC](https://img.shields.io/badge/Java_LOC-7.4k-yellow?style=flat-square)
 
 <br/>
 
@@ -27,7 +28,7 @@
 
 <br/>
 
-[🚀 Quick Start](#-getting-started) · [🧱 Architecture](#-architecture) · [💾 Database](#-database-schema) · [📖 Keywords Explained](#-keywords-explained) · [🗺️ Roadmap](PROJECT_ROADMAP.md)
+[📸 Screenshots](#-screenshots) · [🚀 Quick Start](#-getting-started) · [🧱 Architecture](#-architecture) · [💾 Database](#-database-schema) · [🧪 Tests](#-tests--ci) · [📖 Keywords Explained](#-keywords-explained) · [🗺️ Roadmap](PROJECT_ROADMAP.md)
 
 </div>
 
@@ -38,12 +39,13 @@
 | | Section | | Section |
 |:---:|---|:---:|---|
 | 🎯 | [About the Project](#-about-the-project) | 🧮 | [Grade Engine](#-grade-engine) |
-| ✨ | [Features](#-features) | 🔗 | [Data Integrity](#-data-integrity) |
-| 🧰 | [Tech Stack](#-tech-stack) | 📁 | [Project Structure](#-project-structure) |
-| 🧱 | [Architecture](#-architecture) | 🌐 | [Routes](#-routes) |
+| 📸 | [Screenshots](#-screenshots) | 🔗 | [Data Integrity](#-data-integrity) |
+| ✨ | [Features](#-features) | 📁 | [Project Structure](#-project-structure) |
+| 🧰 | [Tech Stack](#-tech-stack) | 🌐 | [Routes](#-routes) |
+| 🧱 | [Architecture](#-architecture) | 🧪 | [Tests & CI](#-tests--ci) |
 | 🧩 | [Anatomy of a Module](#-anatomy-of-a-module) | 🚀 | [Getting Started](#-getting-started) |
 | 🧭 | [User Journey](#-user-journey) | 📖 | [Keywords Explained](#-keywords-explained) |
-| 🔐 | [Login Flow](#-login-flow) | 📊 | [Project Status](#-project-status) |
+| 🔐 | [Login Flow](#-login-flow) & [Roles](#-roles) | 📊 | [Project Status](#-project-status) |
 | 💾 | [Database Schema](#-database-schema) | 👤 | [Author](#-author) |
 
 ---
@@ -51,8 +53,9 @@
 ## 🎯 About the Project
 
 > **Student Management System (SMS)** is a server-rendered **Spring Boot MVC** application.
-> An administrator logs in, lands on a live dashboard, and manages every academic record of the
-> institution through ten CRUD modules that share one layout, one security layer and one database.
+> Admins, teachers and students sign in to a live dashboard and work with every academic record of
+> the institution through nine record modules that share one layout, one role-based security layer
+> and one database, plus marksheets, receipts, reports, CSV and PDF export.
 
 <table>
 <tr>
@@ -61,8 +64,9 @@
 **🧠 Why it exists**
 
 Colleges still track admissions, attendance and fees across spreadsheets and paper. This project
-puts all of it behind a single login with searchable, paginated screens and a dashboard that
-reads real numbers from the database — not hardcoded placeholders.
+puts all of it behind a single login with searchable, paginated screens, a dashboard that reads
+real numbers from the database, and alerts for what needs attention: overdue fees, low attendance
+and exams this week.
 
 </td>
 <td width="50%" valign="top">
@@ -71,16 +75,35 @@ reads real numbers from the database — not hardcoded placeholders.
 
 | Metric | Count |
 |---|:---:|
-| Feature modules | `10` |
-| HTTP endpoints | `66` |
-| JPA entities / repositories | `10` / `10` |
-| Service classes | `21` |
-| Thymeleaf templates | `36` |
-| Lines of Java | `4.5k` |
+| Record modules + auth | `9` + `1` |
+| HTTP endpoints | `88` |
+| JPA entities / repositories | `11` / `11` |
+| Service interfaces / implementations | `13` / `13` |
+| Thymeleaf templates | `57` |
+| Automated tests | `55` |
+| Lines of Java | `7.4k` |
 
 </td>
 </tr>
 </table>
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+| 📊 Dashboard | 👨‍🎓 Student list |
+|:---:|:---:|
+| <img src="docs/screenshots/dashboard.png" alt="Dashboard with stat cards, charts and the notification bell" width="100%"/> | <img src="docs/screenshots/student-list.png" alt="Student list with search, photos and actions" width="100%"/> |
+| **🎓 Marksheet** | **🧾 Fee receipt** |
+| <img src="docs/screenshots/marksheet.png" alt="Student marksheet with totals and overall grade" width="100%"/> | <img src="docs/screenshots/fee-receipt.png" alt="Printable fee receipt" width="100%"/> |
+| **📈 Attendance report** | **🛡️ Access denied** |
+| <img src="docs/screenshots/attendance-report.png" alt="Attendance report highlighting students under 75 percent" width="100%"/> | <img src="docs/screenshots/error-403.png" alt="403 page shown to a student who opens the fees page" width="100%"/> |
+
+<sub>Made-up demo data on <code>@example.com</code>. The 403 page is what a student sees on <code>/fee</code>.</sub>
+
+</div>
 
 ---
 
@@ -90,10 +113,11 @@ reads real numbers from the database — not hardcoded placeholders.
 
 | | | |
 |:---:|:---:|:---:|
-| 🔐 **Secure Login**<br/><sub>BCrypt hashing · session auth · duplicate guards</sub> | 👨‍🎓 **Students**<br/><sub>CRUD · photo upload · search · pagination</sub> | 👨‍🏫 **Teachers**<br/><sub>CRUD · department · qualification · photo</sub> |
-| 📚 **Courses & Subjects**<br/><sub>Catalogue with codes, credits, semesters</sub> | 📝 **Enrollment**<br/><sub>Links Student ↔ Course ↔ Subject</sub> | 🗓️ **Attendance**<br/><sub>Daily marking · keyword + date filter</sub> |
-| 🧾 **Exams**<br/><sub>Schedule with total & passing marks</sub> | 🏆 **Results**<br/><sub>**Auto grade** & pass/fail computation</sub> | 💰 **Fees**<br/><sub>Paid / pending tracking · totals</sub> |
-| 📊 **Live Dashboard**<br/><sub>Real stat cards · Chart.js analytics · live clock</sub> | 🔍 **Search Everywhere**<br/><sub>Multi-field case-insensitive search</sub> | 🔗 **Safe Deletes**<br/><sub>Transactional cascade — no orphan rows</sub> |
+| 🔐 **Secure Login & Roles**<br/><sub>BCrypt · Admin / Teacher / Student · POST + CSRF on every change</sub> | 👨‍🎓 **Students**<br/><sub>CRUD · photo upload · profile · attendance %</sub> | 👨‍🏫 **Teachers**<br/><sub>CRUD · department · qualification · photo</sub> |
+| 📚 **Courses & Subjects**<br/><sub>Unique codes · credits · subject page lists its exams</sub> | 📝 **Enrollment**<br/><sub>Student ↔ Course ↔ Subject · no duplicates</sub> | 🗓️ **Attendance**<br/><sub>Daily or **bulk** for a whole class · report under 75%</sub> |
+| 🧾 **Exams**<br/><sub>Schedule by month · results with pass rate</sub> | 🏆 **Results & Marksheet**<br/><sub>**Auto grade** · totals · overall grade · **PDF**</sub> | 💰 **Fees**<br/><sub>Printable receipt · **PDF** · overdue flags</sub> |
+| 📊 **Live Dashboard**<br/><sub>Real stat cards · Chart.js · recent activity</sub> | 🔔 **Notifications**<br/><sub>Overdue fees · low attendance · exams this week</sub> | 📥 **CSV Import & Export**<br/><sub>Row-by-row validation · Excel-safe export</sub> |
+| 👤 **Profile & Password**<br/><sub>Own details · change password</sub> | 🛠️ **User Admin**<br/><sub>Enable / disable accounts · change roles</sub> | 🧪 **Tested**<br/><sub>55 tests on H2 · GitHub Actions CI</sub> |
 
 </div>
 
@@ -111,7 +135,10 @@ reads real numbers from the database — not hardcoded placeholders.
 | 🗄️ | ![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=flat&logo=spring&logoColor=white) ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=flat&logo=hibernate&logoColor=white) | Object ↔ table mapping, derived queries, pagination |
 | 🐬 | ![MySQL](https://img.shields.io/badge/MySQL_8-4479A1?style=flat&logo=mysql&logoColor=white) | Relational database (`sms_web`) |
 | 🎨 | ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=flat&logo=thymeleaf&logoColor=white) ![Bootstrap](https://img.shields.io/badge/Bootstrap_5.3-7952B3?style=flat&logo=bootstrap&logoColor=white) ![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=flat&logo=chartdotjs&logoColor=white) | Server-rendered HTML, responsive UI, dashboard charts |
-| ✔️ | ![Validation](https://img.shields.io/badge/Jakarta_Bean_Validation-F8B500?style=flat&logo=jakartaee&logoColor=black) | `@NotBlank`, `@Email`, `@Pattern` form checks |
+| ✔️ | ![Validation](https://img.shields.io/badge/Jakarta_Bean_Validation-F8B500?style=flat&logo=jakartaee&logoColor=black) | `@NotBlank`, `@Email`, `@Pattern` form checks, also run on every CSV row |
+| 📄 | ![OpenPDF](https://img.shields.io/badge/OpenPDF_3-B30B00?style=flat&logo=adobeacrobatreader&logoColor=white) ![Commons CSV](https://img.shields.io/badge/Apache_Commons_CSV-D22128?style=flat&logo=apache&logoColor=white) | Marksheet and receipt PDFs · student CSV import, student and fee CSV export |
+| 🧪 | ![JUnit 5](https://img.shields.io/badge/JUnit_5-25A162?style=flat&logo=junit5&logoColor=white) ![Mockito](https://img.shields.io/badge/Mockito-78A641?style=flat) ![H2](https://img.shields.io/badge/H2-0000BB?style=flat) | Unit, repository and controller-security tests on an in-memory database |
+| ⚙️ | ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=githubactions&logoColor=white) | Runs the tests on every push and pull request |
 | 🛠️ | ![Maven](https://img.shields.io/badge/Maven-C71A36?style=flat&logo=apachemaven&logoColor=white) | Build & dependency management (wrapper included) |
 
 </div>
@@ -126,17 +153,19 @@ strictly downward — controllers never touch the database, services never touch
 ```mermaid
 flowchart LR
     U["👤 Browser<br/><i>Bootstrap 5 · HTML</i>"]
-    S["🔐 Spring Security<br/><i>filter chain · BCrypt</i>"]
-    C["🎯 Controllers<br/><i>12 classes · 66 routes</i>"]
+    S["🔐 Spring Security<br/><i>roles · CSRF · BCrypt</i>"]
+    C["🎯 Controllers<br/><i>14 classes · 88 routes</i>"]
     V["⚙️ Services<br/><i>business rules</i>"]
     R["🗄️ Repositories<br/><i>Spring Data JPA</i>"]
     D[("🐬 MySQL<br/><i>sms_web</i>")]
-    T["🎨 Thymeleaf<br/><i>36 templates</i>"]
+    T["🎨 Thymeleaf<br/><i>57 templates</i>"]
     F["📁 uploads/<br/><i>student & teacher photos</i>"]
+    P["📄 Downloads<br/><i>PDF · CSV</i>"]
 
-    U -->|HTTP| S -->|authenticated| C --> V --> R --> D
+    U -->|HTTP| S -->|allowed for the role| C --> V --> R --> D
     C -.->|model data| T -.->|rendered HTML| U
     C -.->|multipart| F
+    C -.->|attachment| P -.-> U
 
     style U fill:#1e3a8a,stroke:#3b82f6,color:#fff
     style S fill:#7f1d1d,stroke:#ef4444,color:#fff
@@ -146,6 +175,7 @@ flowchart LR
     style D fill:#164e63,stroke:#06b6d4,color:#fff
     style T fill:#831843,stroke:#ec4899,color:#fff
     style F fill:#374151,stroke:#9ca3af,color:#fff
+    style P fill:#374151,stroke:#9ca3af,color:#fff
 ```
 
 | Layer | Responsibility | Example |
@@ -160,13 +190,13 @@ flowchart LR
 
 ## 🧩 Anatomy of a Module
 
-All ten modules follow the **same shape**, so once you understand one you understand them all.
-Here is the **Student** module:
+All nine record modules follow the **same shape**, so once you understand one you understand them all.
+Here is the **Student** module, the largest:
 
 ```mermaid
 flowchart TB
     subgraph WEB["🎯 Web"]
-        SC["StudentController<br/><i>8 endpoints</i>"]
+        SC["StudentController<br/><i>13 endpoints</i>"]
     end
     subgraph BIZ["⚙️ Business"]
         SS["StudentService<br/><i>interface</i>"]
@@ -180,13 +210,14 @@ flowchart TB
         L["student-list.html"]
         Fm["student-form.html"]
         Vw["student-view.html"]
+        Mk["marksheet.html"]
     end
 
     SC --> SS
     SS -. implemented by .-> SI
     SI --> SR
     SR --> SE
-    SC -.-> L & Fm & Vw
+    SC -.-> L & Fm & Vw & Mk
 
     style WEB fill:#065f46,stroke:#10b981,color:#fff
     style BIZ fill:#78350f,stroke:#f59e0b,color:#fff
@@ -208,7 +239,7 @@ flowchart TD
     C -->|new user| C2[📝 Register]
     C2 --> C
     C -->|valid credentials| D
-    B -- Yes --> D[📊 Dashboard<br/><i>stats · charts · recent activity</i>]
+    B -- Yes --> D[📊 Dashboard<br/><i>stats · charts · notifications</i>]
 
     D --> E[👨‍🎓 Students]
     D --> F[👨‍🏫 Teachers]
@@ -218,7 +249,7 @@ flowchart TD
     D --> J[🧾 Exams → 🏆 Results]
     D --> K[💰 Fees]
 
-    E & F & G & H & I & J & K --> L{{"📋 List · 🔍 Search · ➕ Add · ✏️ Edit · 🗑️ Delete"}}
+    E & F & G & H & I & J & K --> L{{"📋 List · 🔍 Search · 👁️ View · ➕ Add · ✏️ Edit · 🗑️ Delete"}}
     L -->|save| M[(🐬 MySQL)]
     M -->|redirect| L
 
@@ -228,8 +259,9 @@ flowchart TD
     style M fill:#164e63,stroke:#06b6d4,color:#fff
 ```
 
-Every module exposes the same five actions — **list, search, add, edit, delete** — with pagination
-on the list page and validation on the form.
+Every module exposes the same six actions — **list, search, view, add, edit, delete** — with
+pagination on the list page, validation on the form, and buttons shown only to roles allowed to
+use them.
 
 ---
 
@@ -257,24 +289,46 @@ sequenceDiagram
     DB-->>R: User row (BCrypt hash)
     R-->>UD: User entity
     UD-->>P: UserDetails
-    P->>P: BCrypt.matches(raw, hash)
-    alt ✅ match
-        P-->>SF: Authenticated
+    P->>P: BCrypt.matches(raw, hash) · enabled?
+    alt ✅ match and enabled
+        P-->>SF: Authenticated (with the user's role)
         SF-->>U: 302 → /dashboard  (session cookie set)
-    else ❌ no match
-        P-->>SF: BadCredentials
+    else ❌ no match, or account disabled
+        P-->>SF: BadCredentials / Disabled
         SF-->>U: 302 → /login?error=true
     end
 ```
 
 **Registration** (`POST /register`) checks that the username and email are unused, hashes the
-password with **BCrypt**, assigns `ROLE_STUDENT`, and saves the user — the raw password is never stored.
+password with **BCrypt**, assigns `ROLE_STUDENT` (view-only), and saves the user — the raw
+password is never stored. The first **admin** is created at startup from the `ADMIN_USERNAME` and
+`ADMIN_PASSWORD` environment variables; after that, admins promote accounts on the **Users** page.
+
+---
+
+## 👥 Roles
+
+Three roles, enforced on the server by URL rules in `SecurityConfig` (the first matching rule wins)
+and mirrored in the UI with `sec:authorize`, so nobody sees a button they can't use.
+
+| Area | 🛠️ Admin | 👩‍🏫 Teacher | 🎓 Student |
+|---|:---:|:---:|:---:|
+| Dashboard, lists, detail pages, marksheets, reports, exam schedule | ✅ | ✅ | ✅ |
+| Add / edit / delete attendance, exams and results · bulk attendance | ✅ | ✅ | ❌ |
+| Add / edit / delete students, teachers, courses, subjects, enrollments | ✅ | ❌ | ❌ |
+| Student CSV import and export | ✅ | ❌ | ❌ |
+| Fees: everything, viewing included (receipts, PDFs, export) | ✅ | ❌ | ❌ |
+| User accounts: enable, disable, change role | ✅ | ❌ | ❌ |
+| Own profile and password | ✅ | ✅ | ✅ |
+
+<sub>Every change is a POST carrying a CSRF token; a typed GET delete URL gets 405. A disabled account
+can't sign in, and admins can't disable or demote themselves. A forbidden page shows the styled 403 page.</sub>
 
 ---
 
 ## 💾 Database Schema
 
-Ten tables, **nine foreign-key relationships**. Hibernate creates them automatically from the
+Eleven tables, **nine foreign-key relationships**. Hibernate creates them automatically from the
 entity classes (`ddl-auto=update`) — no SQL script needed.
 
 ```mermaid
@@ -297,6 +351,14 @@ erDiagram
         String role
         boolean enabled
     }
+    ACTIVITY_LOG {
+        Long id PK
+        String action
+        String entityType
+        String description
+        String username
+        LocalDateTime createdAt
+    }
     STUDENT {
         Long id PK
         String firstName
@@ -312,21 +374,21 @@ erDiagram
         Long id PK
         String firstName
         String lastName
-        String email
+        String email UK
         String department
         String qualification
         String photo
     }
     COURSE {
         Long id PK
-        String courseCode
+        String courseCode UK
         String courseName
         String duration
         Double fees
     }
     SUBJECT {
         Long id PK
-        String subjectCode
+        String subjectCode UK
         String subjectName
         String semester
         Integer credits
@@ -371,8 +433,10 @@ erDiagram
     }
 ```
 
-<sub>`PK` primary key · `FK` foreign key · `UK` unique in the database. `USER` and `TEACHER` are standalone tables.
-Course code, subject code and teacher email are checked for duplicates in code when a record is created.</sub>
+<sub>`PK` primary key · `FK` foreign key · `UK` unique in the database. An enrollment is also unique per
+(student, course, subject). `USER`, `TEACHER` and `ACTIVITY_LOG` are standalone tables; the log stores
+names as text, so its lines still read correctly after the record is deleted. Duplicate codes and emails
+are reported on the form, on create and on edit, before the database constraint is reached.</sub>
 
 ---
 
@@ -408,6 +472,10 @@ flowchart TD
 > have different thresholds. A fail is always **F** and a pass is never below **D**, so the grade
 > and the status can't contradict each other: 40/100 with a pass mark of 33 is **D · Pass**.
 > Obtained marks can't exceed the exam's total, and passing marks can't exceed the total either.
+>
+> 🎓 The **marksheet** applies the same rule to the whole record: it totals every exam (865/1100 =
+> 78.6% → **B**) and is a pass only if every exam is passed, so one failed exam makes it **F · Fail**.
+> `GradeCalculatorTest` checks every band edge (89.99% vs 90%, 49.99% vs 50%) and the exact pass mark.
 
 ---
 
@@ -451,37 +519,44 @@ other rows point at:
 <sub>Bulk JPQL deletes cannot join, so a subject's exam results are matched with a subquery:
 `DELETE FROM Result r WHERE r.exam.id IN (SELECT e.id FROM Exam e WHERE e.subject.id = :subjectId)`.</sub>
 
+> 🧪 `DeleteCascadeTest` builds one of everything, deletes each parent and checks its children are gone.
+> It flushes after every delete, because H2 enforces foreign keys like MySQL: with the exam's
+> results delete removed, the test fails with a referential-integrity error.
+
 ---
 
 ## 📁 Project Structure
 
 ```
+.github/workflows/ci.yml                # GitHub Actions: ./mvnw -B test on every push
+docs/screenshots/                       # README screenshots
 Student-Management-System-web/
 ├── 📄 pom.xml                          # Maven dependencies & build
-├── 📁 uploads/                         # Uploaded photos (served at /student-images, /teacher-images)
-└── 📁 src/main/
-    ├── 📁 java/com/anurag/sms/
+├── 📁 uploads/                         # Uploaded photos, not in git (served at /student-images, /teacher-images)
+└── 📁 src/
+    ├── 📁 main/java/com/anurag/sms/
     │   ├── 🚀 SmswebApplication.java   # Entry point (@SpringBootApplication)
-    │   ├── 📁 config/                  # SecurityConfig · webConfig (static resource mapping)
-    │   ├── 📁 controller/              # 12 controllers — one per module + Auth, Home, Dashboard
-    │   ├── 📁 service/                 # 10 interfaces + CustomUserDetailsService
-    │   │   └── 📁 impl/                # 10 implementations (@Service)
-    │   ├── 📁 repository/              # 10 Spring Data JPA repositories
-    │   ├── 📁 entity/                  # 10 JPA entities (@Entity)
-    │   ├── 📁 dto/                     # UserRegistrationDto (+ stubs)
-    │   └── 📁 utility/                 # Helper stubs (FileUploadUtil, DateUtil, CsvHelper)
-    └── 📁 resources/
-        ├── ⚙️ application.properties   # DB, Hibernate, multipart, port
-        ├── 📁 static/
-        │   ├── 📁 css/                 # theme · sidebar · navbar · stats-cards · charts …
-        │   └── 📁 js/                  # dashboard.js · charts.js · notification.js
-        └── 📁 templates/
-            ├── 📁 layout/              # layout.html — the app shell
-            ├── 📁 common/              # navbar · sidebar · footer · notification fragments
-            ├── 📁 dashboard/           # stats-cards · charts · recent-* · upcoming-exams
-            ├── 📁 auth/                # login · register
-            └── 📁 {student,teacher,course,subject,enrollment,attendance,exam,result,fee}/
-                                        # list · form (· view) per module
+    │   ├── 📁 config/                  # SecurityConfig (role rules) · WebConfig · AdminSeeder (first admin)
+    │   ├── 📁 controller/              # 14 controllers + LayoutView · FileDownload · NotificationAdvice
+    │   ├── 📁 service/                 # 13 interfaces + CustomUserDetailsService
+    │   │   └── 📁 impl/                # 13 implementations (@Service)
+    │   ├── 📁 repository/              # 11 Spring Data JPA repositories
+    │   ├── 📁 entity/                  # 11 JPA entities (@Entity)
+    │   ├── 📁 dto/                     # 7 records and forms: Marksheet · AttendanceSummary · BulkAttendanceForm …
+    │   ├── 📁 exception/               # GlobalExceptionHandler · ResourceNotFoundException (404)
+    │   └── 📁 utility/                 # GradeCalculator · CsvHelper · FileUploadUtil · Pages
+    ├── 📁 main/resources/
+    │   ├── ⚙️ application.properties   # DB (from env), Hibernate, multipart limits, institution name
+    │   ├── ⚙️ application-dev.properties # SQL echo + DEBUG logging, only with the dev profile
+    │   ├── 📁 static/                  # css/ (11 files) · js/ (3) · images/default-avatar.svg
+    │   └── 📁 templates/               # 57 templates
+    │       ├── 📁 layout/ · common/    # app shell · navbar · sidebar · notifications · error page
+    │       ├── 📁 dashboard/           # stat cards · charts · recent students, fees, activity · upcoming exams
+    │       ├── 📁 error/               # 403 · 404 · 409 · 413 · 500
+    │       ├── 📁 auth/ · profile/ · admin/
+    │       └── 📁 {student,teacher,course,subject,enrollment,attendance,exam,result,fee}/
+    │                                   # list · form · view, plus marksheet, receipt, report, schedule, bulk, import
+    └── 📁 test/                        # 55 tests · application.properties points at in-memory H2
 ```
 
 ---
@@ -489,30 +564,51 @@ Student-Management-System-web/
 ## 🌐 Routes
 
 <details>
-<summary><b>All 66 endpoints, grouped by module</b> — click to expand</summary>
+<summary><b>All 88 endpoints (60 GET · 28 POST), grouped by module</b> — click to expand</summary>
 
 <br/>
 
-| Module | Base path | Endpoints |
-|:---:|---|---|
-| 🏠 Home | `/` | `GET /` → redirect to dashboard |
-| 🔐 Auth | `/login` `/register` | `GET /login` · `GET /register` · `POST /register` · `POST /login` & `/logout` handled by Spring Security |
-| 📊 Dashboard | `/dashboard` | `GET /dashboard` |
-| 👨‍🎓 Student | `/student` | `GET /` · `GET /view/{id}` · `GET /search` · `GET /new` · `POST /` · `GET /edit/{id}` · `GET /delete/{id}` · `GET /page/{n}` |
-| 👨‍🏫 Teacher | `/teacher` | `GET /` · `GET /new` · `POST /` · `GET /edit/{id}` · `GET /view/{id}` · `GET /delete/{id}` |
-| 📚 Course | `/course` | `GET /` · `GET /new` · `POST /` · `GET /edit/{id}` · `GET /view/{id}` · `GET /delete/{id}` |
-| 📖 Subject | `/subject` | `GET /` · `GET /new` · `POST /` · `GET /edit/{id}` · `GET /delete/{id}` |
-| 📝 Enrollment | `/enrollment` | `GET /` · `GET /new` · `POST /` · `GET /edit/{id}` · `GET /delete/{id}` |
-| 🗓️ Attendance | `/attendance` | `GET /` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `GET /delete/{id}` · `GET /search` · `GET /page/{n}` |
-| 🧾 Exam | `/exam` | `GET /` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `GET /delete/{id}` · `GET /search` · `GET /page/{n}` |
-| 🏆 Result | `/result` | `GET /` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `GET /delete/{id}` · `GET /search` · `GET /page/{n}` |
-| 💰 Fee | `/fee` | `GET /` · `GET /search` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `GET /delete/{id}` |
+| Module | Base path | Endpoints | Changes allowed for |
+|:---:|---|---|:---:|
+| 🏠 Home | `/` | `GET /` → redirect to dashboard | — |
+| 🔐 Auth | `/login` `/register` | `GET /login` · `GET /register` · `POST /register` · `POST /login` & `POST /logout` handled by Spring Security | public |
+| 📊 Dashboard | `/dashboard` | `GET /dashboard` | — |
+| 👤 Profile | `/profile` | `GET /` · `POST /password` | everyone, own account |
+| 🛠️ Users | `/admin/users` | `GET /` · `POST /{id}/enabled` · `POST /{id}/role` | Admin (viewing too) |
+| 👨‍🎓 Student | `/student` | `GET /` · `GET /search` · `GET /page/{n}` · `GET /view/{id}` · `GET /{id}/marksheet` · `GET /{id}/marksheet.pdf` · `GET /new` · `POST /` · `GET /edit/{id}` · `POST /delete/{id}` · `GET /import` · `POST /import` · `GET /export` | Admin |
+| 👨‍🏫 Teacher | `/teacher` | `GET /` · `GET /view/{id}` · `GET /new` · `POST /` · `GET /edit/{id}` · `POST /delete/{id}` | Admin |
+| 📚 Course | `/course` | `GET /` · `GET /view/{id}` · `GET /new` · `POST /` · `GET /edit/{id}` · `POST /delete/{id}` | Admin |
+| 📖 Subject | `/subject` | `GET /` · `GET /view/{id}` · `GET /new` · `POST /` · `GET /edit/{id}` · `POST /delete/{id}` | Admin |
+| 📝 Enrollment | `/enrollment` | `GET /` · `GET /view/{id}` · `GET /new` · `POST /` · `GET /edit/{id}` · `POST /delete/{id}` | Admin |
+| 🗓️ Attendance | `/attendance` | `GET /` · `GET /search` · `GET /page/{n}` · `GET /view/{id}` · `GET /report` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `POST /delete/{id}` · `GET /bulk` · `POST /bulk` | Admin · Teacher |
+| 🧾 Exam | `/exam` | `GET /` · `GET /search` · `GET /page/{n}` · `GET /view/{id}` · `GET /schedule` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `POST /delete/{id}` | Admin · Teacher |
+| 🏆 Result | `/result` | `GET /` · `GET /search` · `GET /page/{n}` · `GET /view/{id}` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `POST /delete/{id}` | Admin · Teacher |
+| 💰 Fee | `/fee` | `GET /` · `GET /search` · `GET /view/{id}` · `GET /{id}/receipt.pdf` · `GET /export` · `GET /new` · `POST /save` · `GET /edit/{id}` · `POST /update/{id}` · `POST /delete/{id}` | Admin (viewing too) |
 
 **Public** (no login needed): `/`, `/login`, `/register`, `/css/**`, `/js/**`, `/images/**`.
-**Everything else** requires an authenticated session, including uploaded photos, which are served
-at `/student-images/**` and `/teacher-images/**`.
+**Everything else** requires a signed-in session, including uploaded photos, which are served
+at `/student-images/**` and `/teacher-images/**`. Viewing is open to every role unless the last
+column says otherwise. The `/page/{n}` routes are kept so old links still work.
 
 </details>
+
+---
+
+## 🧪 Tests & CI
+
+**55 tests**, run with `./mvnw test`. They use an in-memory **H2** database in MySQL mode
+(`src/test/resources/application.properties`), so they need no MySQL server and no password, and
+**GitHub Actions** runs them on every push and pull request.
+
+| Test class | Kind | What it proves |
+|---|:---:|---|
+| `GradeCalculatorTest` · 22 | unit | Every grade band edge, fail is always F, pass/fail at exactly the pass mark |
+| `MarksheetTest` · 3 | unit | Totals, overall percentage and grade match the hand calculations |
+| `CsvHelperTest` · 5 | unit | Any column order, Excel's BOM, row errors, export → import round trip |
+| `SearchRepositoryTest` · 10 | `@DataJpaTest` | Attendance and exam search with date only, keyword only, both and neither |
+| `DeleteCascadeTest` · 5 | `@SpringBootTest` | Deleting a student, course, exam or subject removes its children; an unknown id changes and logs nothing |
+| `StudentControllerSecurityTest` · 9 | `@WebMvcTest` | Student and teacher get 403 on delete, admin is redirected, no CSRF token is 403, GET delete is 405 |
+| `SmswebApplicationTests` · 1 | `@SpringBootTest` | The whole application context starts |
 
 ---
 
@@ -542,19 +638,28 @@ export DB_PASSWORD=<your-password>      # macOS / Linux
 setx DB_PASSWORD "<your-password>"      # Windows (then open a new terminal)
 #     DB_USERNAME is optional and defaults to root
 
-# 4️⃣  Build & run
+# 4️⃣  Create the first admin: used once, at startup, while no admin exists
+export ADMIN_USERNAME=admin ADMIN_PASSWORD=<choose-one>     # Windows: setx each one
+
+# 5️⃣  Build & run
 ./mvnw spring-boot:run          # macOS / Linux
 mvnw.cmd spring-boot:run        # Windows
+
+# 🧪  Run the tests (no MySQL needed)
+./mvnw test
 ```
 
 <div align="center">
 
-🌐 Open **http://localhost:8080** → **Register** an account → **Sign in** → you're on the dashboard.
+🌐 Open **http://localhost:8080** → sign in as the admin → you're on the dashboard.
+Anyone who **registers** gets a view-only student account; promote it on the **Users** page.
 
 </div>
 
-> 🔧 Change the port with `server.port` in `application.properties`. Uploaded photos land in
-> `Student-Management-System-web/uploads/`.
+> 🔧 Optional settings: `INSTITUTION_NAME` (printed on receipts and PDFs), `server.port` in
+> `application.properties`, and the `dev` profile (`-Dspring-boot.run.profiles=dev`) for SQL and
+> DEBUG logging. Uploaded photos land in `Student-Management-System-web/uploads/`.
+> A sample import file with made-up students is in [`student.CSV`](student.CSV).
 
 ---
 
@@ -620,6 +725,9 @@ Short, plain-English definitions of the terms used in this project — enough to
 | **Session** | After login the server remembers you via a `JSESSIONID` cookie until logout. |
 | **CSRF** | An attack where another site submits a form as you. Spring adds a hidden token to block it. |
 | **Role** | A label like `ROLE_STUDENT` used to decide what a user is allowed to do. |
+| **`hasRole(...)`** | A URL rule in `SecurityConfig`: only these roles may open this path; others get 403. |
+| **`sec:authorize`** | Thymeleaf attribute that leaves a button out of the page unless the user has the role. |
+| **Formula injection** | A CSV cell starting with `=` that Excel would run; the export prefixes `'` so it stays text. |
 
 </details>
 
@@ -640,6 +748,25 @@ Short, plain-English definitions of the terms used in this project — enough to
 | **Multipart** | The form encoding used to upload files (student / teacher photos). |
 | **Maven / `pom.xml`** | Build tool and its config file — lists dependencies, compiles, and packages the `.jar`. |
 | **`mvnw`** | Maven *wrapper* — downloads the right Maven version so you don't install it yourself. |
+| **`@ControllerAdvice`** | Code that applies to every controller: the error pages and the navbar's notifications. |
+| **Lazy variable** | A model value Thymeleaf only computes if the page reads it, so redirects skip the queries. |
+
+</details>
+
+<details open>
+<summary><b>🧪 Testing &amp; Delivery</b></summary>
+
+<br/>
+
+| Term | Meaning in one line |
+|---|---|
+| **JUnit 5** | The test framework: each `@Test` method is one check that passes or fails. |
+| **Mockito / `@MockitoBean`** | Replaces a real service with a stand-in, so a test checks one layer on its own. |
+| **H2** | A database that lives in memory for the length of the test run — no server to install. |
+| **`@DataJpaTest`** | Starts only the repositories and an in-memory database, to test queries fast. |
+| **`@WebMvcTest`** | Starts only the web layer and security, to test URLs, status codes and redirects. |
+| **`@WithMockUser`** | Runs a test as a pretend signed-in user with a given role. |
+| **CI** | *Continuous Integration* — GitHub runs the tests on every push and shows ✅ or ❌. |
 
 </details>
 
@@ -649,20 +776,21 @@ Short, plain-English definitions of the terms used in this project — enough to
 
 <div align="center">
 
-![Progress](https://img.shields.io/badge/Overall-75%25-success?style=for-the-badge)
-![Backend](https://img.shields.io/badge/Backend-10%2F10_modules-brightgreen?style=for-the-badge)
-![Frontend](https://img.shields.io/badge/Frontend-list_%2B_form_on_all_modules-blue?style=for-the-badge)
+![Tasks](https://img.shields.io/badge/Task_board-100%2F101-success?style=for-the-badge)
+![Modules](https://img.shields.io/badge/Modules-list_·_view_·_form_on_all_9-brightgreen?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-55_passing-brightgreen?style=for-the-badge&logo=junit5&logoColor=white)
 
 </div>
 
 | Area | Status | Notes |
 |---|:---:|---|
-| 🔐 Auth · 👨‍🎓 Student · 👨‍🏫 Teacher · 📚 Course | 🟢 Complete | CRUD, search, pagination, detail views |
-| 📖 Subject · 📝 Enrollment · 🧾 Exam | 🟢 Backend · 🟡 UI | Detail view page pending |
-| 💰 Fee · 🗓️ Attendance · 🏆 Result | 🟢 Backend · 🟡 UI | Receipt / report views pending |
-| 📊 Dashboard | 🟢 Complete | Real data, Chart.js — notifications still static |
-| 🛡️ Role-based access | 🔴 Planned | All users currently share one role |
-| 🧪 Tests | 🟡 Minimal | Context-load test only |
+| 👨‍🎓 All nine record modules | 🟢 Complete | CRUD, search, pagination, detail pages, validation, safe deletes |
+| 🎓 Marksheet · 🧾 Receipt · 📈 Reports | 🟢 Complete | Pages, print styles, PDF downloads, attendance report, exam schedule |
+| 📥 CSV · 👥 Bulk attendance | 🟢 Complete | Validated import, Excel-safe export, one form per class |
+| 🛡️ Roles · 🛠️ User admin · 👤 Profile | 🟢 Complete | Admin / Teacher / Student, enable/disable, roles, change password |
+| 📊 Dashboard · 🔔 Notifications · 📰 Activity | 🟢 Complete | Live data, alerts from real conditions, audit trail for admins |
+| 🧪 Tests · ⚙️ CI | 🟢 Complete | 55 tests on H2, GitHub Actions on every push |
+| 🔑 Old DB password | 🟡 Deferred | Read from the environment now; rotating the old one (task A4) waits, since other local projects share the account |
 
 > 🗺️ The full phased plan, engineering backlog and severity triage live in
 > **[PROJECT_ROADMAP.md](PROJECT_ROADMAP.md)**. A module-by-module inventory is in
@@ -686,6 +814,6 @@ Short, plain-English definitions of the terms used in this project — enough to
 
 <br/>
 
-<sub>Built with ☕ Java 21 · 🍃 Spring Boot 3.5 · 🐬 MySQL 8 — last verified against source on 7 Oct 2026</sub>
+<sub>Built with ☕ Java 21 · 🍃 Spring Boot 3.5 · 🐬 MySQL 8 — last verified against source on 9 Oct 2026</sub>
 
 </div>

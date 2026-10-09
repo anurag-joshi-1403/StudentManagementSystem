@@ -1,5 +1,6 @@
 package com.anurag.sms.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // AdminSeeder: has any account been given this role yet?
     boolean existsByRole(String role);
+
+    // Admin user list (F11): oldest account first
+    List<User> findAllByOrderByCreatedAtAscIdAsc();
 }

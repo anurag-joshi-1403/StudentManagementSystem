@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.anurag.sms.entity.Fee;
 import com.anurag.sms.service.FeeService;
+import com.anurag.sms.service.PdfService;
+import com.anurag.sms.service.impl.PdfServiceImpl;
 import com.anurag.sms.service.StudentService;
 import com.anurag.sms.utility.CsvHelper;
 
@@ -31,15 +33,18 @@ public class FeeController {
 
     private final FeeService feeService;
     private final StudentService studentService;
+    private final PdfService pdfService;
 
     // Printed on the receipt; see application.properties
     private final String institutionName;
 
     public FeeController(FeeService feeService,
             StudentService studentService,
+            PdfService pdfService,
             @Value("${sms.institution-name}") String institutionName) {
         this.feeService = feeService;
         this.studentService = studentService;
+        this.pdfService = pdfService;
         this.institutionName = institutionName;
     }
 
@@ -144,6 +149,16 @@ public class FeeController {
         return LayoutView.render(model, "fee/fee-view :: content", "fee", "Fee Receipt");
     }
 
+    // The receipt as a PDF (F8), with the same facts as the receipt page
+    @GetMapping("/{id}/receipt.pdf")
+    public ResponseEntity<byte[]> receiptPdf(@PathVariable Long id) {
+
+        Fee fee = feeService.getFeeById(id);
+        byte[] pdf = pdfService.feeReceipt(fee, LocalDate.now());
+
+        return FileDownload.pdf("receipt-" + PdfServiceImpl.receiptNumber(fee) + ".pdf", pdf);
+    }
+
     // CSV export for a spreadsheet (E20), admins only like every /fee page
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportFees() {
@@ -151,7 +166,7 @@ public class FeeController {
         List<Fee> fees = new ArrayList<>(feeService.getAllFees());
         fees.sort(Comparator.comparing(Fee::getId));
 
-        return CsvDownload.of("fees.csv", CsvHelper.feesToCsv(fees));
+        return FileDownload.csv("fees.csv", CsvHelper.feesToCsv(fees));
     }
 
     // Delete Fee

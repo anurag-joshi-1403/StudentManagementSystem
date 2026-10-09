@@ -7,9 +7,11 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.anurag.sms.entity.ActivityLog;
 import com.anurag.sms.entity.Fee;
 import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.FeeRepository;
+import com.anurag.sms.service.ActivityLogService;
 import com.anurag.sms.service.FeeService;
 import com.anurag.sms.utility.Pages;
 
@@ -19,9 +21,12 @@ public class FeeServiceImpl implements FeeService {
     private static final String PAID = "Paid";
 
     private final FeeRepository feeRepository;
+    private final ActivityLogService activityLogService;
 
-    public FeeServiceImpl(FeeRepository feeRepository) {
+    public FeeServiceImpl(FeeRepository feeRepository,
+                          ActivityLogService activityLogService) {
         this.feeRepository = feeRepository;
+        this.activityLogService = activityLogService;
     }
 
     @Override
@@ -44,17 +49,43 @@ public class FeeServiceImpl implements FeeService {
 
     @Override
     public Fee saveFee(Fee fee) {
-        return feeRepository.save(fee);
+
+        Fee saved = feeRepository.save(fee);
+
+        activityLogService.record(ActivityLog.CREATED, "Fee", describe(saved));
+        return saved;
     }
 
     @Override
     public Fee updateFee(Fee fee) {
-        return feeRepository.save(fee);
+
+        Fee saved = feeRepository.save(fee);
+
+        activityLogService.record(ActivityLog.UPDATED, "Fee", describe(saved));
+        return saved;
     }
 
     @Override
     public void deleteFee(Long id) {
+
+        // Read the details first: afterwards there is nothing left to describe.
+        // An unknown id deletes nothing, so it is not logged either.
+        Fee fee = feeRepository.findById(id).orElse(null);
+        if (fee == null) {
+            return;
+        }
+        String description = describe(fee);
+
         feeRepository.deleteById(id);
+
+        activityLogService.record(ActivityLog.DELETED, "Fee", description);
+    }
+
+    // e.g. "Tuition fee for Diya Patel (Pending)"
+    private static String describe(Fee fee) {
+        String student = fee.getStudent() == null ? "a student"
+                : fee.getStudent().getFirstName() + " " + fee.getStudent().getLastName();
+        return fee.getFeeType() + " fee for " + student + " (" + fee.getPaymentStatus() + ")";
     }
 
     @Override

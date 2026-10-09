@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <body>
+    <!--/* The last 10 entries of the activity log (F5). Admin-only: the log
+         includes fees, which only admins may see (C7). */-->
+    <div class="dashboard-panel" th:fragment="recentActivity" sec:authorize="hasRole('ADMIN')">
+      <div class="panel-header">
+        <h4>Recent Activity</h4>
+      </div>
+
+      <div class="panel-body">
+        <div class="panel-empty" th:if="${#lists.isEmpty(recentActivity)}">
+          <i class="bi bi-clock-history" aria-hidden="true"></i>
+          <p>Nothing has been added, changed or deleted yet.</p>
+        </div>
+
+        <div class="student-item" th:each="entry : ${recentActivity}">
+          <div
+            class="student-avatar"
+            aria-hidden="true"
+            th:with="icon=${entry.action == 'Deleted' ? 'bi-trash' : (entry.action == 'Updated' ? 'bi-pencil' : (entry.action == 'Imported' ? 'bi-upload' : 'bi-plus-lg'))}"
+          >
+            <i class="bi" th:classappend="${icon}"></i>
+          </div>
+
+          <div class="student-info">
+            <h6>
+              <span th:text="${entry.action + ' ' + #strings.toLowerCase(entry.entityType)}">Created student</span>
+              <span class="fw-normal" th:text="${entry.description}">Rohan Verma</span>
+            </h6>
+            <small>
+              <span th:text="${entry.username}">admin</span>
+              &middot;
+              <time
+                th:datetime="${#temporals.format(entry.createdAt, 'yyyy-MM-dd''T''HH:mm')}"
+                th:text="${#temporals.format(entry.createdAt, 'd MMM, h:mm a')}"
+                >8 Oct, 5:10 pm</time
+              >
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

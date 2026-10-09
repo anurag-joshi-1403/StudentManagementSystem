@@ -48,13 +48,29 @@
   font-weight: 600;
 }
 
+/* Each item is a link to the page that deals with it */
 .notification-item {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-5);
-  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
   transition: background-color var(--dur) var(--ease);
+}
+
+.notification-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.notification-empty {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
 }
 
 .notification-item + .notification-item {
@@ -78,6 +94,7 @@
 .notify-icon.blue   { background: var(--c-blue-soft);  color: var(--c-blue); }
 .notify-icon.green  { background: var(--c-green-soft); color: var(--c-green); }
 .notify-icon.orange { background: var(--c-amber-soft); color: var(--c-amber); }
+.notify-icon.red    { background: var(--danger-soft);  color: var(--danger); }
 
 .notify-content h6 {
   font-size: var(--fs-base);

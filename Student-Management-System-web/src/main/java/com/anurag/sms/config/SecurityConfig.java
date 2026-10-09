@@ -53,6 +53,10 @@ public class SecurityConfig {
                         .requestMatchers("/fee", "/fee/**")
                         .hasRole("ADMIN")
 
+                        // Account management (F11): admins only
+                        .requestMatchers("/admin/**")
+                        .hasRole("ADMIN")
+
                         // Attendance, exams and results: teachers may change them too
                         .requestMatchers(
                                 "/attendance/new", "/attendance/edit/**", "/attendance/bulk",

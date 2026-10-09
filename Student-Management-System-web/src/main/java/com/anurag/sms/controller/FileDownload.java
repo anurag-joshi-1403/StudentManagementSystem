@@ -8,9 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 /**
- * A CSV file download, shared by the student (E19) and fee (E20) exports.
+ * File downloads: the CSV exports (E19, E20) and the PDFs (F7, F8).
  */
-final class CsvDownload {
+final class FileDownload {
 
     // Without a byte order mark, Excel reads a CSV in the PC's legacy code
     // page and garbles anything outside ASCII (accented names, the ₹ sign).
@@ -19,15 +19,23 @@ final class CsvDownload {
 
     private static final MediaType TEXT_CSV = new MediaType("text", "csv", StandardCharsets.UTF_8);
 
-    private CsvDownload() {
+    private FileDownload() {
     }
 
-    static ResponseEntity<byte[]> of(String fileName, String csv) {
+    static ResponseEntity<byte[]> csv(String fileName, String csv) {
+        return attachment(fileName, TEXT_CSV, (BOM + csv).getBytes(StandardCharsets.UTF_8));
+    }
+
+    static ResponseEntity<byte[]> pdf(String fileName, byte[] pdf) {
+        return attachment(fileName, MediaType.APPLICATION_PDF, pdf);
+    }
+
+    private static ResponseEntity<byte[]> attachment(String fileName, MediaType type, byte[] body) {
 
         return ResponseEntity.ok()
-                .contentType(TEXT_CSV)
+                .contentType(type)
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         ContentDisposition.attachment().filename(fileName).build().toString())
-                .body((BOM + csv).getBytes(StandardCharsets.UTF_8));
+                .body(body);
     }
 }

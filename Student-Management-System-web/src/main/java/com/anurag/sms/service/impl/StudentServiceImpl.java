@@ -16,10 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.dto.ImportReport;
+import com.anurag.sms.entity.ActivityLog;
 import com.anurag.sms.entity.Course;
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.StudentRepository;
+import com.anurag.sms.service.ActivityLogService;
 import com.anurag.sms.service.StudentService;
 import com.anurag.sms.utility.CsvHelper;
 import com.anurag.sms.utility.CsvHelper.RowError;
@@ -46,6 +48,7 @@ public class StudentServiceImpl implements StudentService {
 
     // The same Bean Validation the Student form runs through @Valid
     private final Validator validator;
+    private final ActivityLogService activityLogService;
 
     public StudentServiceImpl(
             StudentRepository studentRepository,
@@ -54,7 +57,8 @@ public class StudentServiceImpl implements StudentService {
             FeeRepository feeRepository,
             ResultRepository resultRepository,
             CourseRepository courseRepository,
-            Validator validator) {
+            Validator validator,
+            ActivityLogService activityLogService) {
 
         this.studentRepository = studentRepository;
         this.attendanceRepository = attendanceRepository;
@@ -63,6 +67,7 @@ public class StudentServiceImpl implements StudentService {
         this.resultRepository = resultRepository;
         this.courseRepository = courseRepository;
         this.validator = validator;
+        this.activityLogService = activityLogService;
     }
 
     @Override
@@ -85,17 +90,36 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student saveStudent(Student student) {
-        return studentRepository.save(student);
+
+        // The form posts both new and edited students here
+        boolean isNew = student.getId() == null;
+        Student saved = studentRepository.save(student);
+
+        activityLogService.record(isNew ? ActivityLog.CREATED : ActivityLog.UPDATED,
+                "Student", fullName(saved));
+        return saved;
     }
 
     @Override
     public Student updateStudent(Student student) {
-        return studentRepository.save(student);
+
+        Student saved = studentRepository.save(student);
+
+        activityLogService.record(ActivityLog.UPDATED, "Student", fullName(saved));
+        return saved;
     }
 
     @Override
     @Transactional
     public void deleteStudent(Long id) {
+
+        // Read the name first: afterwards there is nothing left to describe.
+        // An unknown id deletes nothing, so it is not logged either.
+        Student student = studentRepository.findById(id).orElse(null);
+        if (student == null) {
+            return;
+        }
+        String name = fullName(student);
 
         attendanceRepository.deleteByStudentId(id);
 
@@ -106,6 +130,12 @@ public class StudentServiceImpl implements StudentService {
         resultRepository.deleteByStudentId(id);
 
         studentRepository.deleteById(id);
+
+        activityLogService.record(ActivityLog.DELETED, "Student", name);
+    }
+
+    private static String fullName(Student student) {
+        return student.getFirstName() + " " + student.getLastName();
     }
 
     @Override
@@ -176,6 +206,12 @@ public class StudentServiceImpl implements StudentService {
                 // Only if another request saved the same email in between
                 skipped.add(new RowError(row.row(), "email " + student.getEmail() + " exists"));
             }
+        }
+
+        // One line for the whole file rather than one per student
+        if (imported > 0) {
+            activityLogService.record(ActivityLog.IMPORTED, "Student",
+                    imported + (imported == 1 ? " student" : " students") + " from a CSV file");
         }
 
         skipped.sort(Comparator.comparingInt(RowError::row));

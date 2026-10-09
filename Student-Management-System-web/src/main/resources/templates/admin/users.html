@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Users</title>
+  </head>
+
+  <body>
+    <!--/* Admin-only (/admin/** in SecurityConfig), so nothing here needs sec:authorize.
+         Every change is a POST form: th:action adds the CSRF token. */-->
+    <div class="container my-5" th:fragment="content">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+          <h3 class="mb-0"><i class="bi bi-people me-2"></i>User Accounts</h3>
+          <span class="badge bg-light text-primary fs-6" th:text="${#lists.size(users)} + ' accounts'">0 accounts</span>
+        </div>
+
+        <div class="card-body p-4">
+          <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="status">
+            <i class="bi bi-check-circle me-1"></i><span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th>Username</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th width="230">Role</th>
+                  <th class="text-center">Status</th>
+                  <th>Member Since</th>
+                  <th width="130" class="text-center">Account</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="u : ${users}" th:with="self=${u.username == me}" th:classappend="${!u.enabled} ? 'table-secondary'">
+                  <td class="fw-semibold">
+                    <span th:text="${u.username}">username</span>
+                    <span th:if="${self}" class="badge bg-info text-dark ms-1">You</span>
+                  </td>
+                  <td th:text="${u.fullName}"></td>
+                  <td th:text="${u.email}"></td>
+
+                  <!--/* Role: a small form per row. Your own role cannot be changed. */-->
+                  <td>
+                    <span th:if="${self}" th:text="${#strings.replace(u.role, 'ROLE_', '')}">ADMIN</span>
+                    <form th:unless="${self}" th:action="@{/admin/users/{id}/role(id=${u.id})}" method="post" class="d-flex gap-2">
+                      <select name="role" class="form-select form-select-sm" th:aria-label="'Role for ' + ${u.username}">
+                        <option
+                          th:each="r : ${roles}"
+                          th:value="${r}"
+                          th:text="${#strings.replace(r, 'ROLE_', '')}"
+                          th:selected="${r == u.role}"
+                        ></option>
+                      </select>
+                      <button type="submit" class="btn btn-sm btn-outline-primary">Save</button>
+                    </form>
+                  </td>
+
+                  <td class="text-center">
+                    <span th:if="${u.enabled}" class="badge bg-success">Enabled</span>
+                    <span th:unless="${u.enabled}" class="badge bg-secondary">Disabled</span>
+                  </td>
+                  <td th:text="${#temporals.format(u.createdAt, 'd MMM yyyy')}"></td>
+
+                  <!--/* Enable or disable. You cannot disable yourself. */-->
+                  <td class="text-center">
+                    <span th:if="${self}" class="text-muted small">-</span>
+                    <!--/* The confirm text is fixed on purpose: a username in a JavaScript
+                         string would be script injection, since HTML escaping is undone
+                         before the handler runs. */-->
+                    <form th:unless="${self}" th:action="@{/admin/users/{id}/enabled(id=${u.id})}" method="post"
+                          th:attr="onsubmit=${u.enabled} ? 'return confirm(\'Disable this account? It will not be able to sign in.\');' : null">
+                      <input type="hidden" name="enabled" th:value="${!u.enabled}" />
+                      <button
+                        type="submit"
+                        th:class="${u.enabled} ? 'btn btn-sm btn-outline-danger' : 'btn btn-sm btn-outline-success'"
+                        th:text="${u.enabled} ? 'Disable' : 'Enable'"
+                      >Disable</button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-muted small mb-0">
+            <i class="bi bi-info-circle me-1"></i>Changes apply from the account's next sign-in. A disabled account cannot sign in.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

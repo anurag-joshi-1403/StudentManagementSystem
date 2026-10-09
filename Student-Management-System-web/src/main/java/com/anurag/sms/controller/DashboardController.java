@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.anurag.sms.service.ActivityLogService;
 import com.anurag.sms.service.AttendanceService;
 import com.anurag.sms.service.CourseService;
 import com.anurag.sms.service.EnrollmentService;
@@ -12,6 +13,8 @@ import com.anurag.sms.service.FeeService;
 import com.anurag.sms.service.StudentService;
 import com.anurag.sms.service.SubjectService;
 import com.anurag.sms.service.TeacherService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class DashboardController {
@@ -24,6 +27,7 @@ public class DashboardController {
         private final EnrollmentService enrollmentService;
         private final AttendanceService attendanceService;
         private final ExamService examService;
+        private final ActivityLogService activityLogService;
 
         public DashboardController(
                         StudentService studentService,
@@ -33,7 +37,8 @@ public class DashboardController {
                         FeeService feeService,
                         EnrollmentService enrollmentService,
                         AttendanceService attendanceService,
-                        ExamService examService) {
+                        ExamService examService,
+                        ActivityLogService activityLogService) {
 
                 this.studentService = studentService;
                 this.teacherService = teacherService;
@@ -43,10 +48,11 @@ public class DashboardController {
                 this.enrollmentService = enrollmentService;
                 this.attendanceService = attendanceService;
                 this.examService = examService;
+                this.activityLogService = activityLogService;
         }
 
         @GetMapping("/dashboard")
-        public String dashboard(Model model) {
+        public String dashboard(Model model, HttpServletRequest request) {
 
                 long totalStudents = studentService.getTotalStudents();
                 long maleStudents = studentService.getMaleStudents();
@@ -92,6 +98,13 @@ public class DashboardController {
 
                 model.addAttribute("upcomingExams",
                                 examService.getUpcomingExams());
+
+                // Recent activity (F5) is an audit trail that includes fees,
+                // so only admins get it, like the Fees pages (C7)
+                if (request.isUserInRole("ADMIN")) {
+                        model.addAttribute("recentActivity",
+                                        activityLogService.getRecentActivity());
+                }
 
                 return LayoutView.render(model,
                                 "dashboard/dashboard-content :: dashboardContent",

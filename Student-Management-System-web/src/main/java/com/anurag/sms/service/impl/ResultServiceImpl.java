@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.anurag.sms.dto.Marksheet;
+import com.anurag.sms.entity.ActivityLog;
 import com.anurag.sms.entity.Exam;
 import com.anurag.sms.entity.Result;
 import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.ResultRepository;
+import com.anurag.sms.service.ActivityLogService;
 import com.anurag.sms.service.ResultService;
 import com.anurag.sms.utility.GradeCalculator;
 import com.anurag.sms.utility.Pages;
@@ -18,9 +20,12 @@ import com.anurag.sms.utility.Pages;
 public class ResultServiceImpl implements ResultService {
 
     private final ResultRepository resultRepository;
+    private final ActivityLogService activityLogService;
 
-    public ResultServiceImpl(ResultRepository resultRepository) {
+    public ResultServiceImpl(ResultRepository resultRepository,
+                             ActivityLogService activityLogService) {
         this.resultRepository = resultRepository;
+        this.activityLogService = activityLogService;
     }
 
     @Override
@@ -39,7 +44,10 @@ public class ResultServiceImpl implements ResultService {
 
         calculateResult(result);
 
-        return resultRepository.save(result);
+        Result saved = resultRepository.save(result);
+
+        activityLogService.record(ActivityLog.CREATED, "Result", describe(saved));
+        return saved;
     }
 
     @Override
@@ -47,12 +55,34 @@ public class ResultServiceImpl implements ResultService {
 
         calculateResult(result);
 
-        return resultRepository.save(result);
+        Result saved = resultRepository.save(result);
+
+        activityLogService.record(ActivityLog.UPDATED, "Result", describe(saved));
+        return saved;
     }
 
     @Override
     public void deleteResult(Long id) {
+
+        // Read the details first: afterwards there is nothing left to describe.
+        // An unknown id deletes nothing, so it is not logged either.
+        Result result = resultRepository.findById(id).orElse(null);
+        if (result == null) {
+            return;
+        }
+        String description = describe(result);
+
         resultRepository.deleteById(id);
+
+        activityLogService.record(ActivityLog.DELETED, "Result", description);
+    }
+
+    // e.g. "Mid sem: Kabir Mehta, 400/1000 (D, Pass)"
+    private static String describe(Result result) {
+        return result.getExam().getExamName() + ": "
+                + result.getStudent().getFirstName() + " " + result.getStudent().getLastName() + ", "
+                + result.getObtainedMarks() + "/" + result.getExam().getTotalMarks()
+                + " (" + result.getGrade() + ", " + result.getResultStatus() + ")";
     }
 
     @Override

@@ -40,6 +40,9 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     // Subject detail page: every exam for one subject, earliest first
     List<Exam> findBySubjectIdOrderByExamDateAsc(Long subjectId);
 
+    // Notifications (F1): exams between two dates, inclusive, earliest first
+    List<Exam> findByExamDateBetweenOrderByExamDateAsc(LocalDate from, LocalDate to);
+
     // Exam schedule: every exam from this date on, earliest first
     List<Exam> findByExamDateGreaterThanEqualOrderByExamDateAscExamNameAsc(LocalDate date);
 

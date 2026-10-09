@@ -128,6 +128,18 @@
               <span>Results</span>
             </a>
           </li>
+
+          <!--/* Account management is admin-only (F11). */-->
+          <li sec:authorize="hasRole('ADMIN')">
+            <a
+              th:href="@{/admin/users}"
+              th:classappend="${activeNav == 'users'} ? 'active'"
+              th:attr="aria-current=${activeNav == 'users'} ? 'page' : null"
+            >
+              <i class="bi bi-person-gear" aria-hidden="true"></i>
+              <span>Users</span>
+            </a>
+          </li>
         </ul>
       </nav>
 

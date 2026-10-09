@@ -3,69 +3,46 @@
 
 <body>
 
-<div class="notification-dropdown" th:fragment="notification">
+<!--/* Filled by NotificationAdvice from live data (F1/F2): overdue fees,
+     students under 75% attendance and exams in the next 7 days. */-->
+<div class="notification-dropdown" id="notificationPanel" th:fragment="notification">
 
     <div class="notification-header">
 
         <h5>Notifications</h5>
 
-        <span>3 New</span>
+        <span th:unless="${#lists.isEmpty(notifications)}"
+              th:text="${#lists.size(notifications)} + ' New'">0 New</span>
 
     </div>
 
     <div class="notification-body">
 
-        <div class="notification-item">
+        <a class="notification-item"
+           th:each="n : ${notifications}"
+           th:href="@{${n.link}}">
 
-            <div class="notify-icon blue">
+            <div class="notify-icon" th:classappend="${n.tone}">
 
-                <i class="bi bi-person-plus-fill"></i>
-
-            </div>
-
-            <div class="notify-content">
-
-                <h6>New Student Registered</h6>
-
-                <small>2 minutes ago</small>
-
-            </div>
-
-        </div>
-
-        <div class="notification-item">
-
-            <div class="notify-icon green">
-
-                <i class="bi bi-cash-stack"></i>
+                <i class="bi" th:classappend="${n.icon}" aria-hidden="true"></i>
 
             </div>
 
             <div class="notify-content">
 
-                <h6>Fee Payment Received</h6>
+                <h6 th:text="${n.title}">Title</h6>
 
-                <small>15 minutes ago</small>
-
-            </div>
-
-        </div>
-
-        <div class="notification-item">
-
-            <div class="notify-icon orange">
-
-                <i class="bi bi-pencil-square"></i>
+                <small th:text="${n.detail}">Detail</small>
 
             </div>
 
-            <div class="notify-content">
+        </a>
 
-                <h6>Exam Scheduled</h6>
+        <div class="notification-empty" th:if="${#lists.isEmpty(notifications)}">
 
-                <small>Today</small>
+            <i class="bi bi-check2-circle" aria-hidden="true"></i>
 
-            </div>
+            <span>You're all caught up.</span>
 
         </div>
 

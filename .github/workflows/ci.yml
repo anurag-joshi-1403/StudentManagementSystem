@@ -1,0 +1,45 @@
+# Runs the test suite on every push and pull request (F18).
+# The tests use an in-memory H2 database (src/test/resources), so the
+# runner needs no MySQL and no secrets.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: Student-Management-System-web
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: Student-Management-System-web/pom.xml
+
+      - name: Run the tests
+        run: ./mvnw -B test
+
+      # Keep the test reports when something fails, to read on GitHub
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: surefire-reports
+          path: Student-Management-System-web/target/surefire-reports/
+          retention-days: 7

@@ -1,21 +1,35 @@
+// Opens and closes the navbar's notification panel.
+// The "show" class goes on the panel itself (.notification-dropdown), which
+// is what notification.css shows; it used to go on the wrapper around it,
+// so clicking the bell did nothing.
 const bellButton = document.getElementById("notificationBtn");
+const panel = document.getElementById("notificationPanel");
 
-const dropdown = document.getElementById("notificationDropdown");
-
-if(bellButton){
-
-    bellButton.addEventListener("click",function(e){
-
-        e.stopPropagation();
-
-        dropdown.classList.toggle("show");
-
-    });
-
+function setOpen(open) {
+    panel.classList.toggle("show", open);
+    bellButton.setAttribute("aria-expanded", String(open));
 }
 
-window.addEventListener("click",function(){
+if (bellButton && panel) {
 
-    dropdown.classList.remove("show");
+    bellButton.addEventListener("click", function (e) {
+        e.stopPropagation();
+        setOpen(!panel.classList.contains("show"));
+    });
 
-});
+    // Clicks inside the panel follow their link without closing it first
+    panel.addEventListener("click", function (e) {
+        e.stopPropagation();
+    });
+
+    window.addEventListener("click", function () {
+        setOpen(false);
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && panel.classList.contains("show")) {
+            setOpen(false);
+            bellButton.focus();
+        }
+    });
+}

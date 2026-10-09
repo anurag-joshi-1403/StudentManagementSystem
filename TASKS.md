@@ -51,8 +51,8 @@ Suggested commit style: `fix(student): search no longer crashes (#23)`.</sub>
 | 🟡 [C · Security](#-stage-c--security--data-integrity) | Roles, POST deletes, safe uploads, no secrets in git | 15 | ~8 h | ✅ 15 / 15 |
 | 🟢 [D · Correctness](#-stage-d--correctness) | Paged search, unique codes, valid marks | 14 | ~7 h | ✅ 14 / 14 |
 | 🟢 [E · New Features](#-stage-e--new-features) | Detail pages, marksheet, receipts, reports, CSV | 20 | ~16 h | ✅ 20 / 20 |
-| 🔵 [F · Showcase](#-stage-f--showcase-polish) | Notifications, PDF, profile, tests, CI, screenshots | 20 | ~17 h | 0 / 20 |
-| | **Total** | **101** | **~63 h** | **80 / 101** |
+| 🔵 [F · Showcase](#-stage-f--showcase-polish) | Notifications, PDF, profile, tests, CI, screenshots | 20 | ~17 h | 18 / 20 · F18, F19 wait for your commit |
+| | **Total** | **101** | **~63 h** | **98 / 101** |
 
 ```mermaid
 flowchart LR
@@ -582,68 +582,68 @@ flowchart LR
 
 **🔔 Notifications** · `#15`
 
-- [ ] **F1 · Build notifications from existing data** · ⏱ 45 min · 🔗 **Needs** E10, E12
+- [x] **F1 · Build notifications from existing data** · ⏱ 45 min · 🔗 **Needs** E10, E12
   - Don't add a table. Generate them from overdue fees, exams in the next 7 days and students under 75% attendance. Return a `List<Notification>` (a record with icon, text and link).
   - ✅ **Done when** the method returns one item for each condition in your test data.
-- [ ] **F2 · Show notifications on every page** · ⏱ 45 min · 🔗 **Needs** F1
+- [x] **F2 · Show notifications on every page** · ⏱ 45 min · 🔗 **Needs** F1
   - Add a `@ControllerAdvice` with `@ModelAttribute("notifications")` so every page gets the list (skip it when nobody is signed in). Render it in `common/notification.html` and set the badge to `${#lists.size(notifications)}`, hidden when it's 0.
   - 📂 `common/notification.html` · `common/navbar.html:30`
   - ✅ **Done when** paying an overdue fee removes its notification and lowers the badge count.
 
 **📰 Recent activity**
 
-- [ ] **F3 · `ActivityLog` entity and repository** · ⏱ 30 min
+- [x] **F3 · `ActivityLog` entity and repository** · ⏱ 30 min
   - Fields: `action` (Created, Updated or Deleted), `entityType`, `description`, `username` and `createdAt`.
   - ✅ **Done when** the `activity_log` table appears in MySQL.
-- [ ] **F4 · Record activity** · ⏱ 1 h · 🔗 **Needs** F3
+- [x] **F4 · Record activity** · ⏱ 1 h · 🔗 **Needs** F3
   - Write an entry from the save and delete methods of Student, Teacher, Fee and Result. Get the username from `SecurityContextHolder`.
   - ✅ **Done when** adding a student creates a log row with your username.
-- [ ] **F5 · Recent-activity panel on the dashboard** · ⏱ 45 min · 🔗 **Needs** F4
+- [x] **F5 · Recent-activity panel on the dashboard** · ⏱ 45 min · 🔗 **Needs** F4
   - Show the last 10 entries (`findTop10ByOrderByCreatedAtDesc`) in a new dashboard fragment.
   - ✅ **Done when** the dashboard shows your latest actions.
 
 **🖨️ PDF export**
 
-- [ ] **F6 · Set up PDF generation** · ⏱ 45 min
+- [x] **F6 · Set up PDF generation** · ⏱ 45 min
   - Add OpenPDF (`com.github.librepdf:openpdf`) and a `PdfService` that builds a simple document with a title and a table.
   - ✅ **Done when** a test endpoint downloads a valid PDF.
-- [ ] **F7 · Marksheet PDF** · ⏱ 1 h · 🔗 **Needs** E7, F6
+- [x] **F7 · Marksheet PDF** · ⏱ 1 h · 🔗 **Needs** E7, F6
   - Add `GET /student/{id}/marksheet.pdf` and a **Download PDF** button on the marksheet.
   - ✅ **Done when** the PDF matches the marksheet page.
-- [ ] **F8 · Fee receipt PDF** · ⏱ 45 min · 🔗 **Needs** E9, F6
+- [x] **F8 · Fee receipt PDF** · ⏱ 45 min · 🔗 **Needs** E9, F6
   - Add `GET /fee/{id}/receipt.pdf`.
   - ✅ **Done when** the PDF matches the receipt page.
 
 **👤 Profile and users**
 
-- [ ] **F9 · Profile page** · ⏱ 45 min
+- [x] **F9 · Profile page** · ⏱ 45 min
   - Add `GET /profile` showing full name, username, email, role and member-since date (`createdAt`), and link to it from the navbar avatar.
   - ✅ **Done when** each role sees its own details.
-- [ ] **F10 · Change password** · ⏱ 1 h · 🔗 **Needs** F9
+- [x] **F10 · Change password** · ⏱ 1 h · 🔗 **Needs** F9
   - Use a `ChangePasswordDto` with current, new and confirm fields (`@Size(min = 8)`). Check the current password with `passwordEncoder.matches(...)`, then save `passwordEncoder.encode(newPassword)`.
   - ✅ **Done when** the old password stops working and the new one works.
-- [ ] **F11 · Admin user list** · ⏱ 45 min · 🔗 **Needs** C9
+- [x] **F11 · Admin user list** · ⏱ 45 min · 🔗 **Needs** C9
   - Add `GET /admin/users` showing username, email, role and enabled. Add `/admin/**` → `hasRole("ADMIN")` to `SecurityConfig`.
   - ✅ **Done when** a STUDENT gets 403 and the admin sees every account.
-- [ ] **F12 · Enable or disable accounts and change roles** · ⏱ 1 h · 🔗 **Needs** F11
+- [x] **F12 · Enable or disable accounts and change roles** · ⏱ 1 h · 🔗 **Needs** F11
   - Use POST actions only, and stop admins from disabling or demoting themselves.
   - ✅ **Done when** a disabled account can no longer log in.
 
 **🧪 Tests and CI**
 
-- [ ] **F13 · Run tests without MySQL** · ⏱ 30 min
+- [x] **F13 · Run tests without MySQL** · ⏱ 30 min
   - Add `com.h2database:h2` with `test` scope, and create `src/test/resources/application.properties` with `spring.datasource.url=jdbc:h2:mem:sms;MODE=MySQL` and `spring.jpa.hibernate.ddl-auto=create-drop`. During tests this file replaces the main one, so it needs every setting the tests use.
   - ✅ **Done when** `./mvnw test` passes with MySQL stopped.
-- [ ] **F14 · Unit tests for `GradeCalculator`** · ⏱ 45 min · 🔗 **Needs** D12
+- [x] **F14 · Unit tests for `GradeCalculator`** · ⏱ 45 min · 🔗 **Needs** D12
   - Test each band edge (89.99 vs 90, 49.99 vs 50) and pass/fail at exactly the pass mark.
   - ✅ **Done when** all the tests pass.
-- [ ] **F15 · Repository tests for search** · ⏱ 1 h · 🔗 **Needs** A8, A9, F13
+- [x] **F15 · Repository tests for search** · ⏱ 1 h · 🔗 **Needs** A8, A9, F13
   - Use `@DataJpaTest` to cover date only, keyword only, both, and neither.
   - ✅ **Done when** all four cases pass for both Attendance and Exam.
-- [ ] **F16 · Delete tests** · ⏱ 1 h · 🔗 **Needs** F13
+- [x] **F16 · Delete tests** · ⏱ 1 h · 🔗 **Needs** F13
   - Use `@SpringBootTest` + `@Transactional`: create a Student, Course, Exam and Subject, each with child records, delete it, and assert the children are gone with no exception.
   - ✅ **Done when** all four delete paths are covered and pass.
-- [ ] **F17 · Controller security tests** · ⏱ 1.5 h · 🔗 **Needs** C9
+- [x] **F17 · Controller security tests** · ⏱ 1.5 h · 🔗 **Needs** C9
   - Use `@WebMvcTest(StudentController.class)` with `@Import(SecurityConfig.class)`, and `@MockitoBean` for the services and `CustomUserDetailsService`. With `@WithMockUser(roles = "STUDENT")`, a POST delete should return 403. As ADMIN, it should redirect.
   - ✅ **Done when** both cases pass.
 - [ ] **F18 · GitHub Actions CI** · ⏱ 30 min · 🔗 **Needs** F13
@@ -655,9 +655,21 @@ flowchart LR
 - [ ] **F19 · Take screenshots** · ⏱ 45 min
   - Capture the dashboard, a student list, a student view with marksheet, a fee receipt, the attendance report and a 403 page, using made-up data only. Save them to `docs/screenshots/`.
   - ✅ **Done when** 6 PNGs are committed.
-- [ ] **F20 · Final documentation pass** · ⏱ 1 h
+- [x] **F20 · Final documentation pass** · ⏱ 1 h
   - Add the screenshots to the README and update its badges (test count, CI), feature matrix and numbers. Refresh the health check in `project_analysis.md` and the roadmap's phase checkboxes.
   - ✅ **Done when** every number in the three documents matches the code.
+
+> 📝 **Stage F done 8–9 Oct 2026, with these decisions and extras.** F18 and F19 are built and checked
+> locally; they tick once you commit and the push shows a green check.
+> - **F1/F2:** notifications are built from live data each time a page renders them. Overdue fees go to admins only, students under 75% to admins and teachers, and exams in the next 7 days to everyone. The list is a Thymeleaf `LazyContextVariable`, so redirects and downloads run no queries. **Found and fixed:** the bell never opened, because `notification.js` put `show` on the wrapper while the CSS shows the inner panel. It now also sets `aria-expanded` and closes on Escape.
+> - **F3–F5:** besides Student, Teacher, Fee and Result, the log records CSV imports (one line per file) and user-admin actions. Lines store names as text, so they still read after a delete. The panel is admin-only, because it includes fees. **Found and fixed:** a delete of an id that doesn't exist logged a "Deleted … #99999" line, because Spring Data's `deleteById` ignores missing ids. It now deletes and logs nothing, and a test covers it.
+> - **F6–F8:** OpenPDF 3.0.5. Its packages moved to `org.openpdf.text` in 3.x. PDFs use the built-in Helvetica font, which has no ₹ glyph, so amounts read "Rs. 60,000.00". F6's "test endpoint" is covered by the two real endpoints and a `@WebMvcTest`; no throwaway route was added.
+> - **F9–F12:** the profile lives at `/profile`, and the navbar avatar links to it. Password changes need at least 8 characters, must differ from the current one, and never echo the password back into the form. User admin is POST only; admins can't disable or demote themselves; changes apply from the next sign-in. **Found and fixed before shipping:** a confirm dialog that would have put the username inside JavaScript (an XSS vector), and Users-page notes left as HTML comments, which the browser receives.
+> - **F13:** H2 in MySQL mode, plus `spring-security-test`. MySQL was not stopped, because 7 other local databases use it. Instead, tests ran with `DB_PASSWORD` unset and the log names only `jdbc:h2:mem:sms`; CI runs where no MySQL exists at all.
+> - **F14–F17:** 55 tests in all: the required ones plus `MarksheetTest`, `CsvHelperTest`, paging and blank-keyword cases, an unknown-id delete case, and 7 extra security cases (CSRF missing, GET delete, signed out, export, PDF). To prove `DeleteCascadeTest` has teeth, I removed the exam's results delete; the test then failed with H2's referential-integrity error.
+> - **F18:** `.github/workflows/ci.yml` uses checkout v7, setup-java v6 (Temurin 21, Maven cache) and upload-artifact v7, which uploads the reports on failure. `mvnw` is LF and is now staged as `100755`. All 111 template and static paths match the files case-sensitively, as Linux requires. The README's CI badge goes live after the first push.
+> - **F19:** `docs/screenshots/` holds dashboard, student list, marksheet, fee receipt, attendance report and 403. They show only `@example.com` demo people. The Users page was left out, because it shows real accounts. The dashboard still shows "Fees Collected ₹120,000" (#34).
+> - **F20:** every number was re-measured from the source: 88 endpoints, 57 templates, 11 entities, 7,423 lines of Java, 55 tests, 51/51 route checks. The route table was rebuilt from the controllers, all 15 Mermaid diagrams were validated, and new low-severity issues #34–#37 were added to `project_analysis.md`.
 
 ---
 

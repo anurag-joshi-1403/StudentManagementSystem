@@ -14,18 +14,18 @@
 
 <br/>
 
-![Build](https://img.shields.io/badge/Build-passing-brightgreen?style=flat-square&logo=apachemaven&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-1%20passing-brightgreen?style=flat-square&logo=junit5&logoColor=white)
-![Modules](https://img.shields.io/badge/Modules-10-blue?style=flat-square)
-![Endpoints](https://img.shields.io/badge/Endpoints-66-blueviolet?style=flat-square)
-![Entities](https://img.shields.io/badge/JPA_Entities-10-orange?style=flat-square)
-![Templates](https://img.shields.io/badge/Thymeleaf_Views-36-green?style=flat-square)
-![LOC](https://img.shields.io/badge/Java_LOC-4.5k-yellow?style=flat-square)
-![Progress](https://img.shields.io/badge/Progress-75%25-success?style=flat-square)
+[![CI](https://github.com/anurag-joshi-1403/StudentManagementSystem/actions/workflows/ci.yml/badge.svg)](https://github.com/anurag-joshi-1403/StudentManagementSystem/actions/workflows/ci.yml)
+![Tests](https://img.shields.io/badge/Tests-55_passing-brightgreen?style=flat-square&logo=junit5&logoColor=white)
+![Roles](https://img.shields.io/badge/Roles-3-red?style=flat-square)
+![Endpoints](https://img.shields.io/badge/Endpoints-88-blueviolet?style=flat-square)
+![Entities](https://img.shields.io/badge/JPA_Entities-11-orange?style=flat-square)
+![Templates](https://img.shields.io/badge/Thymeleaf_Templates-57-green?style=flat-square)
+![LOC](https://img.shields.io/badge/Java_LOC-7.4k-yellow?style=flat-square)
+![Progress](https://img.shields.io/badge/Phases_0–4-complete-success?style=flat-square)
 
 ### 🎓 A full-stack academic ERP for managing students, faculty, academics and finance.
 
-**Project Roadmap & Engineering Plan** · *Last verified against source: 7 Oct 2026*
+**Project Roadmap & Engineering Plan** · *Last verified against source: 9 Oct 2026*
 
 </div>
 
@@ -56,15 +56,16 @@
 
 **📦 What's inside**
 
-- 🔐 Secure authentication with BCrypt password hashing
-- 👨‍🎓 Student & faculty records with photo upload
-- 📚 Course and subject catalogue management
+- 🔐 BCrypt login with **Admin / Teacher / Student** roles and user admin
+- 👨‍🎓 Student & faculty records with validated photo upload
+- 📚 Course and subject catalogue with unique codes
 - 📝 Enrollment linking students ↔ courses ↔ subjects
-- 🗓️ Daily attendance tracking with date filters
-- 💰 Fee collection with payment status tracking
-- 🧾 Examination scheduling and result processing
-- 🏆 **Automatic grade & pass/fail computation**
-- 📊 Live dashboard with real-time statistics
+- 🗓️ Attendance, daily or **bulk** for a whole class, with a 75% report
+- 💰 Fees with printable receipts, **PDF** and overdue flags
+- 🧾 Exam schedule, results with pass rates
+- 🏆 **Automatic grading** and a marksheet with **PDF**
+- 📥 CSV import and export · 🔔 live notifications · 📰 activity log
+- 🧪 55 tests and GitHub Actions CI
 
 </td>
 <td width="50%" valign="top">
@@ -73,13 +74,14 @@
 
 | Metric | Count |
 |---|:---:|
-| Feature modules | `10` |
-| REST endpoints | `66` |
-| JPA entities | `10` |
-| Repositories | `10` |
-| Service classes | `21` |
-| Thymeleaf views | `36` |
-| Lines of Java | `4,512` |
+| Record modules + auth | `9` + `1` |
+| HTTP endpoints | `88` |
+| JPA entities | `11` |
+| Repositories | `11` |
+| Service interfaces / impls | `13` / `13` |
+| Thymeleaf templates | `57` |
+| Automated tests | `55` |
+| Lines of Java | `7,423` |
 
 </td>
 </tr>
@@ -99,7 +101,10 @@
 | 🗄️ **Persistence** | `Spring Data JPA` + `Hibernate` | ORM and derived query methods |
 | 🐬 **Database** | `MySQL 8.0` | Relational data store (`sms_web`) |
 | 🎨 **View Layer** | `Thymeleaf` + `Bootstrap 5` | Server-rendered UI with fragment composition |
-| ✔️ **Validation** | `Jakarta Bean Validation` | Declarative constraint enforcement |
+| ✔️ **Validation** | `Jakarta Bean Validation` | Declarative constraint enforcement, forms and CSV rows |
+| 📄 **Documents** | `OpenPDF 3` · `Apache Commons CSV` | Marksheet and receipt PDFs · CSV import and export |
+| 🧪 **Testing** | `JUnit 5` · `Mockito` · `H2` | Unit, repository and security tests without MySQL |
+| ⚙️ **CI** | `GitHub Actions` | Runs the tests on every push |
 | 🛠️ **Build** | `Maven` | Dependency management (wrapper included) |
 
 </div>
@@ -118,21 +123,21 @@ flowchart TD
     end
 
     subgraph SEC["🔐 SECURITY LAYER"]
-        SF["Spring Security Filter Chain<br/><i>BCrypt · Form Login · Session</i>"]
+        SF["Spring Security Filter Chain<br/><i>BCrypt · Roles · CSRF · Session</i>"]
     end
 
     subgraph WEB["🎯 PRESENTATION LAYER"]
-        CT["12 Controllers<br/><i>66 request mappings</i>"]
-        TH["Thymeleaf Engine<br/><i>36 templates · fragment composition</i>"]
+        CT["14 Controllers<br/><i>88 endpoints · PDF & CSV downloads</i>"]
+        TH["Thymeleaf Engine<br/><i>57 templates · fragment composition</i>"]
     end
 
     subgraph BIZ["⚙️ BUSINESS LAYER"]
-        SV["10 Service Interfaces<br/>+ 10 Implementations"]
-        RL["Domain Rules<br/><i>grade calc · cascade delete</i>"]
+        SV["13 Service Interfaces<br/>+ 13 Implementations"]
+        RL["Domain Rules<br/><i>GradeCalculator · cascade delete · notifications</i>"]
     end
 
     subgraph DAT["🗄️ PERSISTENCE LAYER"]
-        RP["10 JPA Repositories<br/><i>derived queries · @Modifying JPQL</i>"]
+        RP["11 JPA Repositories<br/><i>derived queries · @Modifying JPQL · paging</i>"]
         HB["Hibernate ORM"]
     end
 
@@ -142,7 +147,7 @@ flowchart TD
     end
 
     BR -->|HTTP| SF
-    SF -->|authenticated| CT
+    SF -->|allowed for the role| CT
     CT --> SV
     CT -.->|render| TH
     TH -.->|HTML| BR
@@ -164,8 +169,8 @@ flowchart TD
 
 ## 🗃️ Database Design
 
-Ten entities with **nine foreign-key relationships**, modelling the full academic lifecycle from
-admission through to results.
+Eleven entities with **nine foreign-key relationships**, modelling the full academic lifecycle from
+admission through to results, plus a standalone activity log.
 
 ```mermaid
 erDiagram
@@ -188,6 +193,14 @@ erDiagram
         boolean enabled
         LocalDateTime createdAt
     }
+    ACTIVITY_LOG {
+        Long id PK
+        String action
+        String entityType
+        String description
+        String username
+        LocalDateTime createdAt
+    }
     STUDENT {
         Long id PK
         String firstName
@@ -204,7 +217,7 @@ erDiagram
         Long id PK
         String firstName
         String lastName
-        String email
+        String email UK
         String phone
         String department
         String qualification
@@ -213,7 +226,7 @@ erDiagram
     }
     COURSE {
         Long id PK
-        String courseCode
+        String courseCode UK
         String courseName
         String duration
         Double fees
@@ -221,7 +234,7 @@ erDiagram
     }
     SUBJECT {
         Long id PK
-        String subjectCode
+        String subjectCode UK
         String subjectName
         String semester
         Integer credits
@@ -272,7 +285,8 @@ erDiagram
 
 > 💡 **Referential integrity is handled in the service layer.** Deleting a Student transactionally clears
 > its Attendance, Enrollment, Fee and Result rows before removing the parent — no orphaned foreign keys.
-> Subject, Course and Exam deletes clear their own dependent rows the same way.
+> Subject, Course and Exam deletes clear their own dependent rows the same way, and `DeleteCascadeTest`
+> checks all four. Codes, emails and enrollments (student, course, subject) are unique in the database.
 
 ---
 
@@ -293,8 +307,8 @@ sequenceDiagram
     participant FS as 📁 File Storage
 
     U->>SF: POST /student (form + photo)
-    SF->>SF: Verify session & CSRF token
-    SF->>C: Forward authenticated request
+    SF->>SF: Verify session, ADMIN role & CSRF token
+    SF->>C: Forward the request
     C->>V: @Valid Student
     alt ❌ Validation fails
         V-->>C: BindingResult errors
@@ -307,7 +321,7 @@ sequenceDiagram
         DB-->>R: Result set
         R-->>S: boolean
         S-->>C: Duplicate check outcome
-        C->>FS: Store photo (timestamped filename)
+        C->>FS: Decode as JPEG/PNG, store under a generated name
         FS-->>C: Saved filename
         C->>S: saveStudent(student)
         S->>R: save(entity)
@@ -327,17 +341,17 @@ sequenceDiagram
 
 | # | Module | Backend | UI | Highlights | Status |
 |:---:|---|:---:|:---:|---|:---:|
-| 1 | 🔐 **Authentication** | ✅ | ✅ | BCrypt hashing, duplicate username/email guards | `████████████` **100%** |
-| 2 | 👨‍🎓 **Student** | ✅ | ✅ | CRUD · search · pagination · photo upload · detail view | `████████████` **100%** |
-| 3 | 👨‍🏫 **Teacher** | ✅ | ✅ | CRUD · search · pagination · photo upload · detail view | `████████████` **100%** |
-| 4 | 📚 **Course** | ✅ | ✅ | CRUD · search · pagination · duplicate-code guard | `████████████` **100%** |
-| 5 | 📖 **Subject** | ✅ | ⚠️ | CRUD · search · pagination — *detail view pending* | `██████████░░` **85%** |
-| 6 | 📝 **Enrollment** | ✅ | ⚠️ | 3-way relational mapping — *detail view pending* | `██████████░░` **85%** |
-| 7 | 💰 **Fee** | ✅ | ⚠️ | CRUD · search · pagination — *receipt pending* | `█████████░░░` **80%** |
-| 8 | 🗓️ **Attendance** | ✅ | ⚠️ | Keyword **+ date** filtering — *summary report pending* | `█████████░░░` **80%** |
-| 9 | 🧾 **Exam** | ✅ | ⚠️ | CRUD · search · pagination — *detail view pending* | `██████████░░` **85%** |
-| 10 | 🏆 **Result** | ✅ | ⚠️ | **Auto grade + pass/fail engine** — *marksheet pending* | `█████████░░░` **80%** |
-| 11 | 📊 **Dashboard** | ✅ | ✅ | Real-data stat cards, Chart.js analytics, live clock, empty states — *notifications still static* | `███████████░` **95%** |
+| 1 | 🔐 **Authentication** | ✅ | ✅ | BCrypt · 3 roles · seeded admin · profile & password · user admin | `████████████` **100%** |
+| 2 | 👨‍🎓 **Student** | ✅ | ✅ | CRUD · paged search · photo · marksheet + PDF · attendance % · CSV | `████████████` **100%** |
+| 3 | 👨‍🏫 **Teacher** | ✅ | ✅ | CRUD · 4-field search · photo · unique email | `████████████` **100%** |
+| 4 | 📚 **Course** | ✅ | ✅ | CRUD · detail · unique code | `████████████` **100%** |
+| 5 | 📖 **Subject** | ✅ | ✅ | CRUD · detail with its exams · unique code | `████████████` **100%** |
+| 6 | 📝 **Enrollment** | ✅ | ✅ | 3-way mapping · detail · no duplicates | `████████████` **100%** |
+| 7 | 💰 **Fee** | ✅ | ✅ | Printable receipt · PDF · overdue flags · CSV export | `████████████` **100%** |
+| 8 | 🗓️ **Attendance** | ✅ | ✅ | Keyword + date filter · bulk entry · 75% report | `████████████` **100%** |
+| 9 | 🧾 **Exam** | ✅ | ✅ | Schedule by month · results with pass rate | `████████████` **100%** |
+| 10 | 🏆 **Result** | ✅ | ✅ | **Auto grade + pass/fail engine** · marks ≤ total | `████████████` **100%** |
+| 11 | 📊 **Dashboard** | ✅ | ✅ | Real-data stat cards · Chart.js · live notifications · recent activity | `████████████` **100%** |
 
 </div>
 
@@ -349,7 +363,7 @@ sequenceDiagram
 
 **🔐 Security Foundation**
 
-`SecurityConfig` with `BCryptPasswordEncoder`, custom `UserDetailsService`, form login, logout handling, and a public allowlist for static assets.
+`SecurityConfig` with BCrypt, a custom `UserDetailsService`, Admin / Teacher / Student URL rules, POST-only changes with CSRF, and `sec:authorize` in every template.
 
 </td>
 <td width="33%" valign="top">
@@ -363,7 +377,7 @@ Cascade deletes using `@Transactional` + `@Modifying` bulk JPQL, so removing a p
 
 **🧮 Business Logic Engine**
 
-`ResultServiceImpl` computes percentage, assigns letter grades across six bands, and derives pass/fail from each exam's own threshold.
+`GradeCalculator` derives pass/fail from each exam's own threshold and a six-band grade that can't contradict it; the marksheet reuses it for the overall grade.
 
 </td>
 </tr>
@@ -372,21 +386,21 @@ Cascade deletes using `@Transactional` + `@Modifying` bulk JPQL, so removing a p
 
 **🎨 Component-Based UI**
 
-`layout.html` composing reusable `sidebar`, `navbar`, `footer` and `notification` fragments — plus 8 hand-written CSS modules.
+Every page renders through `layout.html`, composing `sidebar`, `navbar`, `footer` and `notification` fragments, with 11 hand-written CSS files and print styles.
 
 </td>
 <td valign="top">
 
 **🔍 Search & Pagination**
 
-Spring Data derived queries with multi-field `ContainingIgnoreCase` search and `PageRequest`-driven pagination across all modules.
+One paged query per module: multi-field `ContainingIgnoreCase` search or an AND-semantics `@Query`, 5 per page, sorted so rows can't shift.
 
 </td>
 <td valign="top">
 
 **📤 File Upload Pipeline**
 
-Multipart photo upload with collision-safe timestamped filenames, served back through a custom `WebMvcConfigurer` resource handler.
+Photos decoded as real JPEG/PNG, capped at 2 MB, stored under generated names, and served through a `WebMvcConfigurer` handler behind login.
 
 </td>
 </tr>
@@ -400,32 +414,30 @@ Multipart photo upload with collision-safe timestamped filenames, served back th
 
 ```mermaid
 gantt
-    title Roadmap to Production-Ready Portfolio Build
+    title Roadmap as delivered
     dateFormat YYYY-MM-DD
     axisFormat %b %d
 
     section ✅ Phase 0 · Stabilise
     Repository query fixes          :done, p0, 2026-09-21, 1d
+    Dashboard charts                :done, p0b, 2026-09-21, 1d
 
-    section 🟠 Phase 1 · Unify UI
-    Global layout adoption          :active, p1a, 2026-09-23, 4d
-    Error pages & exception handler :p1b, after p1a, 2d
-    Navbar & sidebar polish         :p1c, after p1a, 2d
+    section ✅ Quick wins
+    Search, logout, deletes, dates  :done, qw, 2026-10-06, 1d
 
-    section 🟡 Phase 2 · Secure
-    Role-based access control       :p2a, after p1b, 3d
-    POST-based delete operations    :p2b, after p2a, 2d
-    Upload hardening & secrets      :p2c, after p2b, 2d
+    section ✅ Phase 1 · Unify UI
+    Shared layout & error pages     :done, p1, 2026-10-07, 1d
 
-    section 🟢 Phase 3 · Complete
-    Detail views for all modules    :p3a, after p2c, 4d
-    Reports & bulk attendance       :p3b, after p3a, 4d
-    CSV import and export           :p3c, after p3b, 3d
+    section ✅ Phase 2 · Secure
+    Roles, POST deletes, uploads    :done, p2, 2026-10-08, 1d
 
-    section 🔵 Phase 4 · Showcase
-    Dashboard charts                :p4a, after p3c, 3d
-    PDF export & profile page       :p4b, after p4a, 3d
-    Test suite & README             :p4c, after p4b, 4d
+    section ✅ Phase 3 · Complete
+    Correctness & paging            :done, p3a, 2026-10-08, 1d
+    Detail views, reports, CSV      :done, p3b, 2026-10-08, 1d
+
+    section ✅ Phase 4 · Showcase
+    Notifications, PDF, profile     :done, p4a, 2026-10-08, 1d
+    Tests, CI, screenshots, docs    :done, p4b, 2026-10-09, 1d
 ```
 
 </div>
@@ -456,46 +468,44 @@ foreign-key violation.
 with 68 request mappings registered · `/login` returns `200` · unauthenticated `/student` correctly
 redirects with `302`.
 
-### 🟠 Phase 1 — Make It Feel Like One Application
+### ✅ Phase 1 — Make It Feel Like One Application · **COMPLETE**
 
-> **⏱️ ~1 week** · **Priority: High** · *The single biggest visual payoff available.*
+> **Completed 7 Oct 2026** ([Task Board](TASKS.md) Stage B) · *The single biggest visual payoff available.*
 
-Only `DashboardController` currently renders through `layout/layout.html`. Every other page is a standalone
-HTML document — so clicking **Students** from the dashboard makes the whole sidebar and navbar disappear.
+Only `DashboardController` used to render through `layout/layout.html`, so clicking **Students** from the
+dashboard made the whole sidebar and navbar disappear. Every page now goes through `LayoutView`.
 
-- [ ] 🎨 **Adopt the global layout everywhere** — convert each view to a `th:fragment="content"` and return
-      `"layout/layout"` with the fragment name on the model. `DashboardController` is the working reference;
-      apply that pattern to the 9 remaining modules (~30 templates).
-- [ ] 📌 **Pin a single Bootstrap version** — templates currently mix `5.3.3` and `5.3.8`.
+- [x] 🎨 **Adopt the global layout everywhere** — each view is a `th:fragment="content"` rendered into
+      `"layout/layout"`, all 9 modules included.
+- [x] 📌 **Pin a single Bootstrap version** — `5.3.8` everywhere.
 - [x] 👤 **Bind the navbar to the real session user** via `sec:authentication="name"` instead of the
       hardcoded *"Admin User"*.
 - [x] 🧭 **Highlight the active sidebar link** — `class="active"` is currently pinned to Dashboard.
-- [ ] 🛡️ **Add `@ControllerAdvice`** plus styled `404` and `500` pages, replacing Whitelabel error output.
+- [x] 🛡️ **Add `@ControllerAdvice`** plus styled `403`, `404`, `409`, `413` and `500` pages, replacing Whitelabel error output.
 
 **✔️ Definition of done** — the shell survives every navigation · bad IDs render a designed 404.
 
-### 🟡 Phase 2 — Security & Data Integrity
+### ✅ Phase 2 — Security & Data Integrity · **COMPLETE** *(one chore deferred)*
 
-> **⏱️ ~1 week** · **Priority: High** · *What turns a demo into something defensible in an interview.*
+> **Completed 8 Oct 2026** (Stage C) · *What turns a demo into something defensible in an interview.*
 
-- [ ] 🔑 **Role-based access control** — registration hardcodes `ROLE_STUDENT` and the filter chain only
-      requires `.anyRequest().authenticated()`. Introduce `ADMIN` / `TEACHER` / `STUDENT`, add
-      `.hasRole(...)` route rules, and gate sidebar entries with `sec:authorize`.
-- [ ] 🚫 **Convert deletes from GET to POST** — all 9 list views destroy data through `<a href>` links,
-      which browser prefetch or a crawler can trigger and which CSRF protection does not cover.
-- [ ] 📎 **Harden file upload** — add content-type allowlisting, size caps and filename sanitisation;
-      centralise the duplicated logic into the `FileUploadUtil` stub and delete replaced photos.
+- [x] 🔑 **Role-based access control** — `ADMIN` / `TEACHER` / `STUDENT` with `.hasRole(...)` route rules,
+      `sec:authorize` on every button, and the first admin seeded from environment variables.
+- [x] 🚫 **Convert deletes from GET to POST** — all 9 lists use POST forms with the CSRF token; a GET
+      delete gets `405`.
+- [x] 📎 **Harden file upload** — images decoded server-side, 2 MB cap, generated names, all in
+      `FileUploadUtil`; a replaced photo is deleted only after the save succeeds.
 - [x] 🔒 **Externalise database credentials** to `${DB_PASSWORD}` *(6 Oct 2026)*
 - [ ] 🔑 **Rotate the old password**, which is still in git history *(deferred: other local projects share the MySQL `root` account)*
-- [ ] 🔇 **Move `show-sql` and `DEBUG` logging** into an `application-dev.properties` profile.
-- [ ] 🧹 **Untrack `uploads/`** — add to `.gitignore` and `git rm --cached`.
+- [x] 🔇 **Move `show-sql` and `DEBUG` logging** into an `application-dev.properties` profile.
+- [x] 🧹 **Untrack `uploads/`** — in `.gitignore`, removed with `git rm --cached`.
 
 **✔️ Definition of done** — a student account receives `403` on admin routes · disguised executables are
 rejected on upload · no credentials in source control.
 
-### 🟢 Phase 3 — Complete the Feature Set
+### ✅ Phase 3 — Complete the Feature Set · **COMPLETE**
 
-> **⏱️ ~1–2 weeks** · **Priority: Medium**
+> **Completed 8 Oct 2026** (Stages D and E)
 
 <table>
 <tr>
@@ -505,7 +515,9 @@ rejected on upload · no credentials in source control.
 
 - [x] ~~`getTotalFees()` returns a record count, not a money sum~~ — `getTotalFeeAmount()` now sums `amount`
 - [x] ~~`getUpcomingExams()` has no date filter~~ — now filters on `examDate >= today`
-- [ ] Search bypasses pagination in all 9 modules — return `Page<T>` instead of `List<T>`
+- [x] ~~Search bypasses pagination in all 9 modules~~ — one paged query per module
+- [x] ~~Uniqueness only on create~~ — database constraints, checked on edit too
+- [x] ~~Marks above the total, negative fees, "Pass · F"~~ — cross-field checks and one `GradeCalculator`
 - [x] ~~Add `@Valid` to Exam and Result controllers~~ — both forms now re-render with field errors instead of a 500 page
 - [x] ~~Replace the `LocalDate.of(1900,1,1)` null-date sentinel~~ — attendance and exam search use a nullable `@Query` that ANDs keyword and date
 
@@ -514,31 +526,33 @@ rejected on upload · no credentials in source control.
 
 **✨ New capability**
 
-- [ ] 📄 Detail views for the 6 remaining modules
-- [ ] 🎓 **Student marksheet** — all results, percentage, overall grade
-- [ ] 🧾 **Printable fee receipt**
-- [ ] 📈 **Attendance percentage** per student
-- [ ] ⚡ **Bulk attendance entry** — mark an entire class in one form *(highest usability win)*
-- [ ] 📥 **CSV import** — sample data and a `CsvHelper` stub already exist
-- [ ] 📤 **CSV export** for student and fee lists
+- [x] 📄 Detail views for the 6 remaining modules
+- [x] 🎓 **Student marksheet** — all results, percentage, overall grade
+- [x] 🧾 **Printable fee receipt** and overdue flags
+- [x] 📈 **Attendance percentage** per student, plus a 75% report
+- [x] 📅 **Exam schedule** by month
+- [x] ⚡ **Bulk attendance entry** — mark an entire class in one form
+- [x] 📥 **CSV import** — validated row by row, with a report
+- [x] 📤 **CSV export** for student and fee lists
 
 </td>
 </tr>
 </table>
 
-### 🔵 Phase 4 — Showcase Polish
+### ✅ Phase 4 — Showcase Polish · **COMPLETE**
 
-> **⏱️ ~1 week** · **Priority: Low** · *The layer recruiters actually see first.*
+> **Completed 8–9 Oct 2026** (Stage F) · *The layer recruiters actually see first.*
 
 - [x] 📊 **Chart.js dashboard** — start with the gender split; `maleStudents` and `femaleStudents` are
       **already computed and on the model**, just never rendered. Then fee collection trends and
       enrollments per course.
-- [ ] 🔔 **Database-driven notifications** — the bell currently shows three hardcoded items.
-- [ ] 🖨️ **PDF export** for marksheets and receipts (OpenPDF / iText).
-- [ ] 👤 **User profile page** with change-password.
-- [ ] 🧪 **Test suite** — unit tests for the grade-boundary logic and cascade deletes, `@WebMvcTest` slices
-      for controllers, `@DataJpaTest` for custom queries.
-- [ ] 📸 **README with screenshots** and setup instructions.
+- [x] 🔔 **Live notifications** — overdue fees, students under 75% and exams this week, built from real data.
+- [x] 📰 **Recent-activity feed** — an audit log of creates, updates, deletes and imports.
+- [x] 🖨️ **PDF export** for marksheets and receipts (OpenPDF).
+- [x] 👤 **User profile page** with change-password, and **admin user management**.
+- [x] 🧪 **Test suite** — 55 tests: grade boundaries, cascade deletes, `@WebMvcTest` security, `@DataJpaTest` search.
+- [x] ⚙️ **CI** — GitHub Actions runs the tests on every push.
+- [x] 📸 **README with screenshots** and setup instructions.
 
 ---
 
@@ -546,10 +560,11 @@ rejected on upload · no credentials in source control.
 
 > Every non-trivial codebase carries debt. What matters professionally is whether it's **tracked and
 > triaged** — this register is maintained deliberately, with file references and an owning phase for each item.
-> Issues found after 21 Sep (#23 onward) are tracked in [project_analysis.md](project_analysis.md#-engineering-backlog).
+> Issues found after 21 Sep (#23 onward, now up to #37) are tracked in [project_analysis.md](project_analysis.md#-engineering-backlog).
+> Of this register's 22 items, **21 are resolved**; only the password rotation (#5) is left.
 
 <details>
-<summary><b>✅ Resolved (10 items)</b></summary>
+<summary><b>✅ Resolved (21 items)</b></summary>
 
 <br/>
 
@@ -565,58 +580,28 @@ rejected on upload · no credentials in source control.
 | 16 | Gender statistics computed but never rendered | `stats-cards.html` · `charts.html` | `21 Sep 2026` |
 | 21 | `footer.css` contained a copy of `footer.html` — footer rendered unstyled | `static/css/footer.css` | `21 Sep 2026` |
 | 22 | `welcome.css` targeted markup that did not exist; live clock in `dashboard.js` had no elements to update | `welcome.css` · `welcome.html` | `21 Sep 2026` |
+| 3 | No role enforcement — every user had full destructive access | Admin / Teacher / Student rules, seeded admin | `8 Oct 2026` |
+| 4 | Deletes exposed as GET links — prefetch/CSRF exposure | POST forms on all 9 lists | `8 Oct 2026` |
+| 6 | Only the dashboard used the shared layout | Every page through `LayoutView` | `7 Oct 2026` |
+| 7 | File upload lacked type/size/filename validation; orphaned old files | `FileUploadUtil` | `8 Oct 2026` |
+| 8 | No global exception handler — Whitelabel error pages | `GlobalExceptionHandler` + styled pages | `7 Oct 2026` |
+| 11 | Search results weren't paginated | One paged query per module | `8 Oct 2026` |
+| 15 | Notifications were three hardcoded placeholder items | `NotificationService` + `NotificationAdvice` | `8 Oct 2026` |
+| 17 | Bootstrap version drift (`5.3.3` vs `5.3.8`) | `5.3.8` everywhere | `7 Oct 2026` |
+| 18 | Six empty stub classes (3 DTOs + 3 utilities) | Implemented or deleted | `8 Oct 2026` |
+| 19 | `uploads/` directory committed to version control | `.gitignore` + `git rm --cached` | `8 Oct 2026` |
+| 20 | `webConfig` broke Java class naming convention | Renamed `WebConfig` | `7 Oct 2026` |
 
 </details>
 
-<details>
-<summary><b>🔴 Critical (3 items)</b> — click to expand</summary>
+<details open>
+<summary><b>🔴 Critical, partly done (1 item)</b></summary>
 
 <br/>
 
-| # | Issue | Location | Phase |
+| # | Issue | Location | Status |
 |:---:|---|---|:---:|
-| 3 | No role enforcement — every user has full destructive access | `SecurityConfig.java:48` · `UserServiceImpl.java:55` | `2` |
-| 4 | Deletes exposed as GET links — prefetch/CSRF exposure | 9 `*-list.html` templates | `2` |
-| 5 | Database password committed in plaintext. Read from `${DB_PASSWORD}` since 6 Oct 2026, but the old value is still in git history and not yet rotated | `application.properties` history | `2` |
-
-</details>
-
-<details>
-<summary><b>🟠 High (3 items)</b></summary>
-
-<br/>
-
-| # | Issue | Location | Phase |
-|:---:|---|---|:---:|
-| 6 | Only the dashboard uses the shared layout | All non-dashboard controllers | `1` |
-| 7 | File upload lacks type/size/filename validation; orphans old files | `StudentController.java:107` · `TeacherController.java:97` | `2` |
-| 8 | No global exception handler — Whitelabel error pages | *(missing `@ControllerAdvice`)* | `1` |
-
-</details>
-
-<details>
-<summary><b>🟡 Medium (1 item)</b></summary>
-
-<br/>
-
-| # | Issue | Location | Phase |
-|:---:|---|---|:---:|
-| 11 | Search results aren't paginated: all 9 search paths return a full `List` | 9 controllers | `3` |
-
-</details>
-
-<details>
-<summary><b>🟢 Low (5 items)</b></summary>
-
-<br/>
-
-| # | Issue | Location | Phase |
-|:---:|---|---|:---:|
-| 15 | Notifications are three hardcoded placeholder items | `common/notification.html` | `4` |
-| 17 | Bootstrap version drift (`5.3.3` vs `5.3.8`) | Various templates | `1` |
-| 18 | Six empty stub classes (3 DTOs + 3 utilities) | `dto/` · `utility/` | `3–4` |
-| 19 | `uploads/` directory committed to version control | `.gitignore` | `2` |
-| 20 | `webConfig` breaks Java class naming convention | `config/webConfig.java` | `1` |
+| 5 | Database password committed in plaintext. Read from `${DB_PASSWORD}` since 6 Oct 2026, but the old value is still in git history and not yet rotated (task A4, deferred: other local projects share the account) | `application.properties` history | 🟡 Env var done |
 
 </details>
 
@@ -624,12 +609,9 @@ rejected on upload · no credentials in source control.
 
 ```mermaid
 pie showData
-    title Backlog by Severity
-    "✅ Resolved" : 10
-    "🔴 Critical" : 3
-    "🟠 High" : 3
-    "🟡 Medium" : 1
-    "🟢 Low" : 5
+    title Issues 1–22 by status
+    "✅ Resolved" : 21
+    "🟡 Partly done" : 1
 ```
 
 </div>
@@ -649,19 +631,20 @@ mysql -u root -p -e "CREATE DATABASE sms_web;"
 # 3️⃣  Configure credentials (avoid committing secrets)
 export DB_USERNAME=root
 export DB_PASSWORD=your_password
+export ADMIN_USERNAME=admin ADMIN_PASSWORD=choose_one   # first admin, created once at startup
 
 # 4️⃣  Build and run
-./mvnw clean install
+./mvnw clean install      # also runs the 55 tests, which need no MySQL
 ./mvnw spring-boot:run
 ```
 
 <div align="center">
 
-🌐 **`http://localhost:8080`** → register an account → sign in → dashboard
+🌐 **`http://localhost:8080`** → sign in as the admin → dashboard
 
 </div>
 
-> ✅ **Verified working** — boots cleanly against MySQL 8.0 on Java 21+, registering 68 request mappings.
+> ✅ **Verified working** — boots against MySQL 8.0 on Java 21+ with 88 endpoints; `./mvnw test` passes on H2.
 
 ---
 
@@ -675,9 +658,9 @@ the trade-off was decided rather than overlooked.
 | 🗄️ | Flyway / Liquibase migrations | `ddl-auto=update` is adequate for a demo; migrations matter once real data must survive schema change |
 | 🔌 | REST API + OpenAPI/Swagger | This is a server-rendered MVC app; an API is a separate product surface |
 | 🐳 | Docker / Kubernetes | Adds setup friction for a reviewer who just wants to run it |
-| 🔁 | CI/CD pipeline | Worth adding once the test suite carries real assertions |
-| 📡 | Audit logging & monitoring | No production traffic to observe yet |
-| 📧 | Email / SMS notifications | Requires external service credentials |
+| 🚢 | Continuous delivery | CI now runs the tests on every push; deploying needs a host |
+| 📡 | Monitoring & metrics | An in-app activity log exists; there is no production traffic to observe yet |
+| 📧 | Email / SMS notifications | In-app notifications exist; sending them out needs external service credentials |
 | 🔑 | Forgot-password flow | Needs a mail server; change-password covers the demo need |
 
 <details>
@@ -704,15 +687,16 @@ scheduled.
 
 | Competency | Evidence in this codebase |
 |---|---|
-| 🏛️ **Layered architecture** | Strict controller → service → repository separation across 10 modules |
-| 🔗 **Relational modelling** | 10 entities, 9 foreign-key relationships, transactional cascade deletes |
-| 🔐 **Application security** | Spring Security filter chain, BCrypt hashing, custom `UserDetailsService` |
-| 🗄️ **Data access** | Derived query methods, `@Modifying` JPQL, `Pageable` pagination |
-| ✔️ **Validation** | Declarative Jakarta constraints wired to `BindingResult` error rendering |
-| 🎨 **Frontend composition** | Thymeleaf fragments, reusable layout, hand-authored responsive CSS |
-| 🧮 **Business logic** | Percentage computation, six-band grading, exam-specific pass thresholds |
-| 📤 **File handling** | Multipart upload with collision-safe naming and custom resource mapping |
-| 🔍 **Code review skill** | A maintained 33-item backlog with severity triage and owning phases |
+| 🏛️ **Layered architecture** | Strict controller → service → repository separation across 9 record modules |
+| 🔗 **Relational modelling** | 11 entities, 9 foreign-key relationships, 7 unique constraints, transactional cascade deletes |
+| 🔐 **Application security** | Three roles, URL rules plus `sec:authorize`, CSRF on every change, hardened uploads |
+| 🗄️ **Data access** | Derived queries, `@Modifying` JPQL, `SELECT new` summaries, `Pageable` paging |
+| ✔️ **Validation** | Jakarta constraints, cross-field checks, the same rules on every CSV row |
+| 🎨 **Frontend composition** | Thymeleaf fragments, one layout, print styles, hand-authored responsive CSS |
+| 🧮 **Business logic** | Grading, marksheets, attendance %, overdue fees, notifications from live data |
+| 📄 **Documents** | PDF marksheets and receipts, Excel-safe CSV export, validated import |
+| 🧪 **Testing & CI** | 55 tests across unit, `@DataJpaTest`, `@SpringBootTest` and `@WebMvcTest`, run by GitHub Actions |
+| 🔍 **Code review skill** | A maintained 37-item backlog with severity triage, 31 resolved |
 
 </div>
 

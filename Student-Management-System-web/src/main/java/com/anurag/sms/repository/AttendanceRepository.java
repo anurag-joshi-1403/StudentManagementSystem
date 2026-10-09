@@ -61,6 +61,22 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             """)
     List<AttendanceSummary> summarise(@Param("subjectId") Long subjectId);
 
+    // Notifications (F1): only the students under the minimum, with the
+    // same present-out-of-total rule as summarise(). An inner join, since a
+    // student with no records has nothing to flag.
+    @Query("""
+            SELECT new com.anurag.sms.dto.AttendanceSummary(
+                       s.id, s.firstName, s.lastName,
+                       SUM(CASE WHEN a.status = 'Present' THEN 1 ELSE 0 END),
+                       COUNT(a))
+            FROM Attendance a
+            JOIN a.student s
+            GROUP BY s.id, s.firstName, s.lastName
+            HAVING SUM(CASE WHEN a.status = 'Present' THEN 1 ELSE 0 END) * 100.0 / COUNT(a) < :minimum
+            ORDER BY s.firstName, s.lastName
+            """)
+    List<AttendanceSummary> findBelowMinimum(@Param("minimum") double minimum);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM Attendance a WHERE a.student.id = :studentId")
