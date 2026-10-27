@@ -35,6 +35,19 @@
                     <th><i class="bi bi-shield-lock me-2 text-muted"></i>Role</th>
                     <td th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(account.role, 'ROLE_', '')))}"></td>
                   </tr>
+                  <!-- The student or teacher record this account belongs to (G10) -->
+                  <tr>
+                    <th><i class="bi bi-link-45deg me-2 text-muted"></i>Linked To</th>
+                    <td>
+                      <span th:if="${account.student != null}"
+                            th:text="${account.student.firstName + ' ' + account.student.lastName + ' (student)'}"></span>
+                      <span th:if="${account.teacher != null}"
+                            th:text="${account.teacher.firstName + ' ' + account.teacher.lastName + ' (teacher)'}"></span>
+                      <span th:if="${account.student == null and account.teacher == null}" class="text-muted">
+                        Not linked to a student or teacher record yet
+                      </span>
+                    </td>
+                  </tr>
                   <tr>
                     <th><i class="bi bi-calendar-check me-2 text-muted"></i>Member Since</th>
                     <td th:text="${#temporals.format(account.createdAt, 'd MMMM yyyy')}"></td>
@@ -81,9 +94,10 @@
                     th:classappend="${#fields.hasErrors('newPassword')} ? 'is-invalid'"
                     autocomplete="new-password"
                     minlength="8"
+                    maxlength="72"
                     required
                   />
-                  <div class="form-text" th:unless="${#fields.hasErrors('newPassword')}">At least 8 characters.</div>
+                  <div class="form-text" th:unless="${#fields.hasErrors('newPassword')}">8 to 72 characters.</div>
                   <div class="invalid-feedback" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
                 </div>
 

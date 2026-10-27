@@ -77,6 +77,13 @@ public class ResultServiceImpl implements ResultService {
         activityLogService.record(ActivityLog.DELETED, "Result", description);
     }
 
+    @Override
+    public boolean isAlreadyGraded(Long studentId, Long examId, Long ownId) {
+        return ownId == null
+                ? resultRepository.existsByStudentIdAndExamId(studentId, examId)
+                : resultRepository.existsByStudentIdAndExamIdAndIdNot(studentId, examId, ownId);
+    }
+
     // e.g. "Mid sem: Kabir Mehta, 400/1000 (D, Pass)"
     private static String describe(Result result) {
         return result.getExam().getExamName() + ": "

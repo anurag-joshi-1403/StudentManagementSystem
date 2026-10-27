@@ -1,6 +1,7 @@
 package com.anurag.sms.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 
@@ -19,6 +20,8 @@ import com.anurag.sms.entity.Fee;
 import com.anurag.sms.entity.Result;
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.entity.Subject;
+import com.anurag.sms.entity.Teacher;
+import com.anurag.sms.entity.User;
 import com.anurag.sms.repository.ActivityLogRepository;
 import com.anurag.sms.repository.AttendanceRepository;
 import com.anurag.sms.repository.CourseRepository;
@@ -28,6 +31,8 @@ import com.anurag.sms.repository.FeeRepository;
 import com.anurag.sms.repository.ResultRepository;
 import com.anurag.sms.repository.StudentRepository;
 import com.anurag.sms.repository.SubjectRepository;
+import com.anurag.sms.repository.TeacherRepository;
+import com.anurag.sms.repository.UserRepository;
 
 import jakarta.persistence.EntityManager;
 
@@ -62,6 +67,8 @@ class DeleteCascadeTest {
     @Autowired private FeeRepository fees;
     @Autowired private ResultRepository results;
     @Autowired private ActivityLogRepository activityLog;
+    @Autowired private TeacherRepository teachers;
+    @Autowired private UserRepository users;
 
     @Autowired private EntityManager em;
 
@@ -74,13 +81,16 @@ class DeleteCascadeTest {
     private Fee fee;
     private Result result;
 
-    // One of everything, all linked: the student is enrolled in the course
-    // and subject, has attendance and a fee, and a result in the exam
+    // One of everything, all linked: the student belongs to the course (G8),
+    // which teaches the subject (G9); the student is enrolled in it, has
+    // attendance and a fee, and a result in the exam
     @BeforeEach
     void linkedRecords() {
-        student = students.save(TestData.student("Kabir", "Mehta"));
-        course = courses.save(TestData.course("BSC-PHY", "B.Sc Physics"));
         subject = subjects.save(TestData.subject("MATH01", "Mathematics"));
+        Course physics = TestData.course("BSC-PHY", "B.Sc Physics");
+        physics.getSubjects().add(subject);
+        course = courses.save(physics);
+        student = students.save(TestData.student("Kabir", "Mehta", course));
         exam = exams.save(TestData.exam("Mid sem", subject, LocalDate.of(2026, 7, 31)));
         attendanceRow = attendance.save(TestData.attendance(student, subject, LocalDate.of(2026, 10, 1), "Present"));
         enrollment = enrollments.save(TestData.enrollment(student, course, subject));
@@ -114,13 +124,34 @@ class DeleteCascadeTest {
         assertThat(exams.existsById(exam.getId())).isTrue();
     }
 
+    // G8: every student belongs to a course, so a course with students stays
     @Test
-    void deletingACourseRemovesItsEnrollments() {
-        courseService.deleteCourse(course.getId());
+    void aCourseWithStudentsIsNotDeleted() {
+        assertThatThrownBy(() -> courseService.deleteCourse(course.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("still has 1 student");
         flushAndClear();
 
-        assertThat(courses.existsById(course.getId())).isFalse();
-        assertThat(enrollments.existsById(enrollment.getId())).isFalse();
+        assertThat(courses.existsById(course.getId())).isTrue();
+        assertThat(enrollments.existsById(enrollment.getId())).isTrue();
+    }
+
+    // A course nobody belongs to goes, with its enrollments and its
+    // course_subjects rows
+    @Test
+    void deletingACourseRemovesItsEnrollmentsAndCurriculum() {
+        Course elective = TestData.course("BSC-MATH", "B.Sc Mathematics");
+        elective.getSubjects().add(subject);
+        elective = courses.save(elective);
+        Enrollment electiveEnrollment = enrollments.save(TestData.enrollment(student, elective, subject));
+        flushAndClear();
+
+        courseService.deleteCourse(elective.getId());
+        flushAndClear();
+
+        assertThat(courses.existsById(elective.getId())).isFalse();
+        assertThat(enrollments.existsById(electiveEnrollment.getId())).isFalse();
+        assertThat(subjects.existsById(subject.getId())).isTrue();
         assertThat(students.existsById(student.getId())).isTrue();
     }
 
@@ -163,5 +194,49 @@ class DeleteCascadeTest {
         assertThat(exams.existsById(exam.getId())).isFalse();
         assertThat(results.existsById(result.getId())).isFalse();
         assertThat(students.existsById(student.getId())).isTrue();
+
+        // G9: and out of the course's curriculum
+        assertThat(courses.findById(course.getId()).orElseThrow().getSubjects()).isEmpty();
+    }
+
+    private User account(String username, String role) {
+        User u = new User();
+        u.setFullName(username);
+        u.setUsername(username);
+        u.setEmail(username + "@example.com");
+        u.setPassword("not-a-real-hash");
+        u.setRole(role);
+        return u;
+    }
+
+    // G10: the account stays; only its link goes
+    @Test
+    void deletingAStudentKeepsTheirAccountButDropsTheLink() {
+        User account = account("kabir01", "ROLE_STUDENT");
+        account.setStudent(student);
+        account = users.save(account);
+        flushAndClear();
+
+        studentService.deleteStudent(student.getId());
+        flushAndClear();
+
+        assertThat(students.existsById(student.getId())).isFalse();
+        assertThat(users.findById(account.getId()).orElseThrow().getStudent()).isNull();
+    }
+
+    @Test
+    void deletingATeacherKeepsTheirAccountButDropsTheLink() {
+        Teacher teacher = teachers.save(new Teacher(null, "Meera", "Iyer", "meera.iyer@example.com",
+                "9876500020", "Physics", "PhD", "Female", null));
+        User account = account("meera01", "ROLE_TEACHER");
+        account.setTeacher(teacher);
+        account = users.save(account);
+        flushAndClear();
+
+        teacherService.deleteTeacher(teacher.getId());
+        flushAndClear();
+
+        assertThat(teachers.existsById(teacher.getId())).isFalse();
+        assertThat(users.findById(account.getId()).orElseThrow().getTeacher()).isNull();
     }
 }

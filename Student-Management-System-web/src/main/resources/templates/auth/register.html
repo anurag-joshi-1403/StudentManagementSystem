@@ -35,7 +35,9 @@
                     type="text"
                     th:field="*{fullName}"
                     class="form-control"
+                    th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'"
                   />
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -45,7 +47,9 @@
                     type="text"
                     th:field="*{username}"
                     class="form-control"
+                    th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
                   />
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -55,7 +59,9 @@
                     type="email"
                     th:field="*{email}"
                     class="form-control"
+                    th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
                   />
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -65,7 +71,10 @@
                     type="password"
                     th:field="*{password}"
                     class="form-control"
+                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
                   />
+                  <div class="form-text" th:unless="${#fields.hasErrors('password')}">8 to 72 characters.</div>
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -75,7 +84,9 @@
                     type="password"
                     th:field="*{confirmPassword}"
                     class="form-control"
+                    th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
                   />
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
                 </div>
 
                 <div class="d-grid">

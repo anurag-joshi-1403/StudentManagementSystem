@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.anurag.sms.TestData;
 import com.anurag.sms.entity.Attendance;
+import com.anurag.sms.entity.Course;
 import com.anurag.sms.entity.Exam;
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.entity.Subject;
@@ -43,11 +44,13 @@ class SearchRepositoryTest {
     @Autowired
     private ResultRepository resultRepository;
 
+    private Course physics;
     private Subject maths;
     private Subject chemistry;
 
     @BeforeEach
     void data() {
+        physics = em.persist(TestData.course("BSC-PHY", "B.Sc Physics"));
         maths = em.persist(TestData.subject("MATH01", "Mathematics"));
         chemistry = em.persist(TestData.subject("CHEM01", "Chemistry"));
     }
@@ -57,8 +60,8 @@ class SearchRepositoryTest {
 
         @BeforeEach
         void rows() {
-            Student aarav = em.persist(TestData.student("Aarav", "Sharma"));
-            Student diya = em.persist(TestData.student("Diya", "Patel"));
+            Student aarav = em.persist(TestData.student("Aarav", "Sharma", physics));
+            Student diya = em.persist(TestData.student("Diya", "Patel", physics));
             em.persist(TestData.attendance(aarav, maths, OCT_1, "Present"));
             em.persist(TestData.attendance(diya, maths, OCT_1, "Absent"));
             em.persist(TestData.attendance(aarav, chemistry, OCT_2, "Late"));
@@ -151,7 +154,7 @@ class SearchRepositoryTest {
 
     @Test
     void attendanceSearchPagesAreFiveRowsSortedById() {
-        Student s = em.persist(TestData.student("Kabir", "Mehta"));
+        Student s = em.persist(TestData.student("Kabir", "Mehta", physics));
         for (int day = 1; day <= 7; day++) {
             em.persist(TestData.attendance(s, maths, LocalDate.of(2026, 10, day), "Present"));
         }

@@ -50,10 +50,13 @@
               <select class="form-select" th:field="*{course}" required>
                 <option value="">-- Select Course --</option>
 
+                <!--/* Each course lists its subjects' ids, so enrollment-form.js
+                     can show only those in the Subject list (G9) */-->
                 <option
                   th:each="course : ${courses}"
                   th:value="${course.id}"
                   th:text="${course.courseName}"
+                  th:attr="data-subjects=${#strings.listJoin(course.subjects.![id], ' ')}"
                 ></option>
               </select>
 
@@ -75,6 +78,7 @@
                 ></option>
               </select>
 
+              <div class="form-text">Lists the chosen course's subjects. Add more on the course's page.</div>
               <div class="text-danger" th:errors="*{subject}"></div>
             </div>
 
@@ -106,6 +110,8 @@
           </form>
         </div>
       </div>
+
+      <script th:src="@{/js/enrollment-form.js}"></script>
     </div>
   </body>
 </html>

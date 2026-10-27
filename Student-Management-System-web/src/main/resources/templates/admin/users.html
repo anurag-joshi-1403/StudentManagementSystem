@@ -34,6 +34,7 @@
                   <th>Full Name</th>
                   <th>Email</th>
                   <th width="230">Role</th>
+                  <th>Linked To</th>
                   <th class="text-center">Status</th>
                   <th>Member Since</th>
                   <th width="130" class="text-center">Account</th>
@@ -64,6 +65,49 @@
                     </form>
                   </td>
 
+                  <!--/* The student or teacher this account belongs to (G10). A STUDENT
+                       account can be linked to a student, a TEACHER account to a teacher. */-->
+                  <td>
+                    <div th:if="${u.student != null}" class="d-flex align-items-center gap-2">
+                      <i class="bi bi-mortarboard text-muted" aria-hidden="true"></i>
+                      <a th:href="@{/student/view/{id}(id=${u.student.id})}"
+                         th:text="${u.student.firstName + ' ' + u.student.lastName}">Student</a>
+                      <form th:action="@{/admin/users/{id}/unlink(id=${u.id})}" method="post" class="ms-auto">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Unlink</button>
+                      </form>
+                    </div>
+                    <div th:if="${u.teacher != null}" class="d-flex align-items-center gap-2">
+                      <i class="bi bi-person-video3 text-muted" aria-hidden="true"></i>
+                      <a th:href="@{/teacher/view/{id}(id=${u.teacher.id})}"
+                         th:text="${u.teacher.firstName + ' ' + u.teacher.lastName}">Teacher</a>
+                      <form th:action="@{/admin/users/{id}/unlink(id=${u.id})}" method="post" class="ms-auto">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Unlink</button>
+                      </form>
+                    </div>
+
+                    <form th:if="${u.student == null and u.role == 'ROLE_STUDENT'}"
+                          th:action="@{/admin/users/{id}/link(id=${u.id})}" method="post" class="d-flex gap-2">
+                      <select name="studentId" class="form-select form-select-sm" required
+                              th:aria-label="'Student for ' + ${u.username}">
+                        <option value="">-- Student --</option>
+                        <option th:each="s : ${unlinkedStudents}" th:value="${s.id}"
+                                th:text="${s.firstName + ' ' + s.lastName}"></option>
+                      </select>
+                      <button type="submit" class="btn btn-sm btn-outline-primary">Link</button>
+                    </form>
+                    <form th:if="${u.teacher == null and u.role == 'ROLE_TEACHER'}"
+                          th:action="@{/admin/users/{id}/link(id=${u.id})}" method="post" class="d-flex gap-2">
+                      <select name="teacherId" class="form-select form-select-sm" required
+                              th:aria-label="'Teacher for ' + ${u.username}">
+                        <option value="">-- Teacher --</option>
+                        <option th:each="t : ${unlinkedTeachers}" th:value="${t.id}"
+                                th:text="${t.firstName + ' ' + t.lastName}"></option>
+                      </select>
+                      <button type="submit" class="btn btn-sm btn-outline-primary">Link</button>
+                    </form>
+                    <span th:if="${u.role == 'ROLE_ADMIN'}" class="text-muted small">-</span>
+                  </td>
+
                   <td class="text-center">
                     <span th:if="${u.enabled}" class="badge bg-success">Enabled</span>
                     <span th:unless="${u.enabled}" class="badge bg-secondary">Disabled</span>
@@ -92,7 +136,7 @@
           </div>
 
           <p class="text-muted small mb-0">
-            <i class="bi bi-info-circle me-1"></i>Changes apply from the account's next sign-in. A disabled account cannot sign in.
+            <i class="bi bi-info-circle me-1"></i>Changes apply at once: the account is signed out, and a disabled account cannot sign in again.
           </p>
         </div>
       </div>

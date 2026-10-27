@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.anurag.sms.TestData;
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.utility.CsvHelper.StudentParseResult;
 
@@ -33,6 +34,8 @@ class CsvHelperTest {
         assertThat(r.errors()).isEmpty();
         Student s = r.students().get(0).student();
         assertThat(s.getAddress()).isEqualTo("12 Lake Road, Pune");
+        // The import looks the course up by this name (G8)
+        assertThat(r.students().get(0).courseName()).isEqualTo("B.Sc Physics");
         assertThat(s.getDateOfBirth()).isEqualTo(LocalDate.of(2005, 4, 12));
         assertThat(r.students().get(0).row()).isEqualTo(2);
     }
@@ -80,7 +83,7 @@ class CsvHelperTest {
         s.setEmail("rohan.verma@example.com");
         s.setPhone("9876500011");
         s.setGender("Male");
-        s.setCourse("B.Sc Physics");
+        s.setCourse(TestData.course("BSC-PHY", "B.Sc Physics"));
         s.setDateOfBirth(LocalDate.of(2005, 4, 12));
         s.setAddress("12 Lake Road, Pune");
 
@@ -91,6 +94,7 @@ class CsvHelperTest {
 
         Student back = parse(csv).students().get(0).student();
         assertThat(back.getFirstName()).isEqualTo("=HYPERLINK(\"x\")");
+        assertThat(parse(csv).students().get(0).courseName()).isEqualTo("B.Sc Physics");
         assertThat(back.getAddress()).isEqualTo("12 Lake Road, Pune");
         assertThat(back.getDateOfBirth()).isEqualTo(LocalDate.of(2005, 4, 12));
     }

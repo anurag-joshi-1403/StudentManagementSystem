@@ -3,6 +3,8 @@ package com.anurag.sms.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import com.anurag.sms.utility.PasswordPolicy;
+
 /**
  * The change-password form on the profile page (F10). The controller checks
  * that the two new entries match; the service checks the current password.
@@ -13,7 +15,7 @@ public class ChangePasswordDto {
     private String currentPassword;
 
     @NotBlank(message = "Enter a new password")
-    @Size(min = 8, max = 100, message = "The new password must be at least 8 characters")
+    @Size(min = PasswordPolicy.MIN_LENGTH, max = PasswordPolicy.MAX_LENGTH, message = PasswordPolicy.LENGTH_MESSAGE)
     private String newPassword;
 
     @NotBlank(message = "Type the new password again")

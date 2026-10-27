@@ -65,6 +65,8 @@ public class AttendanceController {
             BindingResult result,
             Model model) {
 
+        rejectIfAlreadyRecorded(attendance, null, result);
+
         if (result.hasErrors()) {
             model.addAttribute("students", studentService.getAllStudents());
             model.addAttribute("subjects", subjectService.getAllSubjects());
@@ -100,6 +102,8 @@ public class AttendanceController {
             BindingResult result,
             Model model) {
 
+        rejectIfAlreadyRecorded(attendance, id, result);
+
         if (result.hasErrors()) {
             model.addAttribute("students", studentService.getAllStudents());
             model.addAttribute("subjects", subjectService.getAllSubjects());
@@ -111,6 +115,22 @@ public class AttendanceController {
         attendanceService.updateAttendance(attendance);
 
         return "redirect:/attendance";
+    }
+
+    // One record per student, subject and date (#35), as bulk entry already
+    // enforces. On edit, ownId lets the record keep its own values.
+    private void rejectIfAlreadyRecorded(Attendance attendance, Long ownId, BindingResult result) {
+
+        if (attendance.getStudent() == null || attendance.getSubject() == null
+                || attendance.getAttendanceDate() == null) {
+            return;
+        }
+
+        if (attendanceService.isAlreadyRecorded(attendance.getStudent().getId(),
+                attendance.getSubject().getId(), attendance.getAttendanceDate(), ownId)) {
+            result.rejectValue("attendanceDate", "attendance.duplicate",
+                    "This student already has attendance for this subject on this date.");
+        }
     }
 
     // Spring stops growing a bound list at 256 rows by default, which would

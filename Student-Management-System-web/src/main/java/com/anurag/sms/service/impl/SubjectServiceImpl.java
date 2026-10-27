@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.anurag.sms.entity.Subject;
 import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.AttendanceRepository;
+import com.anurag.sms.repository.CourseRepository;
 import com.anurag.sms.repository.EnrollmentRepository;
 import com.anurag.sms.repository.ExamRepository;
 import com.anurag.sms.repository.ResultRepository;
@@ -28,19 +29,22 @@ public class SubjectServiceImpl implements SubjectService {
     private final EnrollmentRepository enrollmentRepository;
     private final ExamRepository examRepository;
     private final ResultRepository resultRepository;
+    private final CourseRepository courseRepository;
 
     public SubjectServiceImpl(
             SubjectRepository subjectRepository,
             AttendanceRepository attendanceRepository,
             EnrollmentRepository enrollmentRepository,
             ExamRepository examRepository,
-            ResultRepository resultRepository) {
+            ResultRepository resultRepository,
+            CourseRepository courseRepository) {
 
         this.subjectRepository = subjectRepository;
         this.attendanceRepository = attendanceRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.examRepository = examRepository;
         this.resultRepository = resultRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -77,6 +81,9 @@ public class SubjectServiceImpl implements SubjectService {
         resultRepository.deleteByExamSubjectId(id);
 
         examRepository.deleteBySubjectId(id);
+
+        // Out of every course's curriculum (G9)
+        courseRepository.removeSubjectFromCourses(id);
 
         subjectRepository.deleteById(id);
     }

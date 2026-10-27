@@ -39,6 +39,11 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     boolean existsByStudentIdAndSubjectIdAndAttendanceDate(Long studentId, Long subjectId, LocalDate attendanceDate);
 
+    // The single form's check (#35): on edit, the record may keep its own
+    // student, subject and date
+    boolean existsByStudentIdAndSubjectIdAndAttendanceDateAndIdNot(
+            Long studentId, Long subjectId, LocalDate attendanceDate, Long id);
+
     // Student profile (E11): all of a student's records, and those in one status
     long countByStudentId(Long studentId);
 

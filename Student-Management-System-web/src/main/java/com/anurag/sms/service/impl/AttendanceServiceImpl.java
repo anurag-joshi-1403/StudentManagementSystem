@@ -67,6 +67,14 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
+    public boolean isAlreadyRecorded(Long studentId, Long subjectId, LocalDate date, Long ownId) {
+        return ownId == null
+                ? attendanceRepository.existsByStudentIdAndSubjectIdAndAttendanceDate(studentId, subjectId, date)
+                : attendanceRepository.existsByStudentIdAndSubjectIdAndAttendanceDateAndIdNot(
+                        studentId, subjectId, date, ownId);
+    }
+
+    @Override
     public Page<Attendance> searchAttendance(String keyword, LocalDate attendanceDate, int pageNo) {
 
         // A blank keyword means "no keyword filter", which the query

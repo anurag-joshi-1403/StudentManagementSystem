@@ -1,5 +1,7 @@
 package com.anurag.sms.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,5 +27,13 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     // Dashboard: how many distinct departments the faculty spans
     @Query("SELECT COUNT(DISTINCT t.department) FROM Teacher t WHERE t.department IS NOT NULL")
     long countDistinctDepartments();
+
+    // Users page (G10): teachers no account is linked to yet, by name
+    @Query("""
+            SELECT t FROM Teacher t
+            WHERE NOT EXISTS (SELECT u.id FROM User u WHERE u.teacher = t)
+            ORDER BY t.firstName, t.lastName
+            """)
+    List<Teacher> findWithoutAccount();
 
 }

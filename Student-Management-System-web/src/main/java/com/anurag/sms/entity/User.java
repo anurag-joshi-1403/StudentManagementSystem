@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -28,8 +27,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    // The BCrypt hash, always 60 characters, so a length rule here would
+    // check nothing. The rule for what people type is PasswordPolicy (#36).
     @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
     @Column(nullable = false)
     private String password;
 
@@ -41,6 +41,18 @@ public class User {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    // The person this account belongs to (G10): a student for a STUDENT
+    // account, a teacher for a TEACHER account, otherwise neither. Set by an
+    // admin on the Users page; each record links to at most one account.
+    // Created by V6__user_links.sql.
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", unique = true)
+    private Student student;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id", unique = true)
+    private Teacher teacher;
 
     public User() {
     }
@@ -116,5 +128,21 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 }

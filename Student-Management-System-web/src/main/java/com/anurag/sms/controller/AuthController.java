@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.anurag.sms.dto.UserRegistrationDto;
@@ -33,10 +34,11 @@ public class AuthController {
         return "auth/register";
     }
 
-    // Register User
+    // Register User. The form is bound as "user", the name the page reads;
+    // without the name, any validation error rendered a 500 page (#36).
     @PostMapping("/register")
     public String registerUser(
-            @Valid UserRegistrationDto user,
+            @Valid @ModelAttribute("user") UserRegistrationDto user,
             BindingResult result,
             Model model) {
 
@@ -44,9 +46,12 @@ public class AuthController {
             return "auth/register";
         }
 
+        // Only the service's own messages are shown. Any other exception
+        // goes to the error page, so its text (which can include SQL) never
+        // reaches the visitor (#43).
         try {
             userService.registerUser(user);
-        } catch (RuntimeException ex) {
+        } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());
             return "auth/register";
         }

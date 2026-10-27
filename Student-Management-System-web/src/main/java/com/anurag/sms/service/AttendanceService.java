@@ -31,6 +31,10 @@ public interface AttendanceService {
     // (null or blank = no filter). pageNo starts at 1.
     Page<Attendance> searchAttendance(String keyword, LocalDate attendanceDate, int pageNo);
 
+    // True if another record already exists for this student, subject and
+    // date (#35). ownId is the record being edited, or null for a new one.
+    boolean isAlreadyRecorded(Long studentId, Long subjectId, LocalDate date, Long ownId);
+
     // Dashboard Count
     long getTotalAttendance();
 

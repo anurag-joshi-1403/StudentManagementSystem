@@ -108,9 +108,17 @@ public class FeeServiceImpl implements FeeService {
     }
 
     @Override
-    public BigDecimal getTotalFeeAmount() {
+    public BigDecimal getCollectedAmount() {
 
-        BigDecimal total = feeRepository.sumAllAmounts();
+        BigDecimal total = feeRepository.sumAmountByPaymentStatus(PAID);
+
+        return total != null ? total : BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal getOutstandingAmount() {
+
+        BigDecimal total = feeRepository.sumAmountByPaymentStatusNot(PAID);
 
         return total != null ? total : BigDecimal.ZERO;
     }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.anurag.sms.entity.Subject;
+import com.anurag.sms.service.CourseService;
 import com.anurag.sms.service.ExamService;
 import com.anurag.sms.service.SubjectService;
 
@@ -21,11 +22,14 @@ public class SubjectController {
 
     private final SubjectService subjectService;
     private final ExamService examService;
+    private final CourseService courseService;
 
     public SubjectController(SubjectService subjectService,
-                             ExamService examService) {
+                             ExamService examService,
+                             CourseService courseService) {
         this.subjectService = subjectService;
         this.examService = examService;
+        this.courseService = courseService;
     }
 
     // Display Subject List
@@ -112,6 +116,7 @@ public class SubjectController {
 
         model.addAttribute("subject", subjectService.getSubjectById(id));
         model.addAttribute("exams", examService.getExamsBySubject(id));
+        model.addAttribute("courses", courseService.getCoursesOffering(id));
 
         return LayoutView.render(model, "subject/subject-view :: content", "subject", "Subject Details");
     }

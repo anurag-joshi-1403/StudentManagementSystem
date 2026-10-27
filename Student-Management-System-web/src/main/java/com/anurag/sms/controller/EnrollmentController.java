@@ -117,6 +117,19 @@ public class EnrollmentController {
                                         "This student is already enrolled in this course and subject.");
                 }
 
+                // Only a subject the course teaches (G9). The form hides the
+                // others; this catches a request that bypasses it.
+                if (enrollment.getCourse() != null
+                                && enrollment.getSubject() != null
+                                && !result.hasFieldErrors("subject")
+                                && !courseService.offersSubject(
+                                                enrollment.getCourse().getId(),
+                                                enrollment.getSubject().getId())) {
+
+                        result.rejectValue("subject", "enrollment.notInCourse",
+                                        "This subject is not part of the chosen course.");
+                }
+
                 if (result.hasErrors()) {
 
                         model.addAttribute("students",

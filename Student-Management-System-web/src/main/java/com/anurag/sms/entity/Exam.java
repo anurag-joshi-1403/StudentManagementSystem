@@ -10,9 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import com.anurag.sms.utility.FieldLimits;
+import com.anurag.sms.utility.GradeCalculator;
 
 @Entity
 @Table(name = "exams")
@@ -23,6 +28,7 @@ public class Exam {
     private Long id;
 
     @NotBlank(message = "Exam name is required")
+    @Size(max = FieldLimits.TEXT, message = "Exam name" + FieldLimits.TEXT_TOO_LONG)
     private String examName;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,6 +41,8 @@ public class Exam {
 
     @NotNull(message = "Total marks is required")
     @Min(value = 1, message = "Total marks must be greater than 0")
+    @Max(value = GradeCalculator.MAX_MARKS,
+            message = "Total marks cannot be more than " + GradeCalculator.MAX_MARKS)
     private Integer totalMarks;
 
     @NotNull(message = "Passing marks is required")

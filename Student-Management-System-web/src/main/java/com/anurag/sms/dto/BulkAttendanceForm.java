@@ -7,6 +7,9 @@ import java.util.List;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+import com.anurag.sms.utility.FieldLimits;
 
 /**
  * The bulk attendance form (E14): one subject and date, and one entry per
@@ -61,6 +64,7 @@ public class BulkAttendanceForm {
         @Pattern(regexp = "Present|Absent|Late", message = "Choose Present, Absent or Late")
         private String status;
 
+        @Size(max = FieldLimits.TEXT, message = "Remarks" + FieldLimits.TEXT_TOO_LONG)
         private String remarks;
 
         // The existing record's status, for display only. The save checks

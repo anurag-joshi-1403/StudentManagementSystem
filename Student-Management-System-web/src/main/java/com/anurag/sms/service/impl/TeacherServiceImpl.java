@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.anurag.sms.entity.ActivityLog;
 import com.anurag.sms.entity.Teacher;
 import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.TeacherRepository;
+import com.anurag.sms.repository.UserRepository;
 import com.anurag.sms.service.ActivityLogService;
 import com.anurag.sms.service.TeacherService;
 import com.anurag.sms.utility.Pages;
@@ -17,12 +19,20 @@ import com.anurag.sms.utility.Pages;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
+    private final UserRepository userRepository;
     private final ActivityLogService activityLogService;
 
     public TeacherServiceImpl(TeacherRepository teacherRepository,
+                              UserRepository userRepository,
                               ActivityLogService activityLogService) {
         this.teacherRepository = teacherRepository;
+        this.userRepository = userRepository;
         this.activityLogService = activityLogService;
+    }
+
+    @Override
+    public List<Teacher> getTeachersWithoutAccount() {
+        return teacherRepository.findWithoutAccount();
     }
 
     @Override
@@ -58,6 +68,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public void deleteTeacher(Long id) {
 
         // Read the name first: afterwards there is nothing left to describe.
@@ -67,6 +78,9 @@ public class TeacherServiceImpl implements TeacherService {
             return;
         }
         String name = fullName(teacher);
+
+        // The teacher's account, if any, stays but loses its link (G10)
+        userRepository.unlinkTeacher(id);
 
         teacherRepository.deleteById(id);
 

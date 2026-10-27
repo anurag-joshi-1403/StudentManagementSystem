@@ -54,6 +54,7 @@ public class ResultController {
                              Model model) {
 
         checkMarksWithinTotal(result, bindingResult);
+        rejectIfAlreadyGraded(result, null, bindingResult);
 
         // Must run before the service: its grade calculation dereferences
         // the exam and the marks, so a blank one used to throw a
@@ -99,6 +100,7 @@ public class ResultController {
         result.setId(id);
 
         checkMarksWithinTotal(result, bindingResult);
+        rejectIfAlreadyGraded(result, id, bindingResult);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("students", studentService.getAllStudents());
@@ -122,6 +124,20 @@ public class ResultController {
             bindingResult.rejectValue("obtainedMarks", "result.obtainedMarks.max",
                     "Marks cannot be more than this exam's total ("
                             + result.getExam().getTotalMarks() + ").");
+        }
+    }
+
+    // One result per student and exam (#41): a second one made the marksheet
+    // count the exam twice. On edit, ownId lets the result keep its own pair.
+    private void rejectIfAlreadyGraded(Result result, Long ownId, BindingResult bindingResult) {
+
+        if (result.getStudent() == null || result.getExam() == null) {
+            return;
+        }
+
+        if (resultService.isAlreadyGraded(result.getStudent().getId(), result.getExam().getId(), ownId)) {
+            bindingResult.rejectValue("exam", "result.duplicate",
+                    "This student already has a result for this exam. Edit that result instead.");
         }
     }
 

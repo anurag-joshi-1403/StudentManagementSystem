@@ -82,9 +82,9 @@ public class DashboardController {
                 // from nothing.
                 model.addAttribute("departmentCount", teacherService.getDepartmentCount());
                 model.addAttribute("totalCredits", subjectService.getTotalCredits());
-                model.addAttribute("totalFeeAmount", feeService.getTotalFeeAmount());
+                model.addAttribute("collectedAmount", feeService.getCollectedAmount());
+                model.addAttribute("outstandingAmount", feeService.getOutstandingAmount());
                 model.addAttribute("paidFees", feeService.countByPaymentStatus("Paid"));
-                model.addAttribute("pendingFees", feeService.countByPaymentStatus("Pending"));
                 model.addAttribute("overdueFees", feeService.getOverdueFeeCount());
                 model.addAttribute("enrolledStudents", enrollmentService.getEnrolledStudentCount());
                 model.addAttribute("presentCount", attendanceService.countByStatus("Present"));

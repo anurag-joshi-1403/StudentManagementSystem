@@ -10,6 +10,9 @@ public interface TeacherService {
 
     List<Teacher> getAllTeachers();
 
+    // Users page (G10): teachers no account is linked to yet
+    List<Teacher> getTeachersWithoutAccount();
+
     Teacher getTeacherById(Long id);
 
     Teacher saveTeacher(Teacher teacher);

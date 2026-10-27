@@ -120,8 +120,14 @@
                     class="form-control"
                     rows="3"
                     th:field="*{remarks}"
+                    th:classappend="${#fields.hasErrors('remarks')} ? 'is-invalid'"
                     placeholder="e.g. Medical leave, late due to transport, etc."
                   ></textarea>
+                  <div
+                    class="invalid-feedback"
+                    th:if="${#fields.hasErrors('remarks')}"
+                    th:errors="*{remarks}"
+                  ></div>
                 </div>
 
                 <!-- Action Buttons -->

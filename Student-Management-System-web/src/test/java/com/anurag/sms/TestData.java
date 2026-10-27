@@ -22,14 +22,15 @@ public final class TestData {
     private TestData() {
     }
 
-    public static Student student(String first, String last) {
+    // A student belongs to a course since G8; save the course first
+    public static Student student(String first, String last, Course course) {
         Student s = new Student();
         s.setFirstName(first);
         s.setLastName(last);
         s.setEmail(first.toLowerCase() + "." + last.toLowerCase() + "@example.com");
         s.setPhone("9876500000");
         s.setGender("Other");
-        s.setCourse("B.Sc Physics");
+        s.setCourse(course);
         s.setDateOfBirth(LocalDate.of(2005, 1, 1));
         s.setAddress("1 Test Road, Pune");
         return s;

@@ -7,6 +7,10 @@ import com.anurag.sms.entity.User;
 
 public interface UserService {
 
+    // Registration. Throws IllegalArgumentException with a message for the
+    // form when the username or email is taken or the passwords differ.
+    String ALREADY_REGISTERED = "That username or email is already registered.";
+
     User registerUser(UserRegistrationDto registrationDto);
 
     User findByUsername(String username);
@@ -35,6 +39,17 @@ public interface UserService {
     User setEnabled(Long userId, boolean enabled, String actingUsername);
 
     // Change an account's role (F12). Admins cannot change their own role,
-    // so there is always at least one admin left.
+    // so there is always at least one admin left. A link that no longer
+    // fits the new role is removed (G10).
     User changeRole(Long userId, String role, String actingUsername);
+
+    // Link an account to the person it belongs to (G10): a STUDENT account
+    // to a student, a TEACHER account to a teacher. Each student or teacher
+    // belongs to at most one account. Throws IllegalArgumentException when
+    // the role does not fit or the person is linked to another account.
+    User linkStudent(Long userId, Long studentId);
+
+    User linkTeacher(Long userId, Long teacherId);
+
+    User unlink(Long userId);
 }

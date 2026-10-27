@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import com.anurag.sms.utility.FieldLimits;
 
 @Entity
 // Subject codes are unique in the database too (#27). Declared on the table
@@ -16,12 +19,15 @@ public class Subject {
     private Long id;
 
     @NotBlank(message = "Subject Code is required")
+    @Size(max = FieldLimits.TEXT, message = "Subject Code" + FieldLimits.TEXT_TOO_LONG)
     private String subjectCode;
 
     @NotBlank(message = "Subject Name is required")
+    @Size(max = FieldLimits.TEXT, message = "Subject Name" + FieldLimits.TEXT_TOO_LONG)
     private String subjectName;
 
     @NotBlank(message = "Semester is required")
+    @Size(max = FieldLimits.TEXT, message = "Semester" + FieldLimits.TEXT_TOO_LONG)
     private String semester;
 
     @NotNull(message = "Credits are required")
@@ -29,6 +35,7 @@ public class Subject {
     private Integer credits;
 
     @NotBlank(message = "Department is required")
+    @Size(max = FieldLimits.TEXT, message = "Department" + FieldLimits.TEXT_TOO_LONG)
     private String department;
 
     public Subject() {

@@ -65,8 +65,9 @@
         </div>
       </article>
 
-      <!-- Fees: the headline is now money collected, not a record count.
-           Admin-only, like the Fees pages themselves (C7). -->
+      <!-- Fees: money actually received (fees marked Paid), not a record
+           count, and not pending fees either (#34). The amount still owed
+           sits underneath. Admin-only, like the Fees pages themselves (C7). -->
       <article class="stat-card" sec:authorize="hasRole('ADMIN')">
         <span class="icon-box tint-cyan" aria-hidden="true">
           <i class="bi bi-cash-stack"></i>
@@ -75,14 +76,14 @@
           <p class="stat-label">Fees Collected</p>
           <p
             class="stat-value stat-value-sm"
-            th:text="'₹' + ${#numbers.formatInteger(totalFeeAmount, 1, 'COMMA')}"
+            th:text="'₹' + ${#numbers.formatInteger(collectedAmount, 1, 'COMMA')}"
           >
             ₹0
           </p>
           <p class="stat-meta">
             <span th:text="${paidFees} + ' paid'">0 paid</span>
             <span class="dot" aria-hidden="true">·</span>
-            <span th:text="${pendingFees} + ' pending'">0 pending</span>
+            <span th:text="'₹' + ${#numbers.formatInteger(outstandingAmount, 1, 'COMMA')} + ' pending'">₹0 pending</span>
             <th:block th:if="${overdueFees > 0}">
               <span class="dot" aria-hidden="true">·</span>
               <span class="stat-meta-alert" th:text="${overdueFees} + ' overdue'">0 overdue</span>

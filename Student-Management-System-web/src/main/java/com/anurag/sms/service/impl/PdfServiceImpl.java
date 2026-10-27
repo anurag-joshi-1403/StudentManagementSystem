@@ -75,7 +75,7 @@ public class PdfServiceImpl implements PdfService {
             document.add(details(new String[][] {
                     { "Student", name(student) },
                     { "Email", student.getEmail() },
-                    { "Course", student.getCourse() },
+                    { "Course", student.getCourse().getCourseName() },
             }));
 
             PdfPTable table = new PdfPTable(new float[] { 2.2f, 2.2f, 1.6f, 1.1f, 1.1f, 1.4f, 0.9f, 1.0f });
@@ -150,7 +150,7 @@ public class PdfServiceImpl implements PdfService {
 
             PdfPTable details = details(new String[][] {
                     { "Student", name(fee.getStudent()) + "  (Student ID " + fee.getStudent().getId() + ")" },
-                    { "Course", fee.getStudent().getCourse() },
+                    { "Course", fee.getStudent().getCourse().getCourseName() },
                     { "Fee Type", fee.getFeeType() },
                     { "Due Date", dueDate },
                     { "Payment Date", fee.getPaymentDate() != null ? fee.getPaymentDate().toString() : "Not paid yet" },

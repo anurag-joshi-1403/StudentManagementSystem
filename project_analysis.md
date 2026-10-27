@@ -9,16 +9,16 @@
 **Module-by-module inventory · code-health audit · engineering backlog**
 
 [![CI](https://github.com/anurag-joshi-1403/StudentManagementSystem/actions/workflows/ci.yml/badge.svg)](https://github.com/anurag-joshi-1403/StudentManagementSystem/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/Tests-55_passing-brightgreen?style=flat-square&logo=junit5&logoColor=white)
-![Endpoints](https://img.shields.io/badge/Endpoints-88-blueviolet?style=flat-square)
-![LOC](https://img.shields.io/badge/Java_LOC-7.4k-yellow?style=flat-square)
-![Resolved](https://img.shields.io/badge/Resolved-31-success?style=flat-square)
-![Open](https://img.shields.io/badge/Open_issues-6-orange?style=flat-square)
-![Verified](https://img.shields.io/badge/Verified-9_Oct_2026-informational?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-117_passing-brightgreen?style=flat-square&logo=junit5&logoColor=white)
+![Endpoints](https://img.shields.io/badge/Endpoints-92-blueviolet?style=flat-square)
+![LOC](https://img.shields.io/badge/Java_LOC-8.7k-yellow?style=flat-square)
+![Resolved](https://img.shields.io/badge/Resolved-44-success?style=flat-square)
+![Open](https://img.shields.io/badge/Open_issues-3-yellowgreen?style=flat-square)
+![Verified](https://img.shields.io/badge/Verified-11_Oct_2026-informational?style=flat-square)
 
-*Last verified against source: **9 Oct 2026** · Stages 0–F of the [Task Board](TASKS.md) on top of commit `ab0a936`*
+*Last verified against source: **11 Oct 2026** · v1 Stages 0–F, v2 Stage G of the [Task Board](TASKS.md) and the [11 Oct audit](PROJECT_AUDIT_REPORT.md), on top of commit `5eb9b8e`*
 
-[📘 README](README.md) · [🗺️ Roadmap](PROJECT_ROADMAP.md) · [✅ Task Board](TASKS.md) · [🧪 Backlog](#-engineering-backlog) · [🚧 Remaining Work](#-remaining-work)
+[📘 README](README.md) · [🗺️ Roadmap](PROJECT_ROADMAP.md) · [✅ Task Board](TASKS.md) · [🧪 Backlog](#-engineering-backlog) · [🚧 Remaining Work](#-remaining-work) · [🔎 Audit Report](PROJECT_AUDIT_REPORT.md)
 
 </div>
 
@@ -42,22 +42,33 @@
 | Check | Result | Evidence |
 |---|:---:|---|
 | 🛠️ **Compile & package** | 🟢 Pass | `mvnw clean test` → `BUILD SUCCESS` |
-| 🧪 **Test suite** | 🟢 55 passing | 7 classes: unit, `@DataJpaTest`, `@SpringBootTest` and `@WebMvcTest` security tests, on in-memory H2 |
+| 🧪 **Test suite** | 🟢 117 passing | 21 classes: unit, `@DataJpaTest`, `@SpringBootTest` and `@WebMvcTest`, including sign-in and session tests through the real login form, on in-memory H2 |
 | ⚙️ **CI** | 🟢 Configured | `.github/workflows/ci.yml` runs `./mvnw -B test` on Java 21 for every push and pull request |
-| 🚀 **Startup** | 🟢 Pass | Boots against MySQL in under 10 s · **88** app endpoints (60 GET, 28 POST) |
-| 🔑 **Authentication** | 🟢 Solid | BCrypt, `enabled` flag honoured, CSRF on every POST form, POST logout, first admin seeded from env |
-| 🛡️ **Authorization** | 🟢 Solid | Admin / Teacher / Student URL rules plus `sec:authorize` in the UI · 51/51 route × role checks pass |
+| 🚀 **Startup** | 🟢 Pass | Boots against MySQL in under 15 s · **92** app endpoints (60 GET, 32 POST) |
+| 🗄️ **Schema** | 🟢 Versioned | Flyway migrations V1–V7; Hibernate only validates (`ddl-auto=validate`). Run on an empty schema and on an existing one |
+| 🔑 **Authentication** | 🟢 Solid | BCrypt, one 8–72 character password rule, CSRF on every POST form, POST logout, disabled or re-roled accounts signed out at once |
+| 🛡️ **Authorization** | 🟡 Solid, viewing wide open | Admin / Teacher / Student URL rules plus `sec:authorize` in the UI · `RouteAccessTest` checks all 92 routes for every role on each build · any signed-in account can view every student (#38) |
 | 🧮 **Business logic** | 🟢 Working | One `GradeCalculator` for results and marksheets · overdue fees · attendance % · notifications from live data |
-| ✔️ **Form validation** | 🟢 Working | Bean Validation on every form and every CSV row; cross-field checks for marks, pass mark and duplicates |
+| ✔️ **Form validation** | 🟢 Working | Bean Validation on every form and every CSV row; cross-field checks for marks, pass mark and duplicates; a length limit on every text field |
 | 🔍 **Search & paging** | 🟢 Working | One paged query per module (5 per page, sorted by id); keyword and date filters combine |
-| 🔗 **Referential integrity** | 🟢 Solid | All four parent deletes clear dependent rows; `DeleteCascadeTest` proves it against foreign keys |
+| 🔗 **Referential integrity** | 🟢 Solid | Students link to a course, courses to their subjects, accounts to a student or teacher; every delete clears or refuses its dependants, and `DeleteCascadeTest` proves it |
 | 🎨 **UI consistency** | 🟢 Complete | Every page renders through `layout.html`; one Bootstrap version; styled 403/404/409/413/500 pages |
-| 📦 **Uploads** | 🟢 Hardened | JPEG/PNG decoded server-side, 2 MB cap, generated file names, old photo removed after a successful save |
+| 📦 **Uploads** | 🟢 Hardened | JPEG/PNG decoded server-side after a 40-megapixel check, 2 MB cap, generated file names, old photo removed after a successful save |
 
 > 🔄 **7–9 Oct 2026:** Stages B to F of the [Task Board](TASKS.md) closed **16 more issues**, including two of the
 > three Critical ones (#3 roles, #4 GET deletes; #5 is half done), and added the whole feature set from
-> roadmap phases 3 and 4. Working on them turned up **four new low-severity issues (#34–#37)**, listed open
-> below.
+> roadmap phases 3 and 4. Working on them turned up four new low-severity issues (#34–#37).
+>
+> 🔄 **11 Oct 2026:** v2 Stage G closed **#33–#37**, put the schema under Flyway, made a student's course and a
+> course's subjects real relationships, and linked accounts to students and teachers. Two bugs found on the way
+> were fixed with it: the registration form gave a 500 page on any validation error, and saving a course would
+> have wiped its subjects. Only #5 is open.
+>
+> 🔎 **11 Oct 2026, audit:** a full review ([report](PROJECT_AUDIT_REPORT.md)) logged **#38–#47** and fixed eight of
+> them, each with a test that failed first: text over 255 characters lost the form behind the 409 page, an audit
+> line could overflow after its change was saved, a student could get two results for one exam, the role
+> rules had no automated test, and four smaller ones. **#38 stays open on purpose:** every signed-in account can
+> view every student's records until Stage I.
 
 ---
 
@@ -72,16 +83,18 @@
 | Layer | Count |
 |---|:---:|
 | 🎯 Controllers | `14` (+ `NotificationAdvice`, `GlobalExceptionHandler`) |
-| ⚙️ Service interfaces / impls | `13` / `13` (+ `CustomUserDetailsService`) |
+| ⚙️ Service interfaces / impls | `14` / `14` (+ `CustomUserDetailsService`) |
 | 🗄️ Repositories | `11` |
 | 📦 JPA entities | `11` |
-| 🔗 `@ManyToOne` relationships | `9` |
-| 🔒 Unique constraints in the database | `7` |
-| ✍️ `@Modifying` JPQL deletes | `10` |
-| 📊 Aggregate `@Query`s | `6` (4 sums/counts, 2 attendance summaries) |
+| 🔗 Relationships | `10` `@ManyToOne` · `2` `@OneToOne` · `1` `@ManyToMany` |
+| 🔒 Unique constraints in the database | `11` |
+| ✍️ `@Modifying` queries | `13` (11 deletes, 2 unlinks) |
+| 📊 Aggregate `@Query`s | `7` (5 sums/counts, 2 attendance summaries) |
 | 🔍 Search `@Query`s | `2` |
 | 📨 DTOs and records | `7` |
-| 🧰 Utilities | `4` (`GradeCalculator`, `CsvHelper`, `FileUploadUtil`, `Pages`) |
+| 🧰 Utilities | `6` (`GradeCalculator`, `CsvHelper`, `FileUploadUtil`, `Pages`, `PasswordPolicy`, `FieldLimits`) |
+| 🔐 Security helpers | `2` (`CurrentUser`, `AccessRules`) |
+| 🗄️ Flyway migrations | `7` |
 
 </td>
 <td width="50%" valign="top">
@@ -90,15 +103,15 @@
 
 | Item | Count |
 |---|:---:|
-| 🌐 HTTP endpoints | `88` (60 GET · 28 POST) |
+| 🌐 HTTP endpoints | `92` (60 GET · 32 POST) |
 | 🖼️ Thymeleaf templates | `57` |
 | 💅 CSS files | `11` |
-| ⚡ JS files | `3` |
-| 🧪 Test classes / tests | `7` / `55` |
-| 📄 Java files (main) | `83` |
-| 📏 Lines of Java (main) | `7,423` |
-| 📏 Lines of test Java | `808` |
-| 📏 Templates · CSS · JS | `5,573` · `1,505` · `235` lines |
+| ⚡ JS files | `4` |
+| 🧪 Test classes / tests | `21` / `117` |
+| 📄 Java files (main) | `90` |
+| 📏 Lines of Java (main) | `8,704` |
+| 📏 Lines of test Java | `2,534` |
+| 📏 Templates · CSS · JS | `5,732` · `1,505` · `266` lines |
 
 </td>
 </tr>
@@ -163,7 +176,7 @@ each one goes beyond that, and the cards below list what's built.
 
 <br/>
 
-- [x] `Student` entity: `firstName`, `lastName`, `email` (unique), `phone` (10 digits), `gender`, `course` (free text), `dateOfBirth`, `address`, `photo`
+- [x] `Student` entity: `firstName`, `lastName`, `email` (unique), `phone` (10 digits), `gender`, `course` (a link to `Course` since G8), `dateOfBirth`, `address`, `photo`
 - [x] `StudentController`: 13 routes, including `/{id}/marksheet`, `/{id}/marksheet.pdf`, `/import` and `/export`
 - [x] Marksheet: totals, overall percentage and grade from `GradeCalculator`; a pass only if every exam is passed
 - [x] Profile shows attendance %, with a "Below 75%" flag
@@ -298,7 +311,9 @@ constraint error now shows the styled **409** page from `GlobalExceptionHandler`
 | Secrets | DB credentials and the first admin come from environment variables |
 | Output escaping | No `th:utext`; no user data inside inline JavaScript |
 | CSV export | Formula-looking cells prefixed with `'`, so Excel shows them as text |
-| Logging | SQL and DEBUG logging only in the `dev` profile |
+| Logging | SQL and DEBUG logging only in the `dev` profile; no password is ever logged (#44) |
+| Role rules | `RouteAccessTest` checks all 92 routes for every role on each build (#42) |
+| Error text | Registration shows only its own messages, never the database's (#43) |
 
 </td>
 <td width="50%" valign="top">
@@ -307,9 +322,9 @@ constraint error now shows the styled **409** page from `GlobalExceptionHandler`
 
 | Gap | Issue |
 |---|:---:|
+| Any signed-in account, self-registered ones included, can view every student's records | #38 |
 | Old DB password still in git history, not rotated | #5 |
-| Sessions survive a disable or role change until they end | #37 |
-| Registration accepts 6-character passwords, the change form 8 | #36 |
+| Password rule counts characters, BCrypt counts bytes | #47 |
 | Old photos and password in git history (rewrite is Parked) | — |
 
 </td>
@@ -321,19 +336,20 @@ constraint error now shows the styled **409** page from `GlobalExceptionHandler`
 ## 🧪 Engineering Backlog
 
 > Numbering continues the register in [PROJECT_ROADMAP.md](PROJECT_ROADMAP.md#-engineering-backlog), so issue
-> numbers match across both documents. 🆕 marks issues first found during Stages E–F. [Remaining Work](#-remaining-work)
+> numbers match across both documents. 🆕 marks issues first found during Stages E–F, 🔎 those from the [11 Oct audit](PROJECT_AUDIT_REPORT.md). [Remaining Work](#-remaining-work)
 > turns the open items into a checklist.
 
 ```mermaid
 pie showData
-    title Backlog (37 items)
-    "Resolved" : 31
+    title Backlog (47 items)
+    "Resolved" : 44
     "Critical (partly done)" : 1
-    "Low" : 5
+    "High, open by design" : 1
+    "Low, open" : 1
 ```
 
 <details>
-<summary><b>✅ Resolved (31)</b></summary>
+<summary><b>✅ Resolved (44)</b></summary>
 
 <br/>
 
@@ -370,6 +386,19 @@ pie showData
 | 30 | Dead code and config (Lombok, `/uploads/**` rule, unused methods) | Removed (B17) | `7 Oct 2026` |
 | 31 | External runtime dependencies | Local avatar SVG, Bootstrap Icons only (B9, B10, B16) | `7 Oct 2026` |
 | 32 | Edit forms opened with empty date boxes | `spring.mvc.format.date=iso` | `6 Oct 2026` |
+| 33 | Raw "Failed to convert…" text for letters in a number field | `messages.properties` (G1) | `11 Oct 2026` |
+| 34 | "Fees Collected" added up pending fees too | Paid-only sum, pending amount shown separately (G2) | `11 Oct 2026` |
+| 35 | Single attendance form allowed duplicates | Form check plus a unique index, `V2__attendance_unique.sql` (G3) | `11 Oct 2026` |
+| 36 | Registration accepted 6 characters, the change form 8 | One `PasswordPolicy`, 8 to 72 characters (G4) | `11 Oct 2026` |
+| 37 | Sessions survived a disable or role change | `SessionRegistry` + `UserSessionService` (G5) | `11 Oct 2026` |
+| 39 🔎 | Text over 255 characters failed in the database: the form was lost behind a 409 page saying nothing changed | `@Size` on every text field from one `FieldLimits`; three forms now show the message | `11 Oct 2026` |
+| 40 🔎 | An audit line could overflow its column after the change was saved, so the user was told nothing changed (a 101+ character username could not change its password) | `ActivityLog` shortens lines to fit; usernames capped at 50 | `11 Oct 2026` |
+| 41 🔎 | A student could get two results for one exam; the marksheet counted it twice | Form check plus a unique index, `V7__results_unique.sql` | `11 Oct 2026` |
+| 42 🔎 | Role rules checked by hand (51 routes, 9 Oct) but not by any test; 8 automated 403 checks in all | `RouteAccessTest`: 92 routes × 3 roles and signed-out visitors; a new route without a rule fails | `11 Oct 2026` |
+| 43 🔎 | Registration printed any exception's text, which can include SQL | Only the service's own messages are shown | `11 Oct 2026` |
+| 44 🔎 | The demo seeder logged the demo password | Logs the setting's name, not its value | `11 Oct 2026` |
+| 45 🔎 | An exam could be out of more than 1000, the most a result can hold | `@Max` from `GradeCalculator.MAX_MARKS` | `11 Oct 2026` |
+| 46 🔎 | A photo was decoded before its size was checked: a small file could make the server allocate gigabytes (admin-only) | Refused over 40 megapixels before decoding | `11 Oct 2026` |
 
 </details>
 
@@ -380,22 +409,29 @@ pie showData
 
 | # | Issue | Location | Status |
 |:---:|---|---|:---:|
-| 5 | Database password committed in plaintext. Since 6 Oct it is read from `${DB_PASSWORD}`, but the old value is still in git history and has not been rotated ([task A4](TASKS.md), deferred because other local projects share the account) | `application.properties` history | 🟡 Env var done |
+| 5 | Database password committed in plaintext. Since 6 Oct it is read from `${DB_PASSWORD}`, and since 11 Oct the app signs in as its own `sms_app` user, limited to `sms_web` (G6). The leaked `root` password is still in git history and not yet rotated (task A4); only the other local projects use `root` now | `application.properties` history | 🟡 App off `root` |
 
 </details>
 
 <details open>
-<summary><b>🟢 Low (5)</b></summary>
+<summary><b>🟠 High, open by design (1)</b></summary>
 
 <br/>
 
-| # | Issue | Location |
-|:---:|---|---|
-| 33 | Non-numeric input in a number field (only possible by bypassing the browser's number box) shows Spring's raw "Failed to convert…" message | *(no `messages.properties`)* |
-| 34 🆕 | The dashboard's "Fees Collected" adds up every fee, pending ones included (₹120,000 shown, ₹60,000 paid) | `FeeRepository.sumAllAmounts()` |
-| 35 🆕 | The single attendance form allows two records for the same student, subject and date; only bulk entry checks | `AttendanceController.saveAttendance` |
-| 36 🆕 | Registration accepts a 6-character password while changing it needs 8 | `UserRegistrationDto` · `ChangePasswordDto` |
-| 37 🆕 | A disabled account, or one given a new role, keeps any session it already has until that session ends | `AdminUserController` (no session registry) |
+| # | Issue | Location | Status |
+|:---:|---|---|:---:|
+| 38 🔎 | Anyone can register, and every signed-in account can view every student's email, phone, address, date of birth, marks and attendance. Intended for v1 and scheduled for Stage I (I5), but it must be settled before real student data goes online (H7) | `SecurityConfig` · `AuthController` | 🟠 Needs a decision |
+
+</details>
+
+<details open>
+<summary><b>🟡 Low, open (1)</b></summary>
+
+<br/>
+
+| # | Issue | Location | Status |
+|:---:|---|---|:---:|
+| 47 🔎 | The password rule counts characters (8 to 72), but BCrypt's limit is 72 **bytes**. A 30-character Hindi password (90 bytes) passes the rule, then the encoder refuses it with its own message; as `ADMIN_PASSWORD` it would stop startup. Fix: count UTF-8 bytes in `PasswordPolicy` and check it with a small custom constraint | `utility/PasswordPolicy` | 🟡 Open |
 
 </details>
 
@@ -427,6 +463,8 @@ Statements in the companion documents that had stopped matching the source, and 
 | "Tests: 1 passing" · static "Build passing" badge | All three | **55 tests**; the badge is now the real GitHub Actions status | ✅ Fixed 9 Oct |
 | Routes table with `GET /delete/{id}` | README | Deletes are POST since C4; table rebuilt from the controllers | ✅ Fixed 9 Oct |
 | "Role-based access: planned" · "notifications still static" | README · Roadmap | Both shipped (C7–C10, F1–F2) | ✅ Fixed 9 Oct |
+| "51/51 route × role checks pass" | This file | True on 9 Oct, by hand on a running copy; no test re-checked it, and the app now has 92 routes | ✅ Automated 11 Oct (#42) |
+| "last verified against source on 9 Oct 2026" | README footer | The other documents said 11 Oct | ✅ Fixed 11 Oct |
 
 ---
 
@@ -442,7 +480,7 @@ flowchart LR
     P2["🟡 Phase 2 · Secure<br/><b>done</b>"]
     P3["🟢 Phase 3 · Complete<br/><b>done</b>"]
     P4["🔵 Phase 4 · Showcase<br/><b>done</b>"]
-    NX["🧊 Next<br/><i>#33–#37 · Parked</i>"]
+    NX["🧱 v2 Stage G<br/><b>done</b>"]
 
     QW --> P1 --> P2 --> P3 --> P4 --> NX
 
@@ -462,18 +500,32 @@ flowchart LR
 - [x] **Phase 3 · Feature set** (#11, #18, #27, #28): paging, uniqueness, marks checks; detail pages, marksheet, receipt, overdue fees, attendance % and report, exam schedule, bulk attendance, CSV import and export
 - [x] **Phase 4 · Showcase** (#15): notifications, activity log, PDFs, profile and password, user admin, 55 tests, CI, screenshots
 
+### ✅ Done in v2 Stage G (11 Oct 2026)
+
+- [x] **Small fixes** (#33–#36): type-mismatch messages, "Fees Collected" counting only paid fees, the single attendance form's duplicate check, one password rule
+- [x] **End sessions on disable or role change** (#37)
+- [x] Flyway migrations, `Student → Course` and `Course ↔ Subject` relationships, accounts linked to people, demo data
+
 ### 🔜 Still open
 
-- [ ] **Rotate the old database password** (#5, task A4), when the other local projects can move off the shared account
-- [ ] **Small fixes** (#33–#36): a `messages.properties` type-mismatch message, "Fees Collected" summing only paid fees, a duplicate check on the single attendance form, one password length for registration and change
-- [ ] **End sessions on disable or role change** (#37): a `SessionRegistry`, so the change applies at once
+- [x] **Give the app its own MySQL user** (G6): `sms_app`, with rights on `sms_web` only
+- [ ] **Rotate the old `root` password** (#5, task A4). It no longer affects this app, only the other local projects that use `root`
+- [ ] **Decide who may view student records before going public** (#38). Stage I's I5 limits students to their own records; until then, either keep the public demo on made-up data or make new accounts wait for an admin's approval
+- [ ] **Count password bytes, not characters** (#47), so a non-English password over 72 bytes gets the policy's message
+
+### ✅ Done in the 11 Oct audit
+
+- [x] **Eight fixes, each with a test that failed first** (#39–#46): length limits on every text field, audit lines that can't overflow, one result per student and exam (V7), every route × role tested, no SQL text on the registration page, no password in the logs, exam totals capped at 1000, photos measured before decoding
 
 ### 🧊 Parked
 
-Recorded but deliberately unscheduled, because each needs a schema migration or an outside service:
+Recorded but deliberately unscheduled in v1, because each needs a schema migration or an outside service. Most are
+now scheduled in [Roadmap v2](PROJECT_ROADMAP.md#-roadmap-v2): the course and subject links (G8, G9), own records
+only (G10, I4, I5), password reset (L2), migrations (G7), the REST API (Stage N), Docker (H1, H2) and monitoring (P1, P2).
+History rewriting stays parked.
 
-- `Student.course` as a real foreign key to `Course`, and a Subject → Course link
-- Students seeing only their own records, which needs a User → Student link
+- ~~`Student.course` as a real foreign key to `Course`, and a Subject → Course link~~ done in G8 and G9
+- Students seeing only their own records: the User → Student link exists since G10; the pages come in Stage I
 - Forgot / reset password, which needs a mail server
 - Removing the old password and photos from git history (`git filter-repo`), which rewrites published history
 - The production concerns in the roadmap's [Future Scope](PROJECT_ROADMAP.md#-future-scope): migrations, REST API, Docker, monitoring
@@ -488,23 +540,25 @@ Recorded but deliberately unscheduled, because each needs a schema migration or 
 | 👨‍🎓 Student | ✅ | ✅ | 🟢 | CRUD, detail, marksheet + PDF, attendance %, CSV |
 | 👨‍🏫 Teacher · 📚 Course · 📖 Subject · 📝 Enrollment | ✅ | ✅ | 🟢 | Detail pages, uniqueness enforced |
 | 🗓️ Attendance | ✅ | ✅ | 🟢 | Bulk entry, report, detail |
-| 💰 Fee | ✅ | ✅ | 🟢 | Receipt + PDF, overdue, export; dashboard total includes pending (#34) |
+| 💰 Fee | ✅ | ✅ | 🟢 | Receipt + PDF, overdue, export; dashboard splits collected and pending |
 | 🧾 Exam · 🏆 Result | ✅ | ✅ | 🟢 | Schedule, pass rate, grade engine, marks checks |
 | 📊 Dashboard | ✅ | ✅ | 🟢 | Live data, notifications, recent activity |
 | 🎨 Shared layout | ✅ | ✅ | 🟢 | Every page, print styles |
-| 🛡️ Roles/permissions | ✅ | ✅ | 🟢 | 51/51 route × role checks |
+| 🛡️ Roles/permissions | ✅ | ✅ | 🟡 | All 92 routes × 3 roles tested; viewing open to every account until Stage I (#38) |
 | 📥 CSV · 🖨️ PDF | ✅ | ✅ | 🟢 | Import, two exports, two PDFs |
-| 🧪 Tests · ⚙️ CI | ✅ | — | 🟢 | 55 tests, GitHub Actions |
+| 🧪 Tests · ⚙️ CI | ✅ | — | 🟢 | 117 tests, every route × role, GitHub Actions |
 
 <div align="center">
 
 ![Surface](https://img.shields.io/badge/Feature_surface-100%25_of_plan-success?style=for-the-badge)
-![Open](https://img.shields.io/badge/Open_issues-6_(1_partly_done,_5_low)-yellowgreen?style=for-the-badge)
+![Open](https://img.shields.io/badge/Open_issues-3-yellowgreen?style=for-the-badge)
 
 </div>
 
-> Every feature in roadmap phases 1–4 is built. What's open is one deferred chore (#5) and five low-severity
-> issues found along the way; none of them blocks a demo.
+> Every feature in roadmap phases 1–4 is built, and Stage G closed the five low-severity issues found along the
+> way. The 11 Oct audit fixed eight more (#39–#46). What's open is one chore (#5), rotating the leaked `root`
+> password, which this app no longer uses; one decision (#38), who may view student records before the app
+> goes online with real data; and one rare edge case (#47) in the password rule.
 
 ---
 
@@ -512,13 +566,18 @@ Recorded but deliberately unscheduled, because each needs a schema migration or 
 
 | Step | Method | Result |
 |---|---|---|
-| 🛠️ Build & tests | `mvnw clean test` with `DB_PASSWORD` unset, so only H2 is reachable | `BUILD SUCCESS` · 55 tests, 0 failures, 0 errors |
+| 🛠️ Build & tests | `mvnw clean test` with `DB_PASSWORD` unset, so only H2 is reachable | `BUILD SUCCESS` · 117 tests, 0 failures, 0 errors (100 before the audit, 55 on 9 Oct) |
 | 🧬 Tests have teeth | Removed `ExamServiceImpl`'s results delete and re-ran `DeleteCascadeTest` | Fails with H2's referential-integrity error, as it should |
-| 🌐 Route count | Every `@GetMapping`/`@PostMapping` in `controller/`, with class prefixes | 88 endpoints (60 GET, 28 POST); the README route table adds up to 88 |
-| 🛡️ Roles | Each route requested as Admin, Teacher and Student against a second instance on `:8081` | 51/51 match the role matrix |
+| 🌐 Route count | Every `@GetMapping`/`@PostMapping` in `controller/`, with class prefixes | 92 endpoints (60 GET, 32 POST); the README route table adds up to 92 |
+| 🛡️ Roles | Each route requested as Admin, Teacher and Student against a second instance on `:8081` (9 Oct); since 11 Oct `RouteAccessTest` on every build | 51/51 on 9 Oct; now 92 routes × 3 roles plus signed-out visitors. With the fee rule deleted on purpose, the test failed on all 16 teacher and student fee requests |
+| 🗄️ Migrations (11 Oct) | V1–V6 run on an empty MySQL schema; then `sms_web` backed up, baselined at V1 and migrated to V6 | Hibernate validation passes on both; every student kept the course their text named |
+| 🧱 Stage G (11 Oct) | 20 browser-level checks with curl against the demo data on MySQL, one cookie jar per person | 20 of 20 pass, including the sign-out of a disabled account on its next request |
+| 🔑 G6 (11 Oct) | `SHOW GRANTS` as root; `sms_app` asked for `sms_web` and for another project's database; the app started as `sms_app` | Only `sms_web`; the other database refused it (error 1044); Flyway found the schema up to date |
 | 🧪 Stages B–F | Each task reproduced or exercised on `:8081`, checked in headless Edge, with made-up `@example.com` data and dedicated `qa_*` accounts | Every check passes; temporary records deleted afterwards |
 | 📄 PDFs and CSV | PDFs rendered and read back; exports opened in Excel; an export imported into an empty throwaway schema | Same facts as the pages · numbers and dates typed correctly · 16 of 16 rows identical |
+| 🔎 Audit fixes (11 Oct) | A test written first for each of #39–#46 and seen to fail; then V1–V7 run on an empty MySQL schema, V7 run against a planted duplicate, and the app started on `:8091` with the demo profile and checked with curl | All 17 new tests pass after the fixes · V7 refused the duplicate (error 1062) and changed nothing · on MySQL a second result and a 300-character description each came back to the form with their message |
 | 🐧 Linux readiness | Every template and static path compared with the files on disk, case-sensitively; `mvnw` checked for LF endings and given the executable bit | 111 references, 0 mismatches |
 
 <sub>The user's own app on `:8080` and the shared MySQL `root` account were never changed. The throwaway
-schema used for the import check (`sms_e19_check`) was dropped afterwards.</sub>
+schemas (`sms_e19_check`, `sms_g7_check`, `sms_demo_check`, `sms_v7_check`) were dropped afterwards. Before V7 was written,
+a read-only query showed `sms_web` holds no duplicate results, so V7 will apply there on the next start.</sub>

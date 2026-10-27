@@ -10,11 +10,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import com.anurag.sms.utility.FieldLimits;
 
 @Entity
-@Table(name = "attendance")
+// One record per student, subject and day (#35). The forms check first; the
+// database index backs them up. Created by V2__attendance_unique.sql.
+@Table(name = "attendance", uniqueConstraints = @UniqueConstraint(
+        name = "uk_attendance_student_subject_date",
+        columnNames = {"student_id", "subject_id", "attendance_date"}))
 public class Attendance {
 
     @Id
@@ -57,6 +65,7 @@ public class Attendance {
     // Remarks
     // ==========================
 
+    @Size(max = FieldLimits.TEXT, message = "Remarks" + FieldLimits.TEXT_TOO_LONG)
     private String remarks;
 
     // ==========================

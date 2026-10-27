@@ -122,30 +122,22 @@
 
                   <div class="col-md-6">
                     <label class="form-label fw-semibold">Course <span class="text-danger">*</span></label>
-                    <!-- If courses exist from DB, show select dropdown -->
-                    <div th:if="${courses != null and !courses.isEmpty()}">
-                      <select
-                        class="form-select"
-                        th:field="*{course}"
-                        th:classappend="${#fields.hasErrors('course')} ? 'is-invalid'"
-                      >
-                        <option value="">-- Select Course --</option>
-                        <option
-                          th:each="c : ${courses}"
-                          th:value="${c.courseName}"
-                          th:text="${c.courseName + ' (' + c.courseCode + ')'}"
-                        ></option>
-                      </select>
-                    </div>
-                    <!-- Fallback text input if no courses are in database yet -->
-                    <div th:unless="${courses != null and !courses.isEmpty()}">
-                      <input
-                        type="text"
-                        class="form-control"
-                        th:field="*{course}"
-                        placeholder="Enter course name"
-                        th:classappend="${#fields.hasErrors('course')} ? 'is-invalid'"
-                      />
+                    <!-- The student's course is a link to a course record (G8),
+                         so it can only be picked from the courses that exist -->
+                    <select
+                      class="form-select"
+                      th:field="*{course}"
+                      th:classappend="${#fields.hasErrors('course')} ? 'is-invalid'"
+                    >
+                      <option value="">-- Select Course --</option>
+                      <option
+                        th:each="c : ${courses}"
+                        th:value="${c.id}"
+                        th:text="${c.courseName + ' (' + c.courseCode + ')'}"
+                      ></option>
+                    </select>
+                    <div class="form-text" th:if="${#lists.isEmpty(courses)}">
+                      No courses yet. <a th:href="@{/course/new}">Add a course</a> first.
                     </div>
                     <div
                       class="invalid-feedback d-block"

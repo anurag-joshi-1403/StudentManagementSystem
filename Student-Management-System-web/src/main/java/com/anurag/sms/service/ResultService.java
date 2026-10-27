@@ -24,6 +24,10 @@ public interface ResultService {
     // Delete Result
     void deleteResult(Long id);
 
+    // True when the student already has a result for this exam (#41).
+    // ownId is the result being edited, or null for a new one.
+    boolean isAlreadyGraded(Long studentId, Long examId, Long ownId);
+
     // Search and pagination in one: a blank keyword lists every result.
     // pageNo starts at 1.
     Page<Result> searchResult(String keyword, int pageNo);

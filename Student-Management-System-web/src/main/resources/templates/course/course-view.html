@@ -15,6 +15,11 @@
         </div>
 
         <div class="card-body">
+          <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+
           <table class="table table-bordered table-striped mt-3">
             <tbody>
               <tr>
@@ -43,6 +48,57 @@
               </tr>
             </tbody>
           </table>
+
+          <!-- Curriculum (G9): the subjects taught in this course. Enrollments
+               can only pair the course with these. -->
+          <h5 class="mt-4 mb-3">
+            <i class="bi bi-journal-bookmark me-2"></i>Subjects
+            <span class="badge bg-secondary" th:text="${#sets.size(course.subjects)}">0</span>
+          </h5>
+
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Code</th>
+                <th>Subject</th>
+                <th>Semester</th>
+                <th>Credits</th>
+                <th width="110" class="text-center" sec:authorize="hasRole('ADMIN')">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="subject : ${course.subjects}">
+                <td th:text="${subject.subjectCode}"></td>
+                <td>
+                  <a th:href="@{/subject/view/{id}(id=${subject.id})}" th:text="${subject.subjectName}">Subject</a>
+                </td>
+                <td th:text="${subject.semester}"></td>
+                <td th:text="${subject.credits}"></td>
+                <td class="text-center" sec:authorize="hasRole('ADMIN')">
+                  <form th:action="@{/course/{id}/subjects/{subjectId}/remove(id=${course.id}, subjectId=${subject.id})}"
+                        method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                  </form>
+                </td>
+              </tr>
+              <tr th:if="${#sets.isEmpty(course.subjects)}">
+                <td colspan="5" class="text-center text-muted">No subjects in this course yet.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <form th:action="@{/course/{id}/subjects(id=${course.id})}" method="post"
+                class="d-flex gap-2" sec:authorize="hasRole('ADMIN')" th:unless="${#lists.isEmpty(addableSubjects)}">
+            <select name="subjectId" class="form-select" aria-label="Subject to add" required>
+              <option value="">-- Add a subject to this course --</option>
+              <option th:each="subject : ${addableSubjects}"
+                      th:value="${subject.id}"
+                      th:text="${subject.subjectName + ' (' + subject.subjectCode + ')'}"></option>
+            </select>
+            <button type="submit" class="btn btn-outline-primary text-nowrap">
+              <i class="bi bi-plus-lg me-1"></i>Add
+            </button>
+          </form>
 
           <div class="text-center mt-4">
             <a th:href="@{/course}" class="btn btn-secondary me-2">

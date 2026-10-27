@@ -61,8 +61,12 @@ public final class CsvHelper {
     private CsvHelper() {
     }
 
-    /** A data row that became a Student. row is the spreadsheet row: the header is row 1. */
-    public record ParsedStudent(int row, Student student) {
+    /**
+     * A data row that became a Student. row is the spreadsheet row: the
+     * header is row 1. The course column stays as the name in the file; the
+     * import looks it up and sets the student's course (G8).
+     */
+    public record ParsedStudent(int row, Student student, String courseName) {
     }
 
     /** A row that could not be used, and why. Row 0 means the whole file. */
@@ -119,7 +123,8 @@ public final class CsvHelper {
                 CSVRecord record = records.next();
                 row++;
                 try {
-                    students.add(new ParsedStudent(row, toStudent(record, columns)));
+                    Student student = toStudent(record, columns);
+                    students.add(new ParsedStudent(row, student, value(record, columns, "course")));
                 } catch (IllegalArgumentException e) {
                     errors.add(new RowError(row, e.getMessage()));
                 }
@@ -165,7 +170,6 @@ public final class CsvHelper {
         student.setEmail(value(record, columns, "email"));
         student.setPhone(value(record, columns, "phone"));
         student.setGender(gender(value(record, columns, "gender")));
-        student.setCourse(value(record, columns, "course"));
         student.setDateOfBirth(date(value(record, columns, "dateOfBirth")));
         student.setAddress(value(record, columns, "address"));
         return student;
@@ -214,7 +218,8 @@ public final class CsvHelper {
                 printer.printRecord(
                         protect(s.getFirstName()), protect(s.getLastName()),
                         protect(s.getEmail()), protect(s.getPhone()),
-                        protect(s.getGender()), protect(s.getCourse()),
+                        protect(s.getGender()),
+                        protect(s.getCourse() == null ? null : s.getCourse().getCourseName()),
                         s.getDateOfBirth() == null ? "" : s.getDateOfBirth().toString(),
                         protect(s.getAddress()));
             }

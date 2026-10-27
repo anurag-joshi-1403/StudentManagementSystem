@@ -125,6 +125,11 @@
                           th:field="*{entries[__${stat.index}__].remarks}"
                           placeholder="Optional"
                         />
+                        <div
+                          class="text-danger small"
+                          th:if="${#fields.hasErrors('entries[__${stat.index}__].remarks')}"
+                          th:errors="*{entries[__${stat.index}__].remarks}"
+                        ></div>
                       </td>
                     </th:block>
                   </tr>

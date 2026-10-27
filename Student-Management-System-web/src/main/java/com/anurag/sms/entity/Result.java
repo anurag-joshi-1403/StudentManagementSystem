@@ -8,12 +8,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import com.anurag.sms.utility.GradeCalculator;
+
 @Entity
-@Table(name = "results")
+// One result per student and exam (#41): a second one made the marksheet
+// count the exam twice. The form checks first; the database index backs it
+// up. Created by V7__results_unique.sql.
+@Table(name = "results", uniqueConstraints = @UniqueConstraint(
+        name = "uk_results_student_exam",
+        columnNames = {"student_id", "exam_id"}))
 public class Result {
 
     @Id
@@ -32,7 +40,7 @@ public class Result {
 
     @NotNull(message = "Obtained marks are required")
     @Min(value = 0, message = "Marks cannot be negative")
-    @Max(value = 1000, message = "Invalid marks")
+    @Max(value = GradeCalculator.MAX_MARKS, message = "Invalid marks")
     private Integer obtainedMarks;
 
     private String grade;

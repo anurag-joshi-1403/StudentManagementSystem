@@ -13,6 +13,9 @@ public interface StudentService {
 
     List<Student> getAllStudents();
 
+    // Users page (G10): students no account is linked to yet
+    List<Student> getStudentsWithoutAccount();
+
     Student getStudentById(Long id);
 
     Student saveStudent(Student student);

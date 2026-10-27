@@ -31,8 +31,11 @@ public interface FeeService {
     // Dashboard Count (number of fee records)
     long getTotalFees();
 
-    // Dashboard: total money collected across all fee records
-    BigDecimal getTotalFeeAmount();
+    // Dashboard: money received, from fees marked Paid (#34)
+    BigDecimal getCollectedAmount();
+
+    // Dashboard: money still owed, from every fee not marked Paid
+    BigDecimal getOutstandingAmount();
 
     // Dashboard: count of records in a given payment status
     long countByPaymentStatus(String paymentStatus);

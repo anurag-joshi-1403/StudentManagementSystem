@@ -30,6 +30,10 @@ public final class FileUploadUtil {
     static final String NOT_ALLOWED = "Only JPG or PNG photos are allowed.";
     static final String NOT_AN_IMAGE = "That file is not a valid JPG or PNG image.";
 
+    // 40 megapixels is more than any phone photo under the 2 MB cap
+    static final long MAX_PIXELS = 40_000_000L;
+    static final String TOO_MANY_PIXELS = "That photo is too large. Use one under 40 megapixels.";
+
     private static final Set<String> CONTENT_TYPES = Set.of("image/jpeg", "image/png");
 
     // Image format detected from the file's bytes -> extension we save it with
@@ -103,6 +107,20 @@ public final class FileUploadUtil {
                 String format = reader.getFormatName().toLowerCase(Locale.ROOT);
                 if (!EXTENSIONS.containsKey(format)) {
                     throw new IllegalArgumentException(NOT_ALLOWED);
+                }
+
+                // Measure before decoding (#46). Decoding allocates the whole
+                // picture first, and a small file can claim a huge one: a
+                // 1 MB PNG of one colour can declare 15000 x 15000 pixels,
+                // which takes 900 MB to decode.
+                long pixels;
+                try {
+                    pixels = (long) reader.getWidth(0) * reader.getHeight(0);
+                } catch (IOException | RuntimeException e) {
+                    throw new IllegalArgumentException(NOT_AN_IMAGE, e);
+                }
+                if (pixels > MAX_PIXELS) {
+                    throw new IllegalArgumentException(TOO_MANY_PIXELS);
                 }
 
                 // Decode it fully: a file that merely starts like an image

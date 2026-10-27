@@ -21,6 +21,7 @@ import com.anurag.sms.entity.Course;
 import com.anurag.sms.entity.Student;
 import com.anurag.sms.exception.ResourceNotFoundException;
 import com.anurag.sms.repository.StudentRepository;
+import com.anurag.sms.repository.UserRepository;
 import com.anurag.sms.service.ActivityLogService;
 import com.anurag.sms.service.StudentService;
 import com.anurag.sms.utility.CsvHelper;
@@ -45,6 +46,7 @@ public class StudentServiceImpl implements StudentService {
     private final FeeRepository feeRepository;
     private final ResultRepository resultRepository;
     private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
 
     // The same Bean Validation the Student form runs through @Valid
     private final Validator validator;
@@ -57,6 +59,7 @@ public class StudentServiceImpl implements StudentService {
             FeeRepository feeRepository,
             ResultRepository resultRepository,
             CourseRepository courseRepository,
+            UserRepository userRepository,
             Validator validator,
             ActivityLogService activityLogService) {
 
@@ -66,6 +69,7 @@ public class StudentServiceImpl implements StudentService {
         this.feeRepository = feeRepository;
         this.resultRepository = resultRepository;
         this.courseRepository = courseRepository;
+        this.userRepository = userRepository;
         this.validator = validator;
         this.activityLogService = activityLogService;
     }
@@ -75,6 +79,11 @@ public class StudentServiceImpl implements StudentService {
 
         return studentRepository.findTop5ByOrderByIdDesc();
 
+    }
+
+    @Override
+    public List<Student> getStudentsWithoutAccount() {
+        return studentRepository.findWithoutAccount();
     }
 
     @Override
@@ -129,6 +138,9 @@ public class StudentServiceImpl implements StudentService {
 
         resultRepository.deleteByStudentId(id);
 
+        // The student's account, if any, stays but loses its link (G10)
+        userRepository.unlinkStudent(id);
+
         studentRepository.deleteById(id);
 
         activityLogService.record(ActivityLog.DELETED, "Student", name);
@@ -148,7 +160,7 @@ public class StudentServiceImpl implements StudentService {
 
         String k = keyword.trim();
         return studentRepository
-                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCourseContainingIgnoreCase(
+                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCourseCourseNameContainingIgnoreCase(
                         k, k, k, k, Pages.of(pageNo));
     }
 
@@ -178,11 +190,10 @@ public class StudentServiceImpl implements StudentService {
         CsvHelper.StudentParseResult parsed = CsvHelper.parseStudents(csv);
         List<RowError> skipped = new ArrayList<>(parsed.errors());
 
-        // Course names as the form's dropdown offers them, matched ignoring
-        // case; the student gets the stored spelling
-        Map<String, String> courses = new HashMap<>();
+        // Courses by name, matched ignoring case
+        Map<String, Course> courses = new HashMap<>();
         for (Course course : courseRepository.findAll()) {
-            courses.putIfAbsent(key(course.getCourseName()), course.getCourseName());
+            courses.putIfAbsent(key(course.getCourseName()), course);
         }
 
         Set<String> emailsInFile = new HashSet<>();
@@ -191,7 +202,7 @@ public class StudentServiceImpl implements StudentService {
         for (CsvHelper.ParsedStudent row : parsed.students()) {
 
             Student student = row.student();
-            String problem = problemWith(student, courses, emailsInFile);
+            String problem = problemWith(student, row.courseName(), courses, emailsInFile);
 
             if (problem != null) {
                 skipped.add(new RowError(row.row(), problem));
@@ -219,11 +230,20 @@ public class StudentServiceImpl implements StudentService {
     }
 
     // The first reason this row cannot be imported, or null if it can. Sets
-    // the student's course to the stored course name.
-    private String problemWith(Student student, Map<String, String> courses, Set<String> emailsInFile) {
+    // the student's course from the name in the file.
+    private String problemWith(Student student, String courseName, Map<String, Course> courses,
+                               Set<String> emailsInFile) {
+
+        Course course = courses.get(key(courseName));
+        student.setCourse(course);
+
+        // A course name that matches no course is reported below, by name,
+        // rather than as "Course is required"
+        boolean unknownCourse = course == null && courseName != null && !courseName.isBlank();
 
         // Bean Validation messages, in the file's column order
         List<String> invalid = validator.validate(student).stream()
+                .filter(v -> !(unknownCourse && v.getPropertyPath().toString().equals("course")))
                 .sorted(Comparator.comparingInt(v -> columnOf(v.getPropertyPath().toString())))
                 .map(ConstraintViolation::getMessage)
                 .toList();
@@ -240,11 +260,9 @@ public class StudentServiceImpl implements StudentService {
             return "email " + student.getEmail() + " exists";
         }
 
-        String course = courses.get(key(student.getCourse()));
-        if (course == null) {
-            return "course \"" + student.getCourse() + "\" not found";
+        if (unknownCourse) {
+            return "course \"" + courseName + "\" not found";
         }
-        student.setCourse(course);
 
         return null;
     }

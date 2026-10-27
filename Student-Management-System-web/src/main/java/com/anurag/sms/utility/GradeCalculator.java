@@ -14,6 +14,11 @@ public final class GradeCalculator {
     public static final String PASS = "Pass";
     public static final String FAIL = "Fail";
 
+    // The most marks a result can hold (Result, and a CHECK in the
+    // database). An exam's total is capped too, so every total can be
+    // scored in full (#45).
+    public static final int MAX_MARKS = 1000;
+
     private GradeCalculator() {
     }
 

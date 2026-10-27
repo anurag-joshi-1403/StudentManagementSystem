@@ -28,6 +28,12 @@ public interface ResultRepository extends JpaRepository<Result, Long> {
     // Marksheet: every result for one student, in exam-date order
     List<Result> findByStudentIdOrderByExamExamDateAsc(Long studentId);
 
+    // One result per student and exam (#41); the AndIdNot form lets an
+    // edited result keep its own student and exam
+    boolean existsByStudentIdAndExamId(Long studentId, Long examId);
+
+    boolean existsByStudentIdAndExamIdAndIdNot(Long studentId, Long examId, Long id);
+
     // Add this
     @Transactional
     @Modifying

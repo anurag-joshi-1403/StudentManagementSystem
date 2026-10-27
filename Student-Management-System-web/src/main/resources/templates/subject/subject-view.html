@@ -41,6 +41,16 @@
                 <th><i class="bi bi-building me-2 text-muted"></i>Department</th>
                 <td th:text="${subject.department}"></td>
               </tr>
+              <!-- The courses whose curriculum includes it (G9) -->
+              <tr>
+                <th><i class="bi bi-book-half me-2 text-muted"></i>Taught In</th>
+                <td>
+                  <th:block th:each="course, stat : ${courses}">
+                    <a th:href="@{/course/view/{id}(id=${course.id})}" th:text="${course.courseName}">Course</a><span th:unless="${stat.last}">, </span>
+                  </th:block>
+                  <span th:if="${#lists.isEmpty(courses)}" class="text-muted">No course yet</span>
+                </td>
+              </tr>
             </tbody>
           </table>
 

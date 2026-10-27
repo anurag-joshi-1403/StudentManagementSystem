@@ -6,14 +6,21 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.anurag.sms.service.CustomUserDetailsService;
 
 @Configuration
+// @PreAuthorize on service methods (G11), for rules a URL cannot express,
+// such as "only this student's own records" (see security/AccessRules)
+@EnableMethodSecurity
 public class SecurityConfig {
 
     /**
@@ -25,10 +32,30 @@ public class SecurityConfig {
     }
 
     /**
+     * Every signed-in session, by account, so UserSessionService can sign an
+     * account out when an admin disables it or changes its role (#37)
+     */
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    /**
+     * Tells the registry when a session ends (sign-out or timeout), so it
+     * does not keep sessions that no longer exist. Spring Boot registers
+     * this listener with the servlet container.
+     */
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
+    /**
      * Security Filter Chain
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   SessionRegistry sessionRegistry) throws Exception {
 
         http
 
@@ -102,7 +129,18 @@ public class SecurityConfig {
 
                         .logoutSuccessUrl("/login?logout=true")
 
-                        .permitAll());
+                        .permitAll())
+
+                // Record each sign-in in the registry. No limit on how many
+                // browsers one account may use (-1); an expired session's
+                // next request goes to the login page with a message.
+                .sessionManagement(session -> session
+
+                        .maximumSessions(-1)
+
+                        .sessionRegistry(sessionRegistry)
+
+                        .expiredUrl("/login?expired=true"));
 
         return http.build();
     }

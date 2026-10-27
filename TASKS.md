@@ -6,16 +6,17 @@
 
 # ✅ Task Board
 
-**All the remaining work, split into small steps you can each finish in one sitting**
+**Version 2: from a records system to a campus platform, one sitting at a time**
 
-![Tasks](https://img.shields.io/badge/Tasks-101-blue?style=flat-square)
-![Stages](https://img.shields.io/badge/Stages-7-blueviolet?style=flat-square)
-![Estimate](https://img.shields.io/badge/Estimate-~63_hours-orange?style=flat-square)
-![Coverage](https://img.shields.io/badge/Open_issues_covered-23%2F23-success?style=flat-square)
+![v1](https://img.shields.io/badge/v1_board-100%2F101_done-success?style=flat-square)
+![Tasks](https://img.shields.io/badge/v2_tasks-99-blue?style=flat-square)
+![Stages](https://img.shields.io/badge/Stages-G–P-blueviolet?style=flat-square)
+![Estimate](https://img.shields.io/badge/Estimate-~150_hours-orange?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-v1.1_to_v2.2-informational?style=flat-square)
 
-*Built from the 6 Oct 2026 audit in [project_analysis.md](project_analysis.md) · commit `9d957c6`*
+*v2 planned on 9 Oct 2026 from commit `5eb9b8e` · the finished v1 board (Stages 0–F) is [archived at the bottom](#-archive--v1-board-stages-0f)*
 
-[📘 README](README.md) · [📋 Analysis](project_analysis.md) · [🗺️ Roadmap](PROJECT_ROADMAP.md)
+[📘 README](README.md) · [📋 Analysis](project_analysis.md) · [🌟 Roadmap v2](PROJECT_ROADMAP.md#-roadmap-v2)
 
 </div>
 
@@ -23,27 +24,633 @@
 
 ## 🧭 How to Use This Board
 
-1. **Work from top to bottom.** Tasks are ordered so each one builds on the ones before it. When a task depends on one from another stage, it says 🔗 **Needs**.
-2. **Each task is one sitting and one commit.** Tasks take between 5 minutes and 2 hours.
-3. **Run the ✅ Done when check** in the running app before you tick the box.
-4. **Tick it off**: change `- [ ]` to `- [x]` and update the **Done** column in the progress table.
+1. **Stages run in order; tasks run top to bottom.** When a task depends on one from another stage, it says 🔗 **Needs**. The [dependency map](PROJECT_ROADMAP.md#-roadmap-v2) in the roadmap shows which stages could overlap.
+2. **Each task is one sitting and one commit.** Tasks take between 15 minutes and 3 hours.
+3. **Keep two habits from v1.** Every new route goes into the route × role security test (`RouteAccessTest`, which fails until a new route has a line in its matrix), and every new feature ships with at least one test. From G7 on, every schema change is a new Flyway migration; never edit one that is already merged.
+4. **Run the ✅ Done when check** in the running app, tick the box (`- [ ]` → `- [x]`), and update the **Done** column below.
+
+> ⚠️ **Decide #38 before the public deploy (H7).** Until I5, every signed-in account, a self-registered one
+> included, can view every student's records. That's fine with the made-up demo data. With real data, do I5
+> first, or make new accounts wait for an admin's approval. Details in the [audit report](PROJECT_AUDIT_REPORT.md).
 
 | Symbol | Meaning |
 |:---:|---|
-| `#23` | Issue number in the [Engineering Backlog](project_analysis.md#-engineering-backlog), which has the full file and line details |
+| `#33` | Issue number in the [Engineering Backlog](project_analysis.md#-engineering-backlog) |
 | ⏱ | Rough time estimate |
-| 📂 | Files to change. Java paths are relative to `Student-Management-System-web/src/main/java/com/anurag/sms/` and templates to `…/src/main/resources/templates/` |
+| 📂 | Files to change. Java paths are relative to `Student-Management-System-web/src/main/java/com/anurag/sms/`, templates to `…/src/main/resources/templates/`, and migrations live in `…/src/main/resources/db/migration/` |
 | 🔗 | Another task that has to be done first |
 | ✅ | How to check the task is finished |
+| 🎯 | A release worth announcing (live demo, platform, AI) |
 
 <sub>Run commands from `Student-Management-System-web/`: `./mvnw spring-boot:run` in Git Bash, `.\mvnw.cmd spring-boot:run` in PowerShell.
-Suggested commit style: `fix(student): search no longer crashes (#23)`.</sub>
+Suggested commit style: `feat(portal): student home page (I3)`.</sub>
 
 ---
 
 ## 📊 Progress
 
-| Stage | What it gets you | Tasks | Time | Done |
+| Stage | Release | What it gets you | Tasks | Time | Done |
+|---|:---:|---|:---:|:---:|:---:|
+| 🧱 [G · Solid Ground](#-stage-g--solid-ground) | `v1.1` | Open backlog closed, Flyway migrations, real course links, accounts linked to people, demo data | 12 | ~11.5 h | ✅ 12 / 12 |
+| 🚀 [H · Ship It](#-stage-h--ship-it) | `v1.2` 🎯 | Docker, a public live demo, MySQL integration tests, coverage, CodeQL | 10 | ~10 h | 0 / 10 |
+| 🎒 [I · Self-Service Portals](#-stage-i--self-service-portals) | `v1.3` | Student and teacher homes, "My" pages, ownership rules, gradebook | 10 | ~15.5 h | 0 / 10 |
+| 🏫 [J · Academic Operations](#-stage-j--academic-operations) | `v1.4` | Terms, timetable, announcements, assignments, leave, calendar, SGPA/CGPA, report cards | 13 | ~22 h | 0 / 13 |
+| 💰 [K · Finance](#-stage-k--finance) | `v1.5` | Fee structures, invoices, partial payments, fines, scholarships, Razorpay, reports | 8 | ~14.5 h | 0 / 8 |
+| 📣 [L · Communication](#-stage-l--communication--automation) | `v1.6` | Email, password reset, inbox, domain events, scheduled reminders, live bell | 9 | ~13 h | 0 / 9 |
+| 📊 [M · Insight & Documents](#-stage-m--insight--documents) | `v1.7` | Analytics, at-risk flags, Excel, verifiable ID cards and certificates, QR attendance | 8 | ~15 h | 0 / 8 |
+| 🔌 [N · REST API](#-stage-n--rest-api) | `v2.0` 🎯 | JWT-secured JSON API, OpenAPI docs, rate limits, contract tests | 8 | ~12.5 h | 0 / 8 |
+| 🤖 [O · AI Assistant](#-stage-o--ai-assistant-claude-api) | `v2.1` 🎯 | Report-card remarks, a student chatbot, plain-English analytics, CSV mapping | 9 | ~15 h | 0 / 9 |
+| 🔒 [P · Production Hardening](#-stage-p--production-hardening) | `v2.2` | Metrics, CSP, 2FA, change history, performance, Hindi, dark mode, backups | 12 | ~20.5 h | 0 / 12 |
+| | | **Total** | **99** | **~150 h** | **12 / 99** |
+
+```mermaid
+flowchart LR
+    G["🧱 G · Solid ground<br/><b>12 tasks</b><br/><i>~11.5 h</i>"]
+    H["🚀 H · Ship it<br/><b>10 tasks</b><br/><i>~10 h</i>"]
+    I["🎒 I · Portals<br/><b>10 tasks</b><br/><i>~15.5 h</i>"]
+    J["🏫 J · Academics<br/><b>13 tasks</b><br/><i>~22 h</i>"]
+    K["💰 K · Finance<br/><b>8 tasks</b><br/><i>~14.5 h</i>"]
+    L["📣 L · Communication<br/><b>9 tasks</b><br/><i>~13 h</i>"]
+    M["📊 M · Insight<br/><b>8 tasks</b><br/><i>~15 h</i>"]
+    N["🔌 N · REST API<br/><b>8 tasks</b><br/><i>~12.5 h</i>"]
+    O["🤖 O · AI<br/><b>9 tasks</b><br/><i>~15 h</i>"]
+    P["🔒 P · Hardening<br/><b>12 tasks</b><br/><i>~20.5 h</i>"]
+
+    G --> H
+    G --> I --> J --> K --> M --> O
+    K --> L --> O
+    H --> L
+    I --> N
+    H --> P
+
+    style G fill:#334155,stroke:#94a3b8,color:#fff
+    style H fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style I fill:#7c2d12,stroke:#f97316,color:#fff
+    style J fill:#713f12,stroke:#eab308,color:#fff
+    style K fill:#065f46,stroke:#10b981,color:#fff
+    style L fill:#065f46,stroke:#10b981,color:#fff
+    style M fill:#164e63,stroke:#06b6d4,color:#fff
+    style N fill:#1e3a8a,stroke:#3b82f6,color:#fff
+    style O fill:#4c1d95,stroke:#8b5cf6,color:#fff
+    style P fill:#334155,stroke:#94a3b8,color:#fff
+```
+
+<sub>An arrow means at least one task in the later stage needs a task in the earlier one. N and P depend on little, so they can run alongside the others.</sub>
+
+> 🎯 **Placement fast track (~35 h, about 3 weeks at 12 h a week).** If interviews are close, do these first:
+> all of **G** and **H** (a live demo link), then **I1–I5** (three real portals), then **O1, O2 and O4** (an AI helpdesk
+> on the student portal). That gives a recruiter a URL, three logins that each show something different,
+> and an AI feature that is safe by design.
+
+---
+
+## 🧱 Stage G · Solid Ground
+
+**Goal:** close the open backlog, put the database schema under version control, and fix the two modelling weaknesses, so that every later stage builds on real relationships. · **Release** `v1.1`
+
+> 💡 **Why this comes first.** Stages I–P add about 20 tables. With `ddl-auto=update` there is no record of what
+> changed, no way to backfill data, and no safe way to rename a column. Flyway (G7) fixes that, and the
+> User → Student link (G10) is what every portal page in Stage I depends on.
+
+> 📝 **Done 11 Oct 2026, with these decisions and extras:**
+> - **G1:** `messages.properties` also covers `Long`, `Double`, `BigDecimal`, `LocalDate`, and a plain `typeMismatch` fallback.
+> - **G2:** the card shows "₹X pending" as money, not a count. On the demo data: ₹1,030,000 collected and ₹235,000 pending, matching the fee rows exactly.
+> - **G3:** besides the form check, `V2__attendance_unique.sql` adds a unique index on (student, subject, date), as enrollments already had.
+> - **G4:** the rule is 8 to **72** characters: Spring Security's BCrypt rejects longer passwords, which the old 100-character limit allowed through. `AdminSeeder` follows it too. **Found and fixed:** any validation error on the registration form gave a 500 page, because the form was bound as `userRegistrationDto` while the page reads `user`; the page also showed no field errors. Both are covered by `RegistrationTest`.
+> - **G5:** `UserService` ends the sessions, so any future caller gets it too (L2's password reset will reuse it). The login page explains the sign-out. Only a real change signs anyone out; re-enabling an account does not need to.
+> - **G7:** Flyway 11 accepted MySQL 8.0.46. `V1__baseline.sql` keeps Hibernate's generated constraint names so that a fresh database and an existing one stay identical for later migrations. Checked both ways: an empty schema ran V1–V6, and `sms_web` was baselined at V1 and then ran V2–V6.
+> - **G8:** V3 stops with MySQL error 1138 if any student's course text matches no course (checked on a scratch schema); V4 drops the old column. A course that still has students can't be deleted; the list says why. Your 4 students moved to the right courses.
+> - **G9:** the curriculum is backfilled from existing enrollments, so none of them became invalid. **Found and fixed before it shipped:** saving the course form would have wiped the course's subjects, because the posted course carries an empty list; the service now copies only the form's fields onto the stored course. Removing a subject that enrollments still use is refused. The subject page lists the courses that teach it.
+> - **G10:** deleting a student or teacher keeps their account and drops the link. A new role drops a link that no longer fits it.
+> - **G11:** the bean is `security/AccessRules`, with `isOwnStudent` and `isOwnTeacher`. `AccessRulesTest` runs the exact `@PreAuthorize` expression Stage I will use.
+> - **G12:** 3 courses, 8 subjects, 5 teachers, 30 students, 102 enrollments, 3,060 attendance records, 102 results and 60 fees. Three students fall under 75%, 6 tuition fees are overdue, and a unit test is always 3 days away. Password `demo12345`, or set `sms.demo.password`.
+> - **Tests:** 100 (from 55) in 16 classes, plus a 20-step browser check with curl against MySQL with the demo data.
+> - **G6:** before any other project's code was touched, every project on E: and in the home folder was searched; none reads `DB_USERNAME` or `DB_PASSWORD`. Because `DB_PASSWORD` was the only stored copy of `root`'s password, that value was first kept in a new user variable, `MYSQL_ROOT_PASSWORD`. `sms_app` got a random 24-character password and `ALL` on `sms_web` only; it is refused on other databases. The app then started as `sms_app`, and Flyway found the schema up to date.
+
+**🧹 Backlog clean-up** · issues #33–#37 and #5
+
+- [x] **G1 · Friendly message for non-numeric input** · `#33` · ⏱ 15 min
+  - Create `src/main/resources/messages.properties` with `typeMismatch.java.lang.Integer=Please enter a whole number.`, plus matching lines for `java.math.BigDecimal`, `java.lang.Double` and `java.time.LocalDate`. Spring Boot picks the file up automatically.
+  - ✅ **Done when** posting `totalMarks=abc` from DevTools re-shows the exam form with your message instead of "Failed to convert…".
+
+- [x] **G2 · "Fees Collected" counts only paid fees** · `#34` · ⏱ 20 min
+  - Rename `FeeRepository.sumAllAmounts()` to `sumPaidAmounts()` and add `WHERE f.paymentStatus = 'Paid'`. Add a second query for the pending total and show it under the card as "₹X pending".
+  - 📂 `repository/FeeRepository.java:30` · `service/impl/FeeServiceImpl.java:113` · `dashboard/stats-cards.html`
+  - ✅ **Done when** the test data shows ₹60,000 collected and ₹60,000 pending, and a `@DataJpaTest` covers both sums.
+
+- [x] **G3 · Block duplicate attendance on the single form** · `#35` · ⏱ 30 min
+  - Reuse `existsByStudentIdAndSubjectIdAndAttendanceDate` in `saveAttendance`; for edits add an `…AndIdNot(id)` variant so a row can keep its own values.
+  - ✅ **Done when** a second record for the same student, subject and date shows a field error and nothing is saved.
+
+- [x] **G4 · One password rule everywhere** · `#36` · ⏱ 20 min
+  - Add a `PasswordPolicy.MIN_LENGTH = 8` constant and use it in `UserRegistrationDto` and `ChangePasswordDto`. Remove `@Size(min = 6)` from `User.password`: that field holds the 60-character BCrypt hash, so the rule never meant anything there.
+  - ✅ **Done when** registering with a 7-character password fails with the same message as the change-password form.
+
+- [x] **G5 · End sessions when an account is disabled or its role changes** · `#37` · ⏱ 1 h
+  - Add a `SessionRegistry` bean and an `HttpSessionEventPublisher` bean, and register the registry with `.sessionManagement(s -> s.maximumSessions(-1).sessionRegistry(registry))`.
+  - In `AdminUserController`, after a disable or role change, find the user in `registry.getAllPrincipals()` by username and call `expireNow()` on each of their sessions.
+  - 📂 `config/SecurityConfig.java` · `controller/AdminUserController.java`
+  - ✅ **Done when** a disabled user's open tab is sent to the login page on its next click.
+
+- [x] **G6 · Give the app its own MySQL user** · `#5` · ⏱ 30 min
+  - Create `sms_app` with rights on `sms_web` only (`GRANT ALL ON sms_web.* TO 'sms_app'@'localhost'`), then point `DB_USERNAME` and `DB_PASSWORD` at it. A4 was deferred because changing `root` would break 7 other projects. With its own user, this app no longer depends on `root`, and rotating `root` becomes a chore for those other projects.
+  - ✅ **Done when** the app runs as `sms_app` and `SHOW GRANTS FOR 'sms_app'@'localhost'` lists only `sms_web`.
+
+**🗄️ Schema under version control**
+
+- [x] **G7 · Add Flyway and baseline today's schema** · ⏱ 1.5 h
+  - Add `org.flywaydb:flyway-core` and `org.flywaydb:flyway-mysql` (Spring Boot manages both versions).
+  - Run `mysqldump --no-data sms_web > V1__baseline.sql`, strip the `AUTO_INCREMENT=` counters, and save it under `src/main/resources/db/migration/`.
+  - Set `spring.flyway.baseline-on-migrate=true` and `spring.flyway.baseline-version=1`, then change `ddl-auto` to `validate`. From now on every schema change is a new `V{n}__*.sql` file, and a merged migration is never edited.
+  - In `src/test/resources/application.properties` set `spring.flyway.enabled=false` and keep `create-drop`. The H2 tests stay fast, and H3 runs the real migrations on MySQL.
+  - ✅ **Done when** the app starts with `ddl-auto=validate`, `flyway_schema_history` shows version 1, and `./mvnw test` still passes.
+
+- [x] **G8 · Make `Student.course` a real foreign key** · ⏱ 2 h · 🔗 **Needs** G7
+  - `V2__student_course_fk.sql`: add `course_id`, fill it with `UPDATE students s JOIN courses c ON LOWER(s.course) = LOWER(c.course_name) SET s.course_id = c.id`, check that no row is left `NULL`, then add `NOT NULL` and the foreign key. Drop the old text column in a later `V3` once everything works.
+  - Change the entity to `@ManyToOne Course course`, use a `<select>` on the form, and search with `s.course.courseName`. The CSV import already looks the course up by name, so it only needs to set the entity.
+  - 📂 `entity/Student.java` · `student/student-form.html` · `repository/StudentRepository.java` · `utility/CsvHelper.java`
+  - ✅ **Done when** every student shows a course picked from the dropdown, the CSV round trip still gives 16 · 0, and all tests pass.
+
+- [x] **G9 · Link subjects to courses (the curriculum)** · ⏱ 1.5 h · 🔗 **Needs** G7
+  - A subject can belong to several courses, so add a `course_subjects` join table (`@ManyToMany` on `Course.subjects`). Manage it from the course page with "Add subject" and "Remove" buttons.
+  - Make the enrollment form offer only the chosen course's subjects.
+  - ✅ **Done when** the course page lists its subjects and the enrollment form can't pair a course with a subject outside it.
+
+- [x] **G10 · Link accounts to people** · ⏱ 1.5 h · 🔗 **Needs** G7
+  - Add nullable, unique `users.student_id` and `users.teacher_id` foreign keys (`@OneToOne`). On the Users page, an admin can link an account to a student or a teacher.
+  - ~~When someone registers with the email of an existing student, link the account automatically.~~ Moved to L3: until an email address is verified, anyone who knows a student's email could register with it and be linked to their marks and fees.
+  - ✅ **Done when** a linked account's profile shows "Linked to Aarav Sharma" and the same student can't be linked to two accounts.
+
+- [x] **G11 · `CurrentUser` helper and an access bean** · ⏱ 1 h · 🔗 **Needs** G10
+  - `CurrentUser` returns the signed-in user's student id or teacher id. Turn on `@EnableMethodSecurity` and add an `@Component("access")` with `isOwnStudent(Long id)`, used as `@PreAuthorize("hasRole('ADMIN') or @access.isOwnStudent(#id)")`. Stage I uses it everywhere.
+  - ✅ **Done when** unit tests cover admin, owner and non-owner for `isOwnStudent`.
+
+- [x] **G12 · Demo data seeder** · ⏱ 1 h
+  - Add a `DemoDataSeeder` under `@Profile("demo")` that, on an empty database only, creates 3 courses, 8 subjects, 30 students, 5 teachers, 6 weeks of attendance, exams, results and fees, plus `demo_admin`, `demo_teacher` and `demo_student` accounts. Use `new Random(42)` so the data is the same on every run, and only invented `@example.com` people.
+  - ✅ **Done when** `./mvnw spring-boot:run -Dspring-boot.run.profiles=demo` on an empty schema gives a full dashboard, notifications included.
+
+---
+
+## 🚀 Stage H · Ship It
+
+**Goal:** a public URL a recruiter can open with one click, a one-command local setup, and tests that run on real MySQL. · **Release** `v1.2` 🎯 **Live demo**
+
+- [ ] **H1 · Dockerfile** · ⏱ 1 h
+  - Use a multi-stage build: `eclipse-temurin:21-jdk` runs `./mvnw -B package -DskipTests`, then `eclipse-temurin:21-jre` runs the app as a non-root user. Extract the jar's layers with `java -Djarmode=tools -jar app.jar extract --layers --launcher`, so a code change rebuilds only the top layer. Mount `uploads/` as a volume.
+  - ✅ **Done when** `docker build -t sms .` succeeds and the image is under 350 MB.
+
+- [ ] **H2 · Docker Compose: app, MySQL and Mailpit** · ⏱ 1 h · 🔗 **Needs** H1, G12
+  - `compose.yaml` with `mysql:8.4` (with a healthcheck), the app (with `depends_on: condition: service_healthy`), and `axllent/mailpit` for Stage L. Use named volumes for data and uploads. Commit a `.env.example` and keep the real `.env` out of git.
+  - ✅ **Done when** `docker compose up` on a clean machine serves the demo data on `:8080`.
+
+- [ ] **H3 · Integration tests on real MySQL with Testcontainers** · ⏱ 1.5 h · 🔗 **Needs** G7
+  - Add `spring-boot-testcontainers`, `org.testcontainers:mysql` and `org.testcontainers:junit-jupiter`. An `AbstractMySqlIT` base declares a `@ServiceConnection MySQLContainer`, so Flyway runs every migration on MySQL 8.4.
+  - Move `DeleteCascadeTest`'s scenarios into an `*IT` class run by the Maven Failsafe plugin, so `./mvnw test` stays fast. CI switches to `./mvnw -B verify`; GitHub's runners already have Docker.
+  - ✅ **Done when** `./mvnw verify` applies V1…Vn to a fresh container and passes, locally and in CI.
+
+- [ ] **H4 · Code coverage with JaCoCo** · ⏱ 45 min
+  - Add `jacoco-maven-plugin` with a `check` rule (start at 60% line coverage and raise it as tests grow). Upload the HTML report as a CI artifact and add a coverage badge (Codecov, or `cicirello/jacoco-badge-generator`).
+  - ✅ **Done when** the README shows the coverage figure and CI fails when it drops below the threshold.
+
+- [ ] **H5 · Dependabot and CodeQL** · ⏱ 45 min
+  - Add `.github/dependabot.yml` for `maven` and `github-actions` (weekly), plus a CodeQL workflow for Java.
+  - ✅ **Done when** the repository's Security tab shows a CodeQL scan and Dependabot has opened its first PR.
+
+- [ ] **H6 · Production profile and health check** · ⏱ 45 min
+  - Create `application-prod.properties`: `server.forward-headers-strategy=framework` (the host's proxy terminates HTTPS), `server.servlet.session.cookie.secure=true`, `server.error.include-stacktrace=never`, `spring.thymeleaf.cache=true`.
+  - Add `spring-boot-starter-actuator` and expose only `health` and `info`; permit `/actuator/health` in `SecurityConfig`.
+  - ✅ **Done when** `/actuator/health` returns `UP` and `/actuator/env` returns 404.
+
+- [ ] **H7 · Deploy to a cloud host** · ⏱ 2 h · 🔗 **Needs** H1, H6, G12
+  - Deploy the Docker image to a host that builds from GitHub (Railway or Render, for example), with a managed MySQL 8. Set `SPRING_PROFILES_ACTIVE=prod,demo` and the DB and admin variables in the host's dashboard. Free plans change often and may sleep when idle, so check the current limits and tell visitors the first load can be slow.
+  - Container disks are usually wiped on redeploy. Either attach the host's persistent volume to `uploads/` or accept that demo photos reset (H8 re-seeds anyway).
+  - ✅ **Done when** the public HTTPS URL shows the login page and the demo accounts work.
+
+- [ ] **H8 · Safe demo mode for strangers** · ⏱ 1 h · 🔗 **Needs** G12, H7
+  - In the `demo` profile: show the three demo logins on the login page; block password changes and user-admin actions for demo accounts; and every night run Flyway `clean()` + `migrate()` and re-seed (allow `spring.flyway.clean-disabled=false` in this profile only).
+  - ✅ **Done when** a deleted student is back after the reset, and `demo_admin` can't change its password or disable `demo_teacher`.
+
+- [ ] **H9 · Deploy only green builds** · ⏱ 45 min · 🔗 **Needs** H7
+  - Turn on the host's "wait for CI" option, or call its deploy hook from a final CI job that needs the test job. Add a **Live demo** badge to the README.
+  - ✅ **Done when** a push with a failing test doesn't deploy.
+
+- [ ] **H10 · "Try it live" section in the README** · ⏱ 30 min · 🔗 **Needs** H8
+  - Add a demo button, the three logins, what each role can try, and a small deployment diagram.
+  - ✅ **Done when** someone new can sign in within 30 seconds of opening the README.
+
+---
+
+## 🎒 Stage I · Self-Service Portals
+
+**Goal:** each role gets a home built for it. A student sees only their own records, and a teacher works only on the subjects they teach. · **Release** `v1.3`
+
+- [ ] **I1 · Assign teachers to subjects** · ⏱ 1.5 h · 🔗 **Needs** G9
+  - Add a `TeachingAssignment(teacher, subject)` entity (Stage J adds a term to it). Admins assign subjects from the teacher page.
+  - ✅ **Done when** the teacher page lists their subjects and the subject page lists its teachers.
+
+- [ ] **I2 · A dashboard for each role** · ⏱ 1 h · 🔗 **Needs** G10
+  - Keep `/dashboard`, but render `dashboard/admin`, `dashboard/teacher` or `dashboard/student` by role. Today's dashboard becomes the admin one.
+  - ✅ **Done when** the three demo accounts each land on a different dashboard.
+
+- [ ] **I3 · Student home** · ⏱ 2 h · 🔗 **Needs** I2, G11
+  - Cards for attendance % (reuse `AttendanceSummary`), latest results, unpaid fees with due dates, and exams in the next 14 days for the subjects they are enrolled in (`e.subject.id IN (SELECT en.subject.id FROM Enrollment en WHERE en.student.id = :id)`).
+  - ✅ **Done when** every number matches what the admin sees for the same student.
+
+- [ ] **I4 · "My" pages for students** · ⏱ 2 h · 🔗 **Needs** I3
+  - `/me/marksheet` (with PDF), `/me/attendance` (by subject) and `/me/fees` (with receipt PDFs). Each page reads the student from `CurrentUser`, never from an id in the URL.
+  - ✅ **Done when** all three pages work for `demo_student` and none of their URLs contain an id.
+
+- [ ] **I5 · Lock record pages down for students** · ⏱ 1.5 h · 🔗 **Needs** I4
+  - Replace the C7 matrix with this one, in `SecurityConfig` and with `@PreAuthorize` on the services, and give students a "My …" sidebar:
+
+    | Area | ADMIN | TEACHER | STUDENT |
+    |---|:---:|:---:|:---:|
+    | Student, teacher and enrollment pages | ✅ | 👁️ view | ❌ |
+    | Course and subject catalogue | ✅ | 👁️ | 👁️ |
+    | Attendance, exams, results | ✅ | ✏️ own subjects (I7) | ❌, uses `/me/…` |
+    | Fees | ✅ | ❌ | ❌, uses `/me/fees` |
+
+  - Today a student can open `/student/{anyone}/marksheet.pdf`; after this task it returns 403.
+  - ✅ **Done when** the route × role test covers every rule in the table and passes.
+
+- [ ] **I6 · Teacher home** · ⏱ 1.5 h · 🔗 **Needs** I1, I2
+  - Show their subjects with student counts, whether attendance was taken today for each, and past exams that still have missing results.
+  - ✅ **Done when** a teacher sees only their own subjects.
+
+- [ ] **I7 · Teachers act only on their own subjects** · ⏱ 1.5 h · 🔗 **Needs** I1, I6
+  - Add `@access.teachesSubject(#subjectId)` to attendance, exam and result changes, and filter the subject dropdowns.
+  - ✅ **Done when** a test shows a teacher posting attendance for another teacher's subject gets 403.
+
+- [ ] **I8 · Gradebook: a whole exam's marks in one form** · ⏱ 2 h · 🔗 **Needs** I7
+  - Pick an exam to get a table of enrolled students with mark boxes, like bulk attendance (E14). Check every mark against the total and grade each one with `GradeCalculator`. Saving again updates rows instead of adding new ones. ~~First add a unique constraint on `results(student_id, exam_id)` in a migration, after checking for duplicates.~~ Already done by the 11 Oct audit (#41): `V7__results_unique.sql` adds `uk_results_student_exam`, and the result form refuses a second result, so the gradebook only has to update the existing row.
+  - ✅ **Done when** 30 results take one submit and a second submit changes marks without creating rows.
+
+- [ ] **I9 · Students edit their own contact details** · ⏱ 1 h · 🔗 **Needs** G10
+  - `/me/profile` lets a student change phone, address and photo only. Bind a small DTO, not the `Student` entity, so a crafted POST can't change the name, email or course.
+  - ✅ **Done when** a crafted POST with `course=…` leaves the course unchanged.
+
+- [ ] **I10 · Ownership tests** · ⏱ 1.5 h · 🔗 **Needs** I5, I7, I9
+  - Cover student A vs student B, teacher on own vs other subject, and admin on everything.
+  - ✅ **Done when** at least 15 new security tests pass.
+
+---
+
+## 🏫 Stage J · Academic Operations
+
+**Goal:** model how a college actually runs a year: terms, timetables, coursework, announcements, leave and credit-based grades. · **Release** `v1.4`
+
+**📅 Terms and timetable**
+
+- [ ] **J1 · Academic year and term** · ⏱ 1.5 h · 🔗 **Needs** G7
+  - Add `AcademicTerm(name, startDate, endDate, current)`, for example "2026–27 Odd". Allow only one current term (checked in the service).
+  - Add a nullable `term_id` to exams, attendance, fees and teaching assignments; the migration creates the first term and fills it in for existing rows.
+  - ✅ **Done when** switching the current term changes what the dashboards count.
+
+- [ ] **J2 · Weekly timetable with clash checks** · ⏱ 2.5 h · 🔗 **Needs** J1, I1
+  - Add `TimetableSlot(term, course, subject, teacher, dayOfWeek, startTime, endTime, room)`. Reject a slot when the same teacher or the same room already has one that overlaps on that day (`s.startTime < :end AND s.endTime > :start`).
+  - ✅ **Done when** an overlapping slot for the same teacher shows an error, and back-to-back slots are allowed.
+
+- [ ] **J3 · Timetable views** · ⏱ 1.5 h · 🔗 **Needs** J2
+  - Weekly grids for a course, "my timetable" for a teacher, and one for a student (through enrollments), with print styles.
+  - ✅ **Done when** each demo account sees its own week.
+
+- [ ] **J4 · Take attendance from a timetable slot** · ⏱ 1 h · 🔗 **Needs** J2, I6
+  - The teacher home lists today's slots, each with a **Take attendance** button that opens the bulk form for that subject and date.
+  - ✅ **Done when** one click from a slot opens a pre-filled bulk form.
+
+**📚 Coursework**
+
+- [ ] **J5 · Announcements** · ⏱ 2 h
+  - Add `Announcement(title, body, audience, course, pinned, publishAt, expiresAt, author)` with audience All, Students, Teachers or one course. Store the body as plain text and display it with `th:text`, so no HTML is ever rendered.
+  - ✅ **Done when** a student sees only announcements meant for them, and expired ones disappear.
+
+- [ ] **J6 · Assignments** · ⏱ 2 h · 🔗 **Needs** I7
+  - Add `Assignment(subject, title, description, dueAt, maxMarks, createdBy)`. Teachers manage them for their own subjects; students see those for subjects they're enrolled in.
+  - ✅ **Done when** a student enrolled in `MATH01` sees its assignment and other students don't.
+
+- [ ] **J7 · Submissions with file upload** · ⏱ 2.5 h · 🔗 **Needs** J6
+  - Add `Submission(assignment, student, file, submittedAt, late, marks, feedback)`. Extend `FileUploadUtil` to accept PDFs up to 5 MB, checking the `%PDF-` signature, not the file name.
+  - Store submissions outside the public `/uploads/**` handler and serve them through a controller that checks ownership.
+  - ✅ **Done when** a renamed `.exe` is rejected, a late upload is flagged, and student A can't download B's file.
+
+- [ ] **J8 · Grade submissions** · ⏱ 1 h · 🔗 **Needs** J7
+  - A teacher sees every submission for an assignment and enters marks and feedback.
+  - ✅ **Done when** the student sees their marks and feedback on the assignment page.
+
+- [ ] **J9 · Leave requests** · ⏱ 2 h · 🔗 **Needs** I2
+  - Students apply with dates, a reason and an optional document; a teacher or admin approves or rejects. Decide and write down the rule: approved leave days are excused, so they're left out of the attendance total. Update the `AttendanceSummary` queries and their tests to match.
+  - ✅ **Done when** approved leave no longer pulls a student under 75%.
+
+- [ ] **J10 · Holidays and an academic calendar** · ⏱ 1.5 h · 🔗 **Needs** J1, J6
+  - Add `Holiday(date, name)`; bulk attendance refuses holidays. A calendar page uses FullCalendar (from a CDN) fed by a `/calendar/events` JSON endpoint with exams, holidays and assignment due dates for the signed-in user.
+  - ✅ **Done when** each role sees only its own events, and attendance can't be taken on a holiday.
+
+**🎓 Credit-based results**
+
+- [ ] **J11 · SGPA and CGPA** · ⏱ 2 h · 🔗 **Needs** J1
+  - Add `GradeCalculator.gradePoint()`: A+ 10 · A 9 · B 8 · C 7 · D 6 · F 0. SGPA is Σ(credits × grade point) ÷ Σ credits for one term, using the existing `Subject.credits`; CGPA covers all terms. Unit-test the formula, including a term with a failed subject.
+  - ✅ **Done when** a hand-calculated SGPA for a demo student matches the page.
+
+- [ ] **J12 · Semester report card (PDF)** · ⏱ 1.5 h · 🔗 **Needs** J11
+  - One page per term: subjects, credits, grades, SGPA, CGPA, attendance % and a remarks box (Stage O can draft it). Reuse `PdfService`.
+  - ✅ **Done when** the PDF matches the report card page.
+
+- [ ] **J13 · Merit list and ranks** · ⏱ 1 h · 🔗 **Needs** J11
+  - Rank students by SGPA within a course and term. Equal scores share a rank (1, 2, 2, 4). JPQL has no `RANK()`, so compute it in Java or with a native MySQL 8 query.
+  - ✅ **Done when** two students with the same SGPA show the same rank.
+
+---
+
+## 💰 Stage K · Finance
+
+**Goal:** turn single fee rows into a small accounts module: fee structures, instalments, fines, scholarships, online payment and reports. · **Release** `v1.5`
+
+- [ ] **K1 · Fee structure per course and term** · ⏱ 1.5 h · 🔗 **Needs** J1, G8
+  - Add `FeeStructure(course, term)` with `FeeComponent(name, amount)` rows such as Tuition, Exam and Library. Use `BigDecimal` with 2 decimal places everywhere.
+  - ✅ **Done when** a structure's total equals the sum of its components.
+
+- [ ] **K2 · Generate a term's invoices** · ⏱ 1.5 h · 🔗 **Needs** K1
+  - One button creates one fee (invoice) per enrolled student of a course for a term, with a due date. Skip students who already have one, as bulk attendance does.
+  - ✅ **Done when** running it twice creates nothing the second time.
+
+- [ ] **K3 · Partial payments** · ⏱ 2.5 h · 🔗 **Needs** K2
+  - Move payments out of `Fee` into `Payment(fee, amount, paidOn, method, reference, receivedBy)`. The fee's status is worked out from its payments: Pending, Partly paid, Paid or Overdue. A migration turns each existing paid fee into one payment row. Refuse a payment larger than the balance, and give each payment its own receipt.
+  - ✅ **Done when** a ₹60,000 fee paid as three ₹20,000 payments shows Partly paid, then Paid, with three receipts.
+
+- [ ] **K4 · Late fines** · ⏱ 1 h · 🔗 **Needs** K3
+  - Add a per-day fine after the due date with a cap (`sms.fees.late-fine-per-day`, `sms.fees.late-fine-max`). Show it on the statement; an admin can waive it, and the waiver is logged.
+  - ✅ **Done when** an invoice 10 days overdue shows 10 days' fine, never more than the cap.
+
+- [ ] **K5 · Scholarships and concessions** · ⏱ 1.5 h · 🔗 **Needs** K2
+  - Add `Concession(student, term, type, value, reason, approvedBy)`, a percentage or a fixed amount, applied when invoices are generated and shown on the receipt. Decide which components it applies to; tuition only is a sensible default.
+  - ✅ **Done when** a 50% scholarship halves only the tuition component.
+
+- [ ] **K6 · Online payment (Razorpay test mode)** · ⏱ 3 h · 🔗 **Needs** K3
+  - **Pay now** makes the server create an order with Razorpay's Orders API (amounts in paise), then opens Razorpay Checkout. Record the payment only after the server checks the signature: HMAC-SHA256 of `order_id|payment_id` with the key secret. Never trust the browser's callback alone.
+  - Add a webhook endpoint that checks the `X-Razorpay-Signature` header, is exempt from CSRF on that path only, and ignores a payment id it has already recorded. Test keys come from environment variables; Stripe's test mode works the same way if you prefer it.
+  - ✅ **Done when** a test-card payment marks the invoice paid, and a test with a tampered signature records nothing.
+
+- [ ] **K7 · Finance reports** · ⏱ 2 h · 🔗 **Needs** K3
+  - Collections by month (chart), by course and by payment method; a defaulters list with ageing buckets (0–30, 31–60, 60+ days overdue); CSV export now, Excel in M3.
+  - ✅ **Done when** every report total equals the sum of the matching payment rows.
+
+- [ ] **K8 · Money tests** · ⏱ 1.5 h · 🔗 **Needs** K3, K4, K5
+  - Cover status rules, fines and the cap, concessions, refused overpayments, and rounding (`HALF_UP` to 2 places).
+  - ✅ **Done when** at least 12 tests pass.
+
+---
+
+## 📣 Stage L · Communication & Automation
+
+**Goal:** reach people outside the browser with email, scheduled reminders, an inbox and self-service password reset. · **Release** `v1.6`
+
+- [ ] **L1 · Email** · ⏱ 1.5 h · 🔗 **Needs** H2
+  - Add `spring-boot-starter-mail` and an `EmailService` that renders Thymeleaf templates from `templates/email/`. Send with `@Async` from an `@TransactionalEventListener(phase = AFTER_COMMIT)`, so a rolled-back save sends nothing. Use Mailpit locally (SMTP `1025`, inbox UI on `8025`) and a real SMTP service in production. Add a `sms.mail.enabled` switch.
+  - ✅ **Done when** a test email appears in Mailpit, and the app still works with mail turned off.
+
+- [ ] **L2 · Forgot and reset password** · ⏱ 2 h · 🔗 **Needs** L1, G5
+  - Add `PasswordResetToken(tokenHash, user, expiresAt, usedAt)`. Email a random 32-byte token and store only its SHA-256 hash; it works once and expires after 30 minutes. Show the same message whether or not the email exists, so the form can't be used to discover accounts, and allow one request per email per minute. End the user's sessions after a reset (G5).
+  - ✅ **Done when** a link works once, fails after 30 minutes, and an unknown email gets the same message as a known one.
+
+- [ ] **L3 · Verify email on registration** · ⏱ 1 h · 🔗 **Needs** L1
+  - New accounts stay disabled until the link in their email is clicked; add a "resend" option.
+  - Once the email is verified, link the account to the student with the same email, if that student has no account yet (moved here from G10, where it would have let anyone claim a student's records).
+  - ✅ **Done when** an unverified account can't sign in.
+
+- [ ] **L4 · Notification inbox** · ⏱ 2 h
+  - Add a `Notification(user, type, title, body, link, readAt, createdAt)` entity for things that happen (assignment graded, leave decided, payment received, new announcement). Rename today's `dto/Notification` record to `Alert` first, so the names don't clash.
+  - The bell merges both: live alerts from F1 and unread inbox items. Add "mark read" and "mark all read" as POST actions.
+  - ✅ **Done when** approving a leave puts an unread item in the student's bell, and reading it lowers the badge.
+
+- [ ] **L5 · Domain events** · ⏱ 1.5 h · 🔗 **Needs** L4, J9, K3
+  - Services publish events such as `LeaveDecided`, `SubmissionGraded`, `PaymentReceived`, `AnnouncementPublished` and `ResultPublished`; listeners create inbox items and emails. Services then don't need to know who listens. The activity log can move to a listener too.
+  - ✅ **Done when** no service calls the notification or email code directly.
+
+- [ ] **L6 · Scheduled reminders** · ⏱ 1.5 h · 🔗 **Needs** L1, L5
+  - Turn on `@EnableScheduling` and add `@Scheduled(cron = "0 0 8 * * *", zone = "Asia/Kolkata")` jobs: fees due in 3 days, weekly overdue reminders, and a weekly low-attendance digest to students and their teachers. Add ShedLock so two running copies of the app don't both send.
+  - ✅ **Done when** a test that runs the job directly finds the expected emails.
+
+- [ ] **L7 · Notification preferences** · ⏱ 1 h · 🔗 **Needs** L4, L6
+  - Each user can turn email on or off per category, and every email has a signed unsubscribe link.
+  - ✅ **Done when** turning off fee reminders stops only that email.
+
+- [ ] **L8 · Live bell with Server-Sent Events** · ⏱ 1.5 h · 🔗 **Needs** L4
+  - Add a `/notifications/stream` endpoint using `SseEmitter` that pushes the unread count. Emitters live in memory, which is fine for one app instance; write that limit down.
+  - ✅ **Done when** approving a leave in one browser updates the student's badge in another without a refresh.
+
+- [ ] **L9 · Email tests with GreenMail** · ⏱ 1 h · 🔗 **Needs** L2, L6
+  - Use `greenmail-junit5` to check recipients, subjects and that the reset link in the email works.
+  - ✅ **Done when** the reset and reminder emails are covered and pass in CI.
+
+---
+
+## 📊 Stage M · Insight & Documents
+
+**Goal:** turn the data into decisions and official documents: analytics, early warnings, Excel, ID cards and verifiable certificates. · **Release** `v1.7`
+
+- [ ] **M1 · Analytics page** · ⏱ 2.5 h · 🔗 **Needs** J1, K3
+  - Add `/analytics` for admins with Chart.js: weekly attendance trend, grade distribution per exam, pass rate per subject, collections per month and enrollments per course, filtered by term and course. Fill each chart from a `GROUP BY` query into a record.
+  - ✅ **Done when** each chart's numbers match the same SQL run by hand.
+
+- [ ] **M2 · At-risk students (rule-based and explainable)** · ⏱ 2 h · 🔗 **Needs** M1, J8
+  - Score each student from 0 to 100 using attendance under 75%, a falling marks trend, failed exams, overdue fees and late or missing submissions. Show each factor's share ("why flagged"), and keep the weights in configuration. Teachers and admins get a list and a weekly alert.
+  - ✅ **Done when** a demo student with 60% attendance and a failed exam is listed with both reasons.
+
+- [ ] **M3 · Excel export with Apache POI** · ⏱ 1.5 h
+  - Add `poi-ooxml` and use `SXSSFWorkbook`, which streams rows instead of holding them all in memory. Export students, the attendance report, results per exam and the finance reports, with a bold frozen header, auto-filter, and real number and date cells.
+  - ✅ **Done when** the files open in Excel with filters on and dates sortable as dates.
+
+- [ ] **M4 · Public document verification** · ⏱ 1.5 h
+  - Add a `DocumentVerification(token, type, subjectId, issuedAt, revokedAt)` table with random 128-bit tokens, and a public `/verify/{token}` page that shows only the name, course, document type and whether it's valid. Rate-limit the page.
+  - ✅ **Done when** a valid token shows the details, and a changed or revoked one shows "not valid".
+
+- [ ] **M5 · Student ID card with a QR code** · ⏱ 2 h · 🔗 **Needs** M4
+  - Use ZXing (`com.google.zxing:core` and `javase`) to draw a QR code holding the M4 verification link, and lay out a card with the photo in OpenPDF, 8 cards to an A4 sheet.
+  - ✅ **Done when** scanning a printed card with a phone opens its verification page.
+
+- [ ] **M6 · Certificates** · ⏱ 1.5 h · 🔗 **Needs** M4
+  - Students request a bonafide or course-completion certificate, an admin approves it, and the PDF has a serial number and a verification QR code.
+  - ✅ **Done when** an approved request downloads a certificate whose QR code verifies.
+
+- [ ] **M7 · QR attendance (stretch)** · ⏱ 2.5 h · 🔗 **Needs** J2, M5
+  - The teacher shows a QR code that changes every 30 seconds and is tied to the current timetable slot. A signed-in student scans it to mark themselves present; old codes and second scans are refused. Be honest in the README that a student could forward the code; the 30-second rotation is the mitigation.
+  - ✅ **Done when** a code older than 30 seconds is refused, and a student can't mark themselves twice.
+
+- [ ] **M8 · Command palette search (Ctrl+K)** · ⏱ 1.5 h · 🔗 **Needs** I5
+  - One box that searches students, teachers, courses and subjects through a JSON endpoint, filtered by role.
+  - ✅ **Done when** typing `MATH` finds the subject, and a student's results include only what they are allowed to open.
+
+---
+
+## 🔌 Stage N · REST API
+
+**Goal:** expose the system as a secured, documented JSON API, ready for a mobile app or a React front end. · **Release** `v2.0` 🎯 **Platform**
+
+- [ ] **N1 · API design record** · ⏱ 1 h
+  - Write `docs/adr/0001-rest-api.md`: resources under `/api/v1`, request and response DTO records (never entities, which avoids lazy-loading errors and mass assignment), plain mappers (the project has no Lombok or MapStruct), and the error and paging shapes.
+  - ✅ **Done when** the ADR is committed and N2–N7 follow it.
+
+- [ ] **N2 · Read endpoints** · ⏱ 2 h · 🔗 **Needs** N1, I5
+  - Students, courses, subjects, exams and results, paged with `@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)` so the JSON page shape stays stable.
+  - Apply the same `@access` ownership rules as the web pages (I5), so a student token reads only that student's records.
+  - ✅ **Done when** `GET /api/v1/students?page=0&size=20` returns the documented shape.
+
+- [ ] **N3 · Write endpoints and problem details** · ⏱ 2 h · 🔗 **Needs** N2
+  - POST, PUT and DELETE with Bean Validation. Errors come back as RFC 9457 `ProblemDetail` (`application/problem+json`) with a list of field errors from an `@RestControllerAdvice`. A create returns 201 with a `Location` header.
+  - ✅ **Done when** an invalid POST returns 400 problem JSON that names the bad fields.
+
+- [ ] **N4 · JWT security for the API** · ⏱ 2.5 h · 🔗 **Needs** N2
+  - Add a second `SecurityFilterChain` with `@Order(1)` and `securityMatcher("/api/**")`: stateless, CSRF off for the API only, and `spring-boot-starter-oauth2-resource-server` checking JWTs. `POST /api/v1/auth/token` issues 15-minute tokens signed with a `JWT_SECRET` from the environment, with roles in a claim. The browser app's chain stays as it is.
+  - ✅ **Done when** no token gives 401, a student token on an admin endpoint gives 403, and browser login still works.
+
+- [ ] **N5 · OpenAPI and Swagger UI** · ⏱ 1 h · 🔗 **Needs** N4
+  - Add `springdoc-openapi-starter-webmvc-ui` (pick the version springdoc lists for Spring Boot 3.5), with a bearer-token scheme and examples. In production, show Swagger UI to admins only.
+  - ✅ **Done when** `/swagger-ui.html` lists every endpoint and its **Authorize** button works.
+
+- [ ] **N6 · Rate limiting** · ⏱ 1 h · 🔗 **Needs** N4
+  - Use Bucket4j per token or IP on `/api/**`, `/login` and the reset form, answering 429 with `Retry-After`.
+  - ✅ **Done when** the 61st request in a minute gets 429.
+
+- [ ] **N7 · API tests and a spec snapshot** · ⏱ 2 h · 🔗 **Needs** N3, N4, N5
+  - Add MockMvc tests with JSON-path checks, and commit `docs/openapi.json`. A test compares the live spec with the snapshot, so a breaking change can't slip in unnoticed.
+  - ✅ **Done when** CI fails if the API changes without the snapshot being updated.
+
+- [ ] **N8 · Ready-made API collection** · ⏱ 45 min · 🔗 **Needs** N5
+  - Commit a Bruno or Postman collection with an environment for the live demo, and link it from the README.
+  - ✅ **Done when** a reviewer can get a token and list students in under 2 minutes.
+
+---
+
+## 🤖 Stage O · AI Assistant (Claude API)
+
+**Goal:** AI features that are useful, safe and explainable. Every AI output is a draft that a person approves, the AI sees only the data it needs, and the app works without an API key. · **Release** `v2.1` 🎯 **AI**
+
+> 🛡️ **Three rules for every task in this stage.** (1) Send no email, phone, address or date of birth to the API.
+> (2) The model never writes SQL and never receives a tool that changes data. (3) No AI text reaches a student
+> or a document until a person has approved it.
+
+- [ ] **O1 · AI foundation** · ⏱ 1.5 h
+  - Add the official Java SDK `com.anthropic:anthropic-java` (pin the current version; 2.34.0 when this was written). An `AiConfig` builds the client with `AnthropicOkHttpClient.fromEnv()` only when `sms.ai.enabled=true` and `ANTHROPIC_API_KEY` is set; otherwise a no-op `AiService` is used and AI buttons are hidden.
+  - Put the model in `sms.ai.model`, defaulting to `claude-opus-5-5`, and set `effort` per feature (low for chat). Check `stop_reason` before reading the reply (`refusal`, `max_tokens`) and catch the SDK's typed exceptions, such as `RateLimitException`. Record input and output tokens per feature in an `ai_usage` table.
+  - ✅ **Done when** the app starts with AI off, and with a key a test prompt returns text and writes a usage row.
+
+- [ ] **O2 · Privacy guardrails** · ⏱ 1 h · 🔗 **Needs** O1
+  - A `PromptRedactor` builds every prompt from an allow-list of fields (first name or a pseudonym, grades, percentages, dates), never whole entities. AI features are off until an admin turns them on. Document what is sent and why in `docs/ai-policy.md`.
+  - ✅ **Done when** a unit test proves no email or phone number can reach a request body.
+
+- [ ] **O3 · Report-card remarks, approved by the teacher** · ⏱ 2 h · 🔗 **Needs** O2, J12
+  - Send grades, attendance % and the marks trend (numbers only). Ask for structured output (a JSON schema in `output_config.format`) such as `{remark, strengths[], focusAreas[]}`. The teacher edits and approves each remark before it appears on the report card. Generate a whole class at once with the Message Batches API, which runs asynchronously at half the price.
+  - ✅ **Done when** no remark appears on a report card until a teacher has approved it.
+
+- [ ] **O4 · Student helpdesk chatbot (tool use)** · ⏱ 3 h · 🔗 **Needs** O2, I4
+  - A chat panel for students. Tools are `get_my_attendance`, `get_my_fees`, `get_my_timetable`, `get_upcoming_exams` and `get_announcements`; each reads the student from `CurrentUser` and takes **no student id**, so the model can't ask for anyone else's data. Use `strict: true` tool schemas with `tool_choice: auto`, and cap the conversation length. Return each reply whole at first; stream it over SSE once L8 exists.
+  - ✅ **Done when** a test with a mocked model that asks for another student's attendance still gets only the signed-in student's data.
+
+- [ ] **O5 · Plain-English questions for admins** · ⏱ 2.5 h · 🔗 **Needs** M1, O2
+  - "Which subjects had a pass rate under 60% this term?" The model picks from fixed, read-only report tools such as `pass_rate_by_subject(term)` and `students_below_attendance(threshold, course)`. Show the result as a table or chart, together with the tool calls it made, so the answer can be checked.
+  - ✅ **Done when** "delete all students" changes nothing and gets a polite refusal, and each answer shows its source tool.
+
+- [ ] **O6 · Smart CSV column mapping** · ⏱ 1.5 h · 🔗 **Needs** O2, G8
+  - When an uploaded CSV's headers don't match, send **only the header row** and ask for a mapping to the known fields (structured output). The admin confirms the mapping, then the existing validated import runs.
+  - ✅ **Done when** a file with `Name, Mobile No, D.O.B` imports after one confirmation, and no data rows were sent.
+
+- [ ] **O7 · Drafting assistant for announcements** · ⏱ 1 h · 🔗 **Needs** O1, J5
+  - A **Draft** button turns bullet points into an announcement in a chosen tone; the text lands in the form for editing.
+  - ✅ **Done when** the draft fills the form and nothing is published automatically.
+
+- [ ] **O8 · AI evaluation and cost page** · ⏱ 1.5 h · 🔗 **Needs** O3, O4
+  - Write 20 test cases (input data, plus properties the answer must have, such as "mentions attendance when it's under 75%" and "invents no numbers") and run them from a manually triggered workflow, since each run costs money. An admin page shows tokens and estimated cost per feature per day, with prices in configuration.
+  - ✅ **Done when** the evaluation prints a pass rate and the cost page totals match the `ai_usage` rows.
+
+- [ ] **O9 · Tests without the network** · ⏱ 1 h · 🔗 **Needs** O3, O4, O5
+  - Use a fake `AiService` in unit and controller tests, so CI needs no API key and makes no calls.
+  - ✅ **Done when** `./mvnw verify` passes with no key and no network.
+
+---
+
+## 🔒 Stage P · Production Hardening
+
+**Goal:** the operational polish that separates a project from a product: monitoring, security headers, stronger login, history, speed, languages, accessibility and backups. · **Release** `v2.2`
+
+- [ ] **P1 · Metrics and dashboards** · ⏱ 2 h · 🔗 **Needs** H2, H6
+  - Add `micrometer-registry-prometheus` and custom counters (logins, payments, AI tokens). Compose gains Prometheus and Grafana with a dashboard committed as JSON.
+  - ✅ **Done when** Grafana shows request rate and p95 latency per endpoint.
+
+- [ ] **P2 · Structured logs with request ids** · ⏱ 1 h
+  - Set `logging.structured.format.console=ecs` (Spring Boot 3.4+) and add a filter that puts a request id into the MDC and the `X-Request-Id` response header.
+  - ✅ **Done when** every log line is JSON with a request id that matches the response header.
+
+- [ ] **P3 · Security headers and a Content Security Policy** · ⏱ 1.5 h
+  - Configure a CSP, HSTS (prod only), `Referrer-Policy` and `Permissions-Policy` in `SecurityConfig`. First move the 14 inline `onclick`/`onsubmit` handlers into a script file (for example `data-confirm="Delete this student?"`), because a strict CSP blocks inline handlers.
+  - ✅ **Done when** Mozilla Observatory rates the live demo A or better and nothing breaks.
+
+- [ ] **P4 · Login lockout and "remember me"** · ⏱ 1.5 h
+  - Lock an account for 15 minutes after 5 failed sign-ins (listen for `AuthenticationFailureBadCredentialsEvent`) and add remember-me with persistent tokens stored in the database.
+  - ✅ **Done when** the sixth wrong password is refused even with the right one, until the 15 minutes pass.
+
+- [ ] **P5 · Two-factor sign-in for admins** · ⏱ 2.5 h · 🔗 **Needs** P4
+  - Add TOTP enrollment with a QR code (for example `dev.samstevens.totp`), hashed one-time recovery codes, and a code step after the password for admin accounts.
+  - ✅ **Done when** admin sign-in asks for a 6-digit code, and each recovery code works only once.
+
+- [ ] **P6 · Change history with Hibernate Envers** · ⏱ 1.5 h · 🔗 **Needs** G7
+  - Add `@Audited` to `Result`, `Fee` and `Payment`, with the `_aud` tables created by a migration, since `ddl-auto` is now `validate`. Add a History tab on their pages.
+  - ✅ **Done when** editing a result shows "marks 45 → 52 by demo_teacher at 10:42".
+
+- [ ] **P7 · Performance pass** · ⏱ 2 h
+  - Find N+1 queries with Hibernate statistics in a test, fix list pages with `JOIN FETCH` or `@EntityGraph`, add indexes for common filters in a migration, and cache courses and subjects with Caffeine and `@Cacheable`. Load-test the dashboard with k6 against 10,000 seeded students.
+  - ✅ **Done when** the student list runs at most 3 queries per page (asserted in a test) and the dashboard's p95 is under 300 ms.
+
+- [ ] **P8 · English and Hindi** · ⏱ 2.5 h · 🔗 **Needs** G1
+  - Move interface text into `messages.properties` and `messages_hi.properties`, add a `LocaleChangeInterceptor` with a cookie-based `localeResolver`, and a language switch in the navbar. Start with the sidebar, the dashboards and login.
+  - ✅ **Done when** switching to हिन्दी translates those pages and the choice is remembered.
+
+- [ ] **P9 · Dark mode and accessibility** · ⏱ 2 h
+  - Use Bootstrap 5.3's `data-bs-theme="dark"` with dark values for `theme.css`'s custom properties, and remember the choice in `localStorage`. Then fix what Lighthouse and axe report: contrast, labels, focus outlines and a skip link.
+  - ✅ **Done when** Lighthouse accessibility scores at least 95 on a dashboard, a list and a form, in both themes.
+
+- [ ] **P10 · Installable app and phone layout** · ⏱ 1.5 h
+  - Add a web manifest and a service worker that caches only static files (never signed-in pages), permitted in `SecurityConfig`. Show tables as stacked cards on narrow screens.
+  - ✅ **Done when** Chrome offers "Install app", and the student home works at 360 px width.
+
+- [ ] **P11 · Backups and a restore drill** · ⏱ 1 h · 🔗 **Needs** H2
+  - Take a nightly `mysqldump` (a Compose sidecar or a host cron job) and keep 7 days. Write the restore steps in `docs/runbook.md`, then rehearse them once.
+  - ✅ **Done when** a backup restored into an empty database runs the app correctly.
+
+- [ ] **P12 · Final v2 documentation pass** · ⏱ 1.5 h
+  - Update the README, roadmap and analysis numbers, retake the screenshots, add a short GIF of the three portals, and list the ADRs.
+  - ✅ **Done when** every number in the three documents matches the code.
+
+---
+
+## 🧊 Parked
+
+Still recorded but deliberately not scheduled:
+
+- **Rotating the MySQL `root` password** (A4). After G6 this app no longer uses `root`, so the rotation only concerns the 7 other local projects.
+- **Removing the old password and photos from git history** (`git filter-repo`), which rewrites published history.
+- **Object storage (S3-compatible) for uploads.** It matters only once the app runs as more than one instance.
+- **Kubernetes or microservices.** One Spring Boot app with Docker Compose fits this scale.
+- **A React front end or a mobile app.** Stage N builds the API either would use.
+- **Several institutions in one install (multi-tenancy) and Google/Microsoft single sign-on.**
+- **Machine-learning risk prediction.** M2's explainable rules come first; a model needs a few terms of real data to train and check against.
+
+> ✅ **Moved out of Parked into v2:** `Student.course` as a foreign key (G8) · Subject → Course (G9) · students seeing only
+> their own records (G10, I4, I5) · forgot/reset password (L2) · Flyway (G7) · Docker (H1, H2) · REST API (Stage N) · monitoring (P1, P2).
+
+---
+
+## 📦 Archive · v1 Board (Stages 0–F)
+
+> ✅ **100 of 101 tasks done** between 6 and 9 Oct 2026, taking the app from a failing build to 88 endpoints, 55 tests
+> and CI. A4 (rotating the old `root` password) is the one task left; G6 removes this app's dependency on `root`, so
+> nothing here waits for it any more. The board is kept for its decisions and "found while doing this" notes.
+
+<details>
+<summary><b>Show the v1 board</b></summary>
+
+<br/>
+
+| Stage | What it got us | Tasks | Time | Done |
 |---|---|:---:|:---:|:---:|
 | 🧰 [0 · Get Ready](#-stage-0--get-ready) | App running with linked test data | 2 | ~35 min | ✅ 2 / 2 |
 | ⚡ [A · Quick Wins](#-stage-a--quick-wins) | Every crash and broken button a reviewer would hit is fixed | 12 | ~4.5 h | 11 / 12 · A4 deferred |
@@ -54,33 +661,7 @@ Suggested commit style: `fix(student): search no longer crashes (#23)`.</sub>
 | 🔵 [F · Showcase](#-stage-f--showcase-polish) | Notifications, PDF, profile, tests, CI, screenshots | 20 | ~17 h | ✅ 20 / 20 |
 | | **Total** | **101** | **~63 h** | **100 / 101** |
 
-```mermaid
-flowchart LR
-    S0["🧰 0 · Get ready<br/><b>2 tasks</b>"]
-    A["⚡ A · Quick wins<br/><b>12 tasks</b><br/><i>~4.5 h</i>"]
-    B["🟠 B · One app<br/><b>18 tasks</b><br/><i>~10 h</i>"]
-    C["🟡 C · Security<br/><b>15 tasks</b><br/><i>~8 h</i>"]
-    D["🟢 D · Correctness<br/><b>14 tasks</b><br/><i>~7 h</i>"]
-    E["🟢 E · Features<br/><b>20 tasks</b><br/><i>~16 h</i>"]
-    F["🔵 F · Showcase<br/><b>20 tasks</b><br/><i>~17 h</i>"]
-
-    S0 --> A --> B --> C --> D --> E --> F
-
-    style S0 fill:#334155,stroke:#94a3b8,color:#fff
-    style A fill:#7f1d1d,stroke:#ef4444,color:#fff
-    style B fill:#7c2d12,stroke:#f97316,color:#fff
-    style C fill:#713f12,stroke:#eab308,color:#fff
-    style D fill:#065f46,stroke:#10b981,color:#fff
-    style E fill:#065f46,stroke:#10b981,color:#fff
-    style F fill:#1e3a8a,stroke:#3b82f6,color:#fff
-```
-
-> 💡 **If you only have one evening**, do Stage A. It fixes the student search, logout and the three
-> failing deletes, which are the flows a reviewer is most likely to try first.
-
----
-
-## 🧰 Stage 0 · Get Ready
+### 🧰 Stage 0 · Get Ready
 
 **Goal:** a running app with enough linked data to test every task below.
 
@@ -110,7 +691,7 @@ flowchart LR
 
 ---
 
-## ⚡ Stage A · Quick Wins
+### ⚡ Stage A · Quick Wins
 
 **Goal:** fix every crash and broken button a reviewer is likely to click in their first few minutes. **About 70 lines of code in total.**
 
@@ -197,7 +778,7 @@ flowchart LR
 
 ---
 
-## 🟠 Stage B · One Application
+### 🟠 Stage B · One Application
 
 **Goal:** the sidebar and navbar stay visible on every page, and errors show designed pages instead of the Whitelabel page.
 
@@ -289,7 +870,7 @@ flowchart LR
 
 ---
 
-## 🟡 Stage C · Security & Data Integrity
+### 🟡 Stage C · Security & Data Integrity
 
 **Goal:** a STUDENT account gets `403` on admin actions, deletes can't be triggered by a link, uploads accept only real images, and no secrets are in git.
 
@@ -413,7 +994,7 @@ flowchart LR
 
 ---
 
-## 🟢 Stage D · Correctness
+### 🟢 Stage D · Correctness
 
 **Goal:** search results are paged, codes are unique, and marks and amounts make sense.
 
@@ -479,7 +1060,7 @@ flowchart LR
 
 ---
 
-## 🟢 Stage E · New Features
+### 🟢 Stage E · New Features
 
 **Goal:** fill the feature gaps listed in the roadmap.
 
@@ -576,7 +1157,7 @@ flowchart LR
 
 ---
 
-## 🔵 Stage F · Showcase Polish
+### 🔵 Stage F · Showcase Polish
 
 **Goal:** the features recruiters notice first: live notifications, PDFs, a profile page, real tests with CI, and screenshots.
 
@@ -671,21 +1252,11 @@ flowchart LR
 > - **F19:** `docs/screenshots/` holds dashboard, student list, marksheet, fee receipt, attendance report and 403. They show only `@example.com` demo people. The Users page was left out, because it shows real accounts. The dashboard still shows "Fees Collected ₹120,000" (#34).
 > - **F20:** every number was re-measured from the source: 88 endpoints, 57 templates, 11 entities, 7,423 lines of Java, 55 tests, 51/51 route checks. The route table was rebuilt from the controllers, all 15 Mermaid diagrams were validated, and new low-severity issues #34–#37 were added to `project_analysis.md`.
 
----
-
-## 🧊 Parked
-
-These are recorded but deliberately not scheduled, because each one needs a schema migration or an outside service:
-
-- `Student.course` as a real foreign key to `Course`, and a Subject → Course link
-- Students seeing only their own records, which needs a User → Student link
-- Forgot or reset password, which needs a mail server
-- Removing the old password and photos from git history (`git filter-repo`), which rewrites published history
-- The production items in the roadmap's [Future Scope](PROJECT_ROADMAP.md#-future-scope): Flyway, a REST API, Docker and monitoring
+</details>
 
 <div align="center">
 
-<sub>Every one of the 23 open backlog issues maps to at least one task above. When a stage is finished, update the
-matching phase checkboxes in <a href="PROJECT_ROADMAP.md">PROJECT_ROADMAP.md</a>.</sub>
+<sub>When a stage is finished, update its <b>Done</b> column in the progress table and the matching release in
+<a href="PROJECT_ROADMAP.md#-roadmap-v2">PROJECT_ROADMAP.md</a>.</sub>
 
 </div>

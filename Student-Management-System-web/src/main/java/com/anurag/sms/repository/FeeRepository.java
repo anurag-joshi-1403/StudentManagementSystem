@@ -24,10 +24,14 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
 
     List<Fee> findTop5ByOrderByPaymentDateDesc();
 
-    // Dashboard: total money collected, as opposed to the record count
-    // returned by count(). COALESCE keeps an empty table at zero.
-    @Query("SELECT COALESCE(SUM(f.amount), 0) FROM Fee f")
-    BigDecimal sumAllAmounts();
+    // Dashboard: money collected, and money still owed. Called with "Paid".
+    // The collected total used to add up every fee, pending ones included
+    // (#34). COALESCE keeps an empty table at zero.
+    @Query("SELECT COALESCE(SUM(f.amount), 0) FROM Fee f WHERE f.paymentStatus = :status")
+    BigDecimal sumAmountByPaymentStatus(@Param("status") String paymentStatus);
+
+    @Query("SELECT COALESCE(SUM(f.amount), 0) FROM Fee f WHERE f.paymentStatus <> :status")
+    BigDecimal sumAmountByPaymentStatusNot(@Param("status") String paymentStatus);
 
     // Dashboard: "Paid" / "Pending" split
     long countByPaymentStatus(String paymentStatus);

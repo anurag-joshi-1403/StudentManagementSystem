@@ -9,6 +9,9 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+import com.anurag.sms.utility.FieldLimits;
 
 @Entity
 // Teacher emails are unique in the database too (#27). Declared on the table
@@ -21,13 +24,16 @@ public class Teacher {
     private Long id;
 
     @NotBlank(message = "First Name is required")
+    @Size(max = FieldLimits.TEXT, message = "First Name" + FieldLimits.TEXT_TOO_LONG)
     private String firstName;
 
     @NotBlank(message = "Last Name is required")
+    @Size(max = FieldLimits.TEXT, message = "Last Name" + FieldLimits.TEXT_TOO_LONG)
     private String lastName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Enter a valid email")
+    @Size(max = FieldLimits.TEXT, message = "Email" + FieldLimits.TEXT_TOO_LONG)
     private String email;
 
     @NotBlank(message = "Phone Number is required")
@@ -38,9 +44,11 @@ public class Teacher {
     private String phone;
 
     @NotBlank(message = "Department is required")
+    @Size(max = FieldLimits.TEXT, message = "Department" + FieldLimits.TEXT_TOO_LONG)
     private String department;
 
     @NotBlank(message = "Qualification is required")
+    @Size(max = FieldLimits.TEXT, message = "Qualification" + FieldLimits.TEXT_TOO_LONG)
     private String qualification;
 
     @NotBlank(message = "Gender is required")

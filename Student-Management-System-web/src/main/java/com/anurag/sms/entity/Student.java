@@ -7,11 +7,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+import com.anurag.sms.utility.FieldLimits;
 
 @Entity
 @Table(name = "students")
@@ -19,15 +24,18 @@ public class Student {
 
     @NotBlank(message = "First Name is required")
     @Column(name = "first_name", nullable = false)
+    @Size(max = FieldLimits.TEXT, message = "First Name" + FieldLimits.TEXT_TOO_LONG)
     private String firstName;
 
     @NotBlank(message = "Last Name is required")
     @Column(name = "last_name", nullable = false)
+    @Size(max = FieldLimits.TEXT, message = "Last Name" + FieldLimits.TEXT_TOO_LONG)
     private String lastName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Enter a valid email")
     @Column(nullable = false, unique = true)
+    @Size(max = FieldLimits.TEXT, message = "Email" + FieldLimits.TEXT_TOO_LONG)
     private String email;
 
     @NotBlank(message = "Phone number is required")
@@ -39,9 +47,12 @@ public class Student {
     @Column(nullable = false)
     private String gender;
 
-    @NotBlank(message = "Course is required")
-    @Column(nullable = false)
-    private String course;
+    // A real link to the course since G8; it was free text that could drift
+    // from the course catalogue. Created by V3__student_course_fk.sql.
+    @NotNull(message = "Course is required")
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
     @NotNull(message = "Date of Birth is required")
     @Column(nullable = false)
@@ -49,6 +60,7 @@ public class Student {
 
     @NotBlank(message = "Address is required")
     @Column(nullable = false)
+    @Size(max = FieldLimits.TEXT, message = "Address" + FieldLimits.TEXT_TOO_LONG)
     private String address;
 
     @Id
@@ -63,7 +75,7 @@ public class Student {
     }
 
     // Parameterized Constructor
-    public Student(Long id, String firstName, String lastName, String email, String phone, String gender, String course,
+    public Student(Long id, String firstName, String lastName, String email, String phone, String gender, Course course,
             LocalDate dateOfBirth, String address, String photo) {
 
         this.id = id;
@@ -127,11 +139,11 @@ public class Student {
         this.gender = gender;
     }
 
-    public String getCourse() {
+    public Course getCourse() {
         return course;
     }
 
-    public void setCourse(String course) {
+    public void setCourse(Course course) {
         this.course = course;
     }
 

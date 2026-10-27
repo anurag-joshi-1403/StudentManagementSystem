@@ -22,6 +22,9 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     // Duplicate check for a new enrollment, and for an edit (any OTHER row)
     boolean existsByStudentIdAndCourseIdAndSubjectId(Long studentId, Long courseId, Long subjectId);
 
+    // Curriculum (G9): enrollments that take this subject through this course
+    long countByCourseIdAndSubjectId(Long courseId, Long subjectId);
+
     boolean existsByStudentIdAndCourseIdAndSubjectIdAndIdNot(
             Long studentId, Long courseId, Long subjectId, Long id);
 

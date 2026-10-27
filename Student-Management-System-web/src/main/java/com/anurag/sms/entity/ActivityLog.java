@@ -27,6 +27,10 @@ public class ActivityLog {
     public static final String DELETED = "Deleted";
     public static final String IMPORTED = "Imported";
 
+    // The column sizes, as in V1__baseline.sql
+    public static final int DESCRIPTION_LENGTH = 255;
+    public static final int USERNAME_LENGTH = 100;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,10 +43,10 @@ public class ActivityLog {
     @Column(name = "entity_type", nullable = false, length = 30)
     private String entityType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = DESCRIPTION_LENGTH)
     private String description;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = USERNAME_LENGTH)
     private String username;
 
     @Column(name = "created_at", nullable = false)
@@ -54,9 +58,26 @@ public class ActivityLog {
     public ActivityLog(String action, String entityType, String description, String username) {
         this.action = action;
         this.entityType = entityType;
-        this.description = description;
-        this.username = username;
+        // Cut to fit (#40). A line is written after the change it records,
+        // outside that change's transaction, so a line too long for its
+        // column used to fail with the change already saved, and the user
+        // was told that nothing had changed.
+        this.description = fit(description, DESCRIPTION_LENGTH);
+        this.username = fit(username, USERNAME_LENGTH);
         this.createdAt = LocalDateTime.now();
+    }
+
+    // The start of the text, ending in "…" when it had to be cut
+    private static String fit(String text, int max) {
+        if (text == null || text.length() <= max) {
+            return text;
+        }
+        int end = max - 1;
+        // Never split a character made of two chars, such as an emoji
+        if (Character.isHighSurrogate(text.charAt(end - 1))) {
+            end--;
+        }
+        return text.substring(0, end) + "…";
     }
 
     public Long getId() {

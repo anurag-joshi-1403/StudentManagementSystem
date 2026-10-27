@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.anurag.sms.entity.User;
 import com.anurag.sms.repository.UserRepository;
+import com.anurag.sms.utility.PasswordPolicy;
 
 /**
  * Creates the first ADMIN account on a fresh database (#3).
@@ -55,6 +56,13 @@ public class AdminSeeder implements ApplicationRunner {
         if (username.isBlank() || password.isBlank()) {
             log.warn("No admin account exists. Set ADMIN_USERNAME and ADMIN_PASSWORD "
                     + "to create one on the next start.");
+            return;
+        }
+
+        // The same rule as registration and the change-password form (#36)
+        if (!PasswordPolicy.isAcceptable(password)) {
+            log.warn("No admin created: ADMIN_PASSWORD must be {} to {} characters.",
+                    PasswordPolicy.MIN_LENGTH, PasswordPolicy.MAX_LENGTH);
             return;
         }
 

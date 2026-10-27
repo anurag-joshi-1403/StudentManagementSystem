@@ -12,6 +12,12 @@
 
       <div class="card shadow">
         <div class="card-body">
+          <!--/* A refused delete explains why, e.g. the course still has students (G8) */-->
+          <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+
           <div class="row align-items-center mb-3">
             <div class="col-md-3">
               <h4 class="mb-0">Course List</h4>

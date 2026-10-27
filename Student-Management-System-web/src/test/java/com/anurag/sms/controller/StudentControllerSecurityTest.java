@@ -71,7 +71,7 @@ class StudentControllerSecurityTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void anAdminDeletesAndIsRedirectedToTheList() throws Exception {
-        when(studentService.getStudentById(1L)).thenReturn(TestData.student("Kabir", "Mehta"));
+        when(studentService.getStudentById(1L)).thenReturn(TestData.student("Kabir", "Mehta", TestData.course("BSC-PHY", "B.Sc Physics")));
 
         mvc.perform(post("/student/delete/1").with(csrf()))
                 .andExpect(status().is3xxRedirection())
@@ -124,7 +124,7 @@ class StudentControllerSecurityTest {
     @Test
     @WithMockUser(roles = "STUDENT")
     void everyoneCanDownloadAMarksheetPdf() throws Exception {
-        when(studentService.getStudentById(1L)).thenReturn(TestData.student("Kabir", "Mehta"));
+        when(studentService.getStudentById(1L)).thenReturn(TestData.student("Kabir", "Mehta", TestData.course("BSC-PHY", "B.Sc Physics")));
         when(pdfService.marksheet(any(), any())).thenReturn("%PDF-".getBytes());
 
         mvc.perform(get("/student/1/marksheet.pdf"))
